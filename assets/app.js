@@ -87,14 +87,14 @@ function syncBadges() {
   return newly;
 }
 function celebrateBadges(list) {
-  list.forEach((a, i) => setTimeout(() => { toast(`${a.icon} Neues Abzeichen: <b>${esc(a.title)}</b>!`, 'good'); confetti(); }, i * 900));
+  list.forEach((a, i) => setTimeout(() => { toast(`${a.icon} New badge: <b>${esc(a.title)}</b>!`, 'good'); confetti(); }, i * 900));
 }
 /* Call after any state change; pass the level index captured BEFORE an XP gain to detect level-ups. */
 function gameCheck(prevLevelIdx) {
   if (typeof prevLevelIdx === 'number') {
     const now = Store.levelInfo();
     if (now.idx > prevLevelIdx)
-      setTimeout(() => { toast(`⭐ Level ${now.level}! Du bist jetzt <b>${esc(now.title)}</b>.`, 'good'); confetti(); }, 300);
+      setTimeout(() => { toast(`⭐ Level ${now.level}! You are now <b>${esc(now.title)}</b>.`, 'good'); confetti(); }, 300);
   }
   const newly = syncBadges();
   if (newly.length) celebrateBadges(newly);
@@ -109,26 +109,26 @@ function shell(inner, active='') {
   <header class="topbar"><div class="topbar__in">
     <div class="brand" data-nav="#/"><span class="logo">🦉</span> Schritt für Schritt</div>
     <nav class="nav">
-      <a data-nav="#/" class="${active==='home'?'active':''}">Start</a>
+      <a data-nav="#/" class="${active==='home'?'active':''}">Home</a>
       <a data-nav="#/roadmap" class="${active==='roadmap'?'active':''}">Roadmap</a>
-      <a data-nav="#/vokabeln" class="${active==='vokabeln'?'active':''}">Vokabeln</a>
-      <a data-nav="#/pruefung" class="${active==='pruefung'?'active':''}">Prüfung</a>
-      <a data-nav="#/belohnungen" class="${active==='belohnungen'?'active':''}">Belohnungen</a>
+      <a data-nav="#/vokabeln" class="${active==='vokabeln'?'active':''}">Vocabulary</a>
+      <a data-nav="#/pruefung" class="${active==='pruefung'?'active':''}">Exam</a>
+      <a data-nav="#/belohnungen" class="${active==='belohnungen'?'active':''}">Rewards</a>
     </nav>
-    <span class="lvchip" data-nav="#/belohnungen" title="Dein Level"><b>Lv ${lv.level}</b><span class="lvbar"><span style="width:${lv.pct}%"></span></span></span>
-    ${streak>0?`<span class="streak" title="Lern-Serie">🔥 ${streak}</span>`:''}
+    <span class="lvchip" data-nav="#/belohnungen" title="Your level"><b>Lv ${lv.level}</b><span class="lvbar"><span style="width:${lv.pct}%"></span></span></span>
+    ${streak>0?`<span class="streak" title="Day streak">🔥 ${streak}</span>`:''}
   </div></header>
   <main>${inner}</main>
   <footer class="footer"><div class="wrap">
-    Fortschritt wird nur in deinem Browser gespeichert ·
-    <a href="#" data-action="reset">Fortschritt zurücksetzen</a>
+    Your progress is saved only in this browser ·
+    <a href="#" data-action="reset">Reset progress</a>
   </div></footer>`;
 }
 function render(inner, active) {
   $('#app').innerHTML = shell(inner, active);
   $$('[data-nav]').forEach(b => b.onclick = () => go(b.dataset.nav));
   const rst = $('[data-action=reset]');
-  if (rst) rst.onclick = e => { e.preventDefault(); if (confirm('Wirklich allen Fortschritt löschen?')) { Store.reset(); go('#/'); location.reload(); } };
+  if (rst) rst.onclick = e => { e.preventDefault(); if (confirm('Really erase all your saved progress?')) { Store.reset(); go('#/'); location.reload(); } };
   window.scrollTo(0,0);
 }
 
@@ -156,12 +156,12 @@ function viewHome() {
   <div class="wrap">
     <section class="hero"><div class="hero__grid">
       <div>
-        <p class="eyebrow">Dein Weg zur B1-Prüfung</p>
-        <h1>Willkommen zurück${name?`, ${esc(name)}`:''}. 🌟</h1>
-        <p class="lead">Ganz ruhig. Wir gehen das <b>Schritt für Schritt</b> an, ohne Eile. Heute ein kleiner Schritt, morgen der nächste. Ich bleibe die ganze Zeit an deiner Seite.</p>
+        <p class="eyebrow">Your path to the B1 exam</p>
+        <h1>Welcome back${name?`, ${esc(name)}`:''}. 🌟</h1>
+        <p class="lead">Take it easy. We go <b>one step at a time</b>, no rush. A small step today, the next one tomorrow. I'll be right beside you the whole way.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
-          <button class="btn btn--accent" data-nav="#/lesson/${current.id}">▶︎ Weiterlernen: ${esc(current.title)}</button>
-          <button class="btn btn--ghost" data-nav="#/flash/${curDeck.id}">🃏 Vokabeln üben</button>
+          <button class="btn btn--accent" data-nav="#/lesson/${current.id}">▶︎ Keep learning: ${esc(current.title)}</button>
+          <button class="btn btn--ghost" data-nav="#/flash/${curDeck.id}">🃏 Practice vocabulary</button>
         </div>
       </div>
       <div class="hero__owl">🦉</div>
@@ -172,25 +172,25 @@ function viewHome() {
         <div class="gcard glevel" data-nav="#/belohnungen">
           <div class="gcard__top"><span>Level ${lv.level}</span><b>${esc(lv.title)}</b></div>
           <div class="progressbar"><span style="width:${lv.pct}%"></span></div>
-          <div class="gcard__sub">${lv.max?`${lv.xp} XP · höchste Stufe!`:`${lv.into}/${lv.span} XP bis „${esc(lv.nextTitle)}“`}</div>
+          <div class="gcard__sub">${lv.max?`${lv.xp} XP · top level!`:`${lv.into}/${lv.span} XP to “${esc(lv.nextTitle)}”`}</div>
         </div>
         <div class="gcard gdaily">
           <div class="ring" style="background:${ring}"><div class="ring__in">${dpct}%</div></div>
-          <div><b>Tagesziel</b><div class="gcard__sub">${daily.xp}/${daily.goal} XP heute</div></div>
+          <div><b>Daily goal</b><div class="gcard__sub">${daily.xp}/${daily.goal} XP today</div></div>
         </div>
-        <div class="gcard gmini" data-nav="#/vokabeln"><div class="n prim">${words}</div><div class="l">Vokabeln gelernt</div></div>
-        <div class="gcard gmini" data-nav="#/roadmap"><div class="n good">${p.done}/${p.total}</div><div class="l">Kapitel geschafft</div></div>
-        <div class="gcard gmini" data-nav="#/belohnungen"><div class="n accent">${badgeCount}/${ACHIEVEMENTS.length}</div><div class="l">Abzeichen</div></div>
+        <div class="gcard gmini" data-nav="#/vokabeln"><div class="n prim">${words}</div><div class="l">Words learned</div></div>
+        <div class="gcard gmini" data-nav="#/roadmap"><div class="n good">${p.done}/${p.total}</div><div class="l">Chapters done</div></div>
+        <div class="gcard gmini" data-nav="#/belohnungen"><div class="n accent">${badgeCount}/${ACHIEVEMENTS.length}</div><div class="l">Badges</div></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section__head"><div><h2>Deine vier Prüfungsfertigkeiten</h2><p>Der DTZ prüft alle vier. Sprechen ist dabei besonders wichtig.</p></div></div>
+      <div class="section__head"><div><h2>Your four exam skills</h2><p>The exam tests all four. Speaking matters most, so practise it often.</p></div></div>
       <div class="skillgrid">
         ${Object.entries(SKILLS).map(([k,v])=>`
           <div class="skillcard" style="background:linear-gradient(140deg,${v.color},${v.color}cc)" data-nav="#/skill/${encodeURIComponent(k)}">
             <div class="ic">${v.icon}</div>
-            <div><h3>${k}</h3><p>${k==='Hören'?'Hörverstehen trainieren':k==='Lesen'?'Texte verstehen':k==='Schreiben'?'Briefe & E-Mails':'Laut sprechen üben'}</p></div>
+            <div><h3>${k}</h3><p>${k==='Hören'?'Listening practice':k==='Lesen'?'Reading practice':k==='Schreiben'?'Letters & emails':'Speak out loud'}</p></div>
           </div>`).join('')}
       </div>
     </section>
@@ -206,9 +206,9 @@ function viewRoadmap() {
   const inner = `
   <div class="wrap">
     <section class="hero" style="padding:36px 0 6px">
-      <p class="eyebrow">Deine Roadmap</p>
-      <h1>Von A2 bis zur B1-Prüfung</h1>
-      <p class="lead">Jedes Kapitel schaltet das nächste frei, sobald du das Quiz mit <b>70%</b> schaffst. Unendlich viele Versuche, jedes Mal neue Fragen. Ganz ohne Druck.</p>
+      <p class="eyebrow">Your roadmap</p>
+      <h1>From A2 to the B1 exam</h1>
+      <p class="lead">Each chapter unlocks the next one as soon as you score <b>70%</b> on its quiz. Unlimited tries, with fresh questions every time. No pressure at all.</p>
     </section>
     <section class="section">
       ${SYLLABUS.map((ph,pi)=>{
@@ -217,7 +217,7 @@ function viewRoadmap() {
         return `
         <div class="phase">
           <div class="phase__label"><span class="dot" style="background:${ph.color}"></span>
-            <h3>${esc(ph.phase)}</h3><span class="meta">${done}/${mods.length} geschafft</span></div>
+            <h3>${esc(ph.phase)}</h3><span class="meta">${done}/${mods.length} done</span></div>
           <div class="road">
             ${mods.map(m=>{
               const mm = byId(m.id);
@@ -236,9 +236,9 @@ function viewRoadmap() {
                   <div class="tags">${(m.grammar||[]).slice(0,3).map(g=>`<span class="chip chip--gram">${esc(g.title)}</span>`).join('')}</div>
                 </div>
                 <div class="node__state">
-                  ${passed?`<div class="check">✓</div><div class="lbl">bestanden</div>`
-                    : unlocked?`<div class="pct">${pct?pct+'%':'-'}</div><div class="lbl">${q.attempts?'bester Versuch':'starte hier'}</div>`
-                    : `<div class="lbl">🔒 gesperrt</div>`}
+                  ${passed?`<div class="check">✓</div><div class="lbl">passed</div>`
+                    : unlocked?`<div class="pct">${pct?pct+'%':'-'}</div><div class="lbl">${q.attempts?'best score':'start here'}</div>`
+                    : `<div class="lbl">🔒 locked</div>`}
                 </div>
               </div>`;
             }).join('')}
@@ -250,7 +250,7 @@ function viewRoadmap() {
   render(inner, 'roadmap');
   $$('.node[data-open]').forEach(n=>{
     const id = n.dataset.open;
-    if (!id) { n.onclick = ()=> toast('Erst das vorherige Kapitel mit 70% abschließen 🔒','warn'); return; }
+    if (!id) { n.onclick = ()=> toast('Finish the previous chapter with 70% first 🔒','warn'); return; }
     n.onclick = ()=> go('#/lesson/'+id);
   });
 }
@@ -272,26 +272,26 @@ function renderBlock(b){
 function viewLesson(id){
   const m = byId(id);
   if(!m){ go('#/roadmap'); return; }
-  if(!isUnlocked(m)){ toast('Dieses Kapitel ist noch gesperrt 🔒','warn'); go('#/roadmap'); return; }
+  if(!isUnlocked(m)){ toast('This chapter is still locked 🔒','warn'); go('#/roadmap'); return; }
   Store.visitLesson(id); Store.touchStreak();
   const q = Store.quiz(id);
   const deck = deckForModule(id);
   const dp = deck ? deckProgress(deck) : null;
   const deckHtml = deck ? `
     <div class="card pad" style="display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:20px">
-      <div><h3 style="margin:0">🃏 Vokabeln: ${esc(deck.title)}</h3><p style="color:var(--ink-soft);margin:4px 0 0">${dp.known}/${dp.total} gelernt. Kurze Karten mit „Umdrehen“.</p></div>
-      <button class="btn btn--ghost" data-nav="#/flash/${deck.id}">Karten üben →</button>
+      <div><h3 style="margin:0">🃏 Vocabulary: ${esc(deck.title)}</h3><p style="color:var(--ink-soft);margin:4px 0 0">${dp.known}/${dp.total} learned. Quick flip cards.</p></div>
+      <button class="btn btn--ghost" data-nav="#/flash/${deck.id}">Practice cards →</button>
     </div>` : '';
   const inner = `
   <div class="wrap lesson">
     <div class="lesson__hero" style="background:linear-gradient(135deg,${m.color},${m.color}cc)">
-      <div class="kicker">${esc(m.phaseName)} ${typeof m.lektion==='number'?'· Lektion '+m.lektion:''}</div>
+      <div class="kicker">${esc(m.phaseName)} ${typeof m.lektion==='number'?'· Lesson '+m.lektion:''}</div>
       <h1>${m.icon} ${esc(m.title)}</h1>
       <p class="lead">${esc(m.subtitle)}</p>
       <div class="goals">${(m.goals||[]).map(g=>`<span class="chip">🎯 ${esc(g)}</span>`).join('')}</div>
     </div>
 
-    ${m.wortfelder?`<p style="color:var(--ink-soft)"><b>Wortfelder:</b> ${m.wortfelder.map(esc).join(' · ')}</p>`:''}
+    ${m.wortfelder?`<p style="color:var(--ink-soft)"><b>Vocabulary topics:</b> ${m.wortfelder.map(esc).join(' · ')}</p>`:''}
 
     ${m.grammar.length>1?`<div class="gtoc">${m.grammar.map((g,i)=>`<button data-jump="c${i}" class="${i===0?'active':''}">${esc(g.title)}</button>`).join('')}</div>`:''}
 
@@ -305,9 +305,9 @@ function viewLesson(id){
     ${deckHtml}
 
     <div class="card pad" style="text-align:center;margin-top:20px">
-      <h3 style="margin-top:0">Bereit für ein kleines Quiz? 🧠</h3>
-      <p style="color:var(--ink-soft)">${q.passed?'Du hast dieses Quiz schon bestanden, aber Wiederholung schadet nie. Neue Fragen warten.':'Keine Sorge, du hast unendlich viele Versuche und jedes Mal neue Fragen. Du brauchst 70%.'}</p>
-      <button class="btn btn--accent" data-nav="#/quiz/${id}">Quiz starten →</button>
+      <h3 style="margin-top:0">Ready for a short quiz? 🧠</h3>
+      <p style="color:var(--ink-soft)">${q.passed?'You already passed this quiz, but a little review never hurts. Fresh questions are waiting.':'No worries: unlimited tries, new questions each time. You need 70% to move on.'}</p>
+      <button class="btn btn--accent" data-nav="#/quiz/${id}">Start quiz →</button>
     </div>
   </div>`;
   render(inner);
@@ -344,8 +344,8 @@ function viewQuiz(id){
     const inner=`
     <div class="wrap quiz">
       <div class="quiz__top">
-        <button class="btn btn--ghost btn--sm" data-nav="#/lesson/${id}">← zurück</button>
-        <span class="chip chip--wash">Frage ${idx+1} / ${set.length}</span>
+        <button class="btn btn--ghost btn--sm" data-nav="#/lesson/${id}">← back</button>
+        <span class="chip chip--wash">Question ${idx+1} / ${set.length}</span>
       </div>
       <div class="quiz__meter"><span style="width:${(idx/set.length)*100}%"></span></div>
       <div class="q">
@@ -353,10 +353,10 @@ function viewQuiz(id){
         ${q.en?`<div class="q__hint">🇬🇧 ${esc(q.en)}</div>`:''}
         ${q.type==='mc'
           ? `<div class="opts">${q._opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>`
-          : `<input class="fillin" placeholder="Deine Antwort…" autocomplete="off" autocapitalize="off" /><div style="margin-top:12px"><button class="btn btn--primary" data-check>Prüfen</button></div>`}
+          : `<input class="fillin" placeholder="Your answer…" autocomplete="off" autocapitalize="off" /><div style="margin-top:12px"><button class="btn btn--primary" data-check>Check</button></div>`}
         <div class="explain" id="ex" style="display:none"></div>
         <div id="nextwrap" style="display:none;margin-top:16px;text-align:right">
-          <button class="btn btn--accent" data-next>${idx+1<set.length?'Nächste Frage →':'Ergebnis ansehen →'}</button>
+          <button class="btn btn--accent" data-next>${idx+1<set.length?'Next question →':'See result →'}</button>
         </div>
       </div>
     </div>`;
@@ -368,7 +368,7 @@ function viewQuiz(id){
       if(ok) correct++;
       const ex=$('#ex'); ex.style.display='block';
       ex.className='explain '+(ok?'good':'bad');
-      ex.innerHTML=`<div class="h">${ok?'✅ Richtig!':'💛 Fast! Kein Problem, so lernt man.'}</div>${esc(q.explain||'')}`;
+      ex.innerHTML=`<div class="h">${ok?'✅ Correct!':'💛 Almost! No problem, that is how we learn.'}</div>${esc(q.explain||'')}`;
       $('#nextwrap').style.display='block';
     };
 
@@ -391,7 +391,7 @@ function viewQuiz(id){
         input.style.borderColor=ok?'var(--success)':'var(--accent)';
         if(!ok) $('#ex'); // fallthrough
         showResult(ok);
-        if(!ok){ const ex=$('#ex'); ex.innerHTML+=`<div style="margin-top:6px"><b>Richtig:</b> ${esc(acc[0])}</div>`; }
+        if(!ok){ const ex=$('#ex'); ex.innerHTML+=`<div style="margin-top:6px"><b>Correct answer:</b> ${esc(acc[0])}</div>`; }
       };
       input.addEventListener('keydown',e=>{if(e.key==='Enter')check();});
       $('[data-check]').onclick=check;
@@ -412,10 +412,10 @@ function viewQuiz(id){
     const passed=frac>=THRESHOLD;
     const nxt=nextModule(id);
     const emoji=passed?(pct===100?'🏆':'🎉'):'🌱';
-    const heading=passed?(pct===100?'Perfekt! Alles richtig!':'Geschafft! Bestanden!'):'Noch nicht ganz, und das ist völlig okay.';
+    const heading=passed?(pct===100?'Perfect! All correct!':'You did it! Passed!'):'Not quite yet, and that is completely okay.';
     const msg=passed
-      ? `Du hast ${correct} von ${set.length} richtig (${pct}%). ${nxt&&isUnlocked(byId(nxt.id))?`Das nächste Kapitel <b>„${esc(nxt.title)}“</b> ist jetzt freigeschaltet! 🔓`:'Du kommst super voran!'}`
-      : `Du hast ${correct} von ${set.length} richtig (${pct}%). Du brauchst 70%, und das schaffst du beim nächsten Mal locker. <b>Neue Fragen, neuer Versuch.</b> Ich glaube an dich.`;
+      ? `You got ${correct} of ${set.length} right (${pct}%). ${nxt&&isUnlocked(byId(nxt.id))?`The next chapter <b>“${esc(nxt.title)}”</b> is now unlocked! 🔓`:'You are doing great!'}`
+      : `You got ${correct} of ${set.length} right (${pct}%). You need 70%, and you will get there next time easily. <b>New questions, new try.</b> I believe in you.`;
 
     const inner=`
     <div class="wrap quiz"><div class="q result">
@@ -425,10 +425,10 @@ function viewQuiz(id){
       <div class="result__actions">
         ${passed
           ? (nxt&&isUnlocked(byId(nxt.id))
-              ? `<button class="btn btn--accent" data-nav="#/lesson/${nxt.id}">Weiter zu „${esc(nxt.title)}“ →</button>`
-              : `<button class="btn btn--accent" data-nav="#/roadmap">Zur Roadmap →</button>`)
-          : `<button class="btn btn--accent" data-retry>Nochmal versuchen (neue Fragen) 🔁</button>`}
-        <button class="btn btn--ghost" data-nav="#/lesson/${id}">Grammatik nochmal ansehen</button>
+              ? `<button class="btn btn--accent" data-nav="#/lesson/${nxt.id}">Continue to “${esc(nxt.title)}” →</button>`
+              : `<button class="btn btn--accent" data-nav="#/roadmap">To the roadmap →</button>`)
+          : `<button class="btn btn--accent" data-retry>Try again (new questions) 🔁</button>`}
+        <button class="btn btn--ghost" data-nav="#/lesson/${id}">Review the grammar</button>
       </div>
     </div></div>`;
     render(inner);
@@ -449,12 +449,12 @@ function viewPruefung(){
   const inner=`
   <div class="wrap">
     <section class="hero" style="padding:36px 0 6px">
-      <p class="eyebrow">Prüfungstraining</p>
+      <p class="eyebrow">Exam training</p>
       <h1>${esc(EXAM_INFO.title)}</h1>
       <div class="bilingual" style="margin-top:14px"><div class="en"><span class="tag">English</span>${esc(EXAM_INFO.intro_en)}</div><div class="de"><span class="tag">Deutsch</span>${esc(EXAM_INFO.intro_de)}</div></div>
     </section>
     <section class="section">
-      <div class="section__head"><div><h2>Die vier Teile</h2><p>Klicke, um jede Fertigkeit zu trainieren.</p></div></div>
+      <div class="section__head"><div><h2>The four parts</h2><p>Tap a skill to train it.</p></div></div>
       <div class="skillgrid">
         ${Object.entries(SKILLS).map(([k,v])=>`
           <div class="skillcard" style="background:linear-gradient(140deg,${v.color},${v.color}cc)" data-nav="#/skill/${encodeURIComponent(k)}">
@@ -465,7 +465,7 @@ function viewPruefung(){
       </div>
     </section>
     <section class="section">
-      <div class="section__head"><div><h2>Aussprache-Spickzettel 🗣️</h2><p>Aus dem Arbeitsbuch. Hör dir jedes Beispiel an.</p></div></div>
+      <div class="section__head"><div><h2>Pronunciation cheat sheet 🗣️</h2><p>From the workbook. Tap 🔊 to hear each example.</p></div></div>
       <div class="card pad">
         ${PHONETIK.map(([h,d])=>`<div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">
           <button class="btn btn--ghost btn--sm" data-say="${esc(d.replace(/["]/g,''))}">🔊</button>
@@ -492,8 +492,8 @@ function viewSkill(name){
       <h3>${esc(t.title)}</h3>
       <div class="player">
         <button data-say="${esc(t.script)}">▶︎</button>
-        <div style="flex:1"><b>Hörtext abspielen</b><br><small style="color:var(--ink-faint)">Klicke so oft du willst. Erst hören, dann antworten.</small></div>
-        <button class="btn btn--ghost btn--sm" data-reveal="script-${t.id}">Text zeigen</button>
+        <div style="flex:1"><b>Play the audio</b><br><small style="color:var(--ink-faint)">Play it as often as you like. Listen first, then answer.</small></div>
+        <button class="btn btn--ghost btn--sm" data-reveal="script-${t.id}">Show text</button>
       </div>
       <div id="script-${t.id}" style="display:none" class="explain">${esc(t.script)}</div>
       <div class="q" style="box-shadow:none;border:1px dashed var(--line);margin-top:12px">
@@ -528,29 +528,29 @@ function viewSkill(name){
       <span class="chip chip--wash">${t.level}</span>
       <h3>${esc(t.title)}</h3>
       <p>${esc(t.prompt_de)}</p>
-      <b>Bearbeite alle 4 Punkte:</b>
+      <b>Cover all four points:</b>
       <ul>${t.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
-      <textarea class="writing-area" data-w="${t.id}" placeholder="Schreib deinen Brief hier… (mind. ca. 40 Wörter)">${esc(Store.getWriting(t.id))}</textarea>
-      <div class="wordcount" id="wc-${t.id}">0 Wörter</div>
+      <textarea class="writing-area" data-w="${t.id}" placeholder="Write your letter here… (about 40+ words)">${esc(Store.getWriting(t.id))}</textarea>
+      <div class="wordcount" id="wc-${t.id}">0 words</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn--ghost btn--sm" data-savew="${t.id}">💾 Entwurf speichern</button>
-        <button class="btn btn--ghost btn--sm" data-model="${t.id}">Musterbrief zeigen</button>
+        <button class="btn btn--ghost btn--sm" data-savew="${t.id}">💾 Save draft</button>
+        <button class="btn btn--ghost btn--sm" data-model="${t.id}">Show model letter</button>
       </div>
-      <div id="model-${t.id}" style="display:none" class="explain good"><b>Musterlösung:</b><br>${t.model.split('\n').map(esc).join('<br>')}</div>
+      <div id="model-${t.id}" style="display:none" class="explain good"><b>Model answer:</b><br>${t.model.split('\n').map(esc).join('<br>')}</div>
     </div>`).join('')}`;
   }
 
   if(name==='Sprechen'){
-    const micNote = Speech.recSupported() ? '' : '<div class="tipbox callout-danger"><div class="ic">⚠️</div><div>Dein Browser unterstützt die Spracherkennung nicht gut. <b>Tipp:</b> Öffne die Seite in <b>Google Chrome</b> für das Mikrofon. Vorlesen & Zuhören klappt aber überall.</div></div>';
+    const micNote = Speech.recSupported() ? '' : '<div class="tipbox callout-danger"><div class="ic">⚠️</div><div>Your browser does not support speech recognition well. <b>Tip:</b> open the page in <b>Google Chrome</b> for the mic. Reading aloud and listening work everywhere.</div></div>';
     body=`${micNote}${v.tasks.map(t=>`
     <div class="task">
       <span class="chip chip--wash">${t.level}</span>
       <h3>${esc(t.title)}</h3>
       <p>${esc(t.prompt_de)}</p>
-      <div><b>Satzanfänge:</b><ul>${t.starters.map(s=>`<li>${esc(s)} <button class="btn btn--ghost btn--sm" data-say="${esc(s)}">🔊</button></li>`).join('')}</ul></div>
+      <div><b>Sentence starters:</b><ul>${t.starters.map(s=>`<li>${esc(s)} <button class="btn btn--ghost btn--sm" data-say="${esc(s)}">🔊</button></li>`).join('')}</ul></div>
       <div style="text-align:center;margin-top:14px">
         <button class="mic" data-mic="${t.id}">🎙️</button>
-        <div style="color:var(--ink-faint);font-size:.85rem;margin-top:8px">Tippe & sprich frei. Ich zeige, was ich verstanden habe.</div>
+        <div style="color:var(--ink-faint);font-size:.85rem;margin-top:8px">Tap and speak freely. I'll show what I heard.</div>
         <div class="explain" id="mic-${t.id}" style="display:none;text-align:left"></div>
       </div>
     </div>`).join('')}`;
@@ -563,7 +563,7 @@ function viewSkill(name){
       <h1>${v.icon} ${esc(name)}</h1>
     </div>
     <div class="bilingual"><div class="en"><span class="tag">English</span>${esc(v.lead_en)}</div><div class="de"><span class="tag">Deutsch</span>${esc(v.lead_de)}</div></div>
-    <div style="margin:10px 0"><button class="btn btn--ghost btn--sm" data-nav="#/pruefung">← alle Fertigkeiten</button></div>
+    <div style="margin:10px 0"><button class="btn btn--ghost btn--sm" data-nav="#/pruefung">← all skills</button></div>
     ${body}
   </div>`;
   render(inner);
@@ -581,29 +581,29 @@ function viewSkill(name){
     if(!ok) $$(`.opt[data-q="${id}"]`)[+btn.dataset.a].classList.add('correct');
     const task=v.tasks.find(t=>t.id===id);
     box.style.display='block'; box.className='explain '+(ok?'good':'bad');
-    box.innerHTML=`<div class="h">${ok?'✅ Richtig!':'💛 Nicht ganz.'}</div>${esc(task.q.explain||'')}`;
+    box.innerHTML=`<div class="h">${ok?'✅ Correct!':'💛 Not quite.'}</div>${esc(task.q.explain||'')}`;
   });
 
   // Schreiben interactions
   $$('.writing-area').forEach(ta=>{
     const id=ta.dataset.w; const wc=$('#wc-'+id);
-    const count=()=>{ const n=(ta.value.trim().match(/\S+/g)||[]).length; wc.textContent=n+' Wörter'; };
+    const count=()=>{ const n=(ta.value.trim().match(/\S+/g)||[]).length; wc.textContent=n+' words'; };
     ta.addEventListener('input',count); count();
   });
-  $$('[data-savew]').forEach(b=>b.onclick=()=>{const id=b.dataset.savew;Store.saveWriting(id,$(`.writing-area[data-w="${id}"]`).value);Store.setFlag('wroteDraft');toast('Entwurf gespeichert 💾','good');gameCheck();});
+  $$('[data-savew]').forEach(b=>b.onclick=()=>{const id=b.dataset.savew;Store.saveWriting(id,$(`.writing-area[data-w="${id}"]`).value);Store.setFlag('wroteDraft');toast('Draft saved 💾','good');gameCheck();});
   $$('[data-model]').forEach(b=>b.onclick=()=>{const el=$('#model-'+b.dataset.model);el.style.display=el.style.display==='none'?'block':'none';});
 
   // Sprechen mic
   $$('[data-mic]').forEach(btn=>btn.onclick=()=>{
     const id=btn.dataset.mic; const out=$('#mic-'+id);
-    out.style.display='block'; out.innerHTML='🎧 Ich höre zu… sprich jetzt!';
+    out.style.display='block'; out.innerHTML='🎧 Listening… speak now!';
     btn.classList.add('rec');
     Speech.listen(
-      (final,interim)=>{ out.innerHTML='<b>Ich verstehe:</b> '+esc(final||interim); },
+      (final,interim)=>{ out.innerHTML='<b>I hear:</b> '+esc(final||interim); },
       (err,final)=>{ btn.classList.remove('rec');
-        if(err==='unsupported'){ out.innerHTML='⚠️ Bitte Google Chrome benutzen fürs Mikrofon.'; return; }
-        if(err&&err!=='no-speech'){ out.innerHTML='Hmm, ich konnte nichts hören. Versuch es nochmal 🎙️'; return; }
-        out.innerHTML=`<div class="h">Klasse, du hast gesprochen! 🎉</div><b>Verstanden:</b> ${esc(final||'-')}<br><small style="color:var(--ink-faint)">Vergleiche mit den Satzanfängen. Jeder Versuch macht dich sicherer.</small>`;
+        if(err==='unsupported'){ out.innerHTML='⚠️ Please use Google Chrome for the mic.'; return; }
+        if(err&&err!=='no-speech'){ out.innerHTML='Hmm, I did not catch anything. Try again 🎙️'; return; }
+        out.innerHTML=`<div class="h">Nice, you spoke! 🎉</div><b>I heard:</b> ${esc(final||'-')}<br><small style="color:var(--ink-faint)">Compare it with the sentence starters. Every try makes you more confident.</small>`;
         Store.setFlag('micUsed'); gameCheck();
       }
     );
@@ -617,7 +617,7 @@ let chatOpen=false;
 function mountMascotFab(){
   const root=$('#mascot-root');
   root.innerHTML=`<div class="mascot-fab">
-    <div class="mascot-fab__bubble" id="lumi-bubble">Hallo, ich bin Lumikuttan. Brauchst du Hilfe? 🦉</div>
+    <div class="mascot-fab__bubble" id="lumi-bubble">Hi, I'm Lumikuttan. Need a hand? 🦉</div>
     <button class="mascot-fab__btn" id="lumi-open">🦉</button>
   </div>`;
   $('#lumi-open').onclick=openChat;
@@ -627,14 +627,14 @@ function openChat(){
   if(chatOpen) return; chatOpen=true;
   const root=$('#mascot-root');
   root.innerHTML=`<div class="chat">
-    <div class="chat__head"><span class="av">🦉</span><div class="who">Lumikuttan<small>deine Deutsch-Begleiterin</small></div><button class="x" id="lumi-close">×</button></div>
+    <div class="chat__head"><span class="av">🦉</span><div class="who">Lumikuttan<small>your German study buddy</small></div><button class="x" id="lumi-close">×</button></div>
     <div class="chat__body" id="chat-body"></div>
     <div class="chat__quick" id="chat-quick"></div>
-    ${Lumikuttan.deepEnabled()?'<div class="deep-hint">„Tiefer erklären“ nutzt KI, nur wenn du es brauchst.</div>':''}
-    <div class="chat__foot"><input id="chat-in" placeholder="Frag mich etwas auf Deutsch oder Englisch…" /><button id="chat-send">➤</button></div>
+    ${Lumikuttan.deepEnabled()?'<div class="deep-hint">“Explain deeper” uses AI, only when you need it.</div>':''}
+    <div class="chat__foot"><input id="chat-in" placeholder="Ask me anything, in English or German…" /><button id="chat-send">➤</button></div>
   </div>`;
   $('#lumi-close').onclick=()=>{chatOpen=false;mountMascotFab();};
-  const quick=['Wie funktioniert „weil“?','Wann Dativ oder Akkusativ?','Was ist im DTZ dran?','Ich bin nervös 😟'];
+  const quick=['How does “weil” work?','Dativ or Akkusativ?','What is on the exam?','I feel nervous 😟'];
   $('#chat-quick').innerHTML=quick.map(q=>`<button data-q="${esc(q)}">${esc(q)}</button>`).join('');
   $$('#chat-quick button').forEach(b=>b.onclick=()=>{ $('#chat-in').value=b.dataset.q; send(); });
   addBot(Lumikuttan.greeting());
@@ -655,13 +655,13 @@ async function send(){
   t.innerHTML=res.text;
   if(res.canDeepen && Lumikuttan.deepEnabled()){
     const wrap=document.createElement('div'); wrap.style.marginTop='8px';
-    const btn=document.createElement('button'); btn.className='btn btn--ghost btn--sm'; btn.textContent='🧠 Tiefer erklären';
-    btn.onclick=async()=>{ btn.disabled=true; btn.textContent='denke nach…';
+    const btn=document.createElement('button'); btn.className='btn btn--ghost btn--sm'; btn.textContent='🧠 Explain deeper';
+    btn.onclick=async()=>{ btn.disabled=true; btn.textContent='thinking…';
       const tt=typing();
       try{ const ctx=byId((location.hash.match(/lesson\/([^/]+)/)||[])[1]);
         const ans=await Lumikuttan.deepAnswer(text, ctx?`Aktuelles Thema: ${ctx.title}: ${(ctx.grammar||[]).map(g=>g.title).join(', ')}`:'');
         tt.innerHTML=esc(ans).replace(/\n/g,'<br>');
-      }catch(e){ tt.innerHTML='Die KI-Antwort ist gerade nicht erreichbar. Aber meine Grund-Erklärung oben stimmt! 🦉'; }
+      }catch(e){ tt.innerHTML='The AI answer is not reachable right now. But my basic explanation above is correct! 🦉'; }
       btn.remove();
     };
     wrap.appendChild(btn); $('#chat-body').appendChild(wrap);
@@ -672,20 +672,22 @@ async function send(){
    Onboarding + toast + confetti
    ===================================================================== */
 function onboard(){
+  if(document.querySelector('.overlay')) return;      // never stack two welcome cards
   const ov=document.createElement('div'); ov.className='overlay';
   ov.innerHTML=`<div class="modal">
     <div class="owl">🦉</div>
-    <h2>Hallo, ich bin Lumikuttan.</h2>
-    <p style="color:var(--ink-soft)">Ich begleite dich Schritt für Schritt zu deiner B1-Prüfung, ganz entspannt. Wie darf ich dich nennen?</p>
-    <input id="ob-name" placeholder="Dein Vorname…" value="Natasha" maxlength="24" />
-    <button class="btn btn--accent btn--block" id="ob-go">Los geht's! 🚀</button>
-    <p style="font-size:.8rem;color:var(--ink-faint);margin:14px 0 0">Kein Konto, kein Passwort. Alles bleibt privat auf deinem Laptop.</p>
+    <h2>Hi, I'm Lumikuttan.</h2>
+    <p style="color:var(--ink-soft)">I'll guide you to your B1 exam, one small step at a time. Nice and calm. What should I call you?</p>
+    <input id="ob-name" placeholder="Your first name…" value="Natasha" maxlength="24" />
+    <button class="btn btn--accent btn--block" id="ob-go">Let's go! 🚀</button>
+    <p style="font-size:.8rem;color:var(--ink-faint);margin:14px 0 0">No account, no password. Everything stays private on your laptop.</p>
   </div>`;
   document.body.appendChild(ov);
-  const done=()=>{ const n=$('#ob-name').value.trim()||'Natasha'; Store.setName(n); ov.remove(); toast(`Schön, dich kennenzulernen, ${n}!`,'good'); route(); };
-  $('#ob-go').onclick=done;
-  $('#ob-name').addEventListener('keydown',e=>{if(e.key==='Enter')done();});
-  $('#ob-name').focus();
+  const nameInput=ov.querySelector('#ob-name');
+  const done=()=>{ const n=(nameInput.value||'').trim()||'Natasha'; Store.setName(n); ov.remove(); toast(`Nice to meet you, ${n}!`,'good'); route(); };
+  ov.querySelector('#ob-go').onclick=done;
+  nameInput.addEventListener('keydown',e=>{ if(e.key==='Enter') done(); });
+  nameInput.focus();
 }
 function toast(msg,kind=''){ const host=$('#toast-host'); const t=document.createElement('div'); t.className='toast '+kind; t.innerHTML=msg; host.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-8px)';setTimeout(()=>t.remove(),300);},2600); }
 function confetti(){ const c=document.createElement('div'); c.className='confetti'; const cols=['#5B7FFF','#FF7A59','#22B981','#F5C451','#EC4899','#8B5CF6']; for(let i=0;i<90;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'vw';s.style.background=cols[i%cols.length];s.style.animationDuration=(2+Math.random()*2)+'s';s.style.animationDelay=(Math.random()*.6)+'s';s.style.transform=`rotate(${Math.random()*360}deg)`;c.appendChild(s);} document.body.appendChild(c); setTimeout(()=>c.remove(),4200); }
@@ -700,18 +702,18 @@ function viewVokabeln(){
   const inner=`
   <div class="wrap">
     <section class="hero" style="padding:36px 0 6px">
-      <p class="eyebrow">Wortschatz</p>
-      <h1>Vokabeltrainer 🃏</h1>
-      <p class="lead">Karteikarten mit „Umdrehen“. Deutsch vorne, Übersetzung auf Knopfdruck. Was du kannst, merkt sich die App. <b>${known}/${total}</b> Vokabeln gelernt.</p>
+      <p class="eyebrow">Vocabulary</p>
+      <h1>Vocabulary trainer 🃏</h1>
+      <p class="lead">Flip cards: German on the front, translation on tap. The app remembers what you know. <b>${known}/${total}</b> words learned.</p>
     </section>
     <section class="section">
       <div class="deckgrid">
       ${VOCAB.map(d=>{ const dp=deckProgress(d); const done=dp.known===dp.total;
         return `<div class="deckcard ${done?'deckcard--done':''}" data-nav="#/flash/${d.id}">
-          <div class="deckcard__top"><span class="deckcard__ic">🃏</span>${done?'<span class="deckcard__badge">✓ komplett</span>':`<span class="deckcard__badge muted">${dp.total} Karten</span>`}</div>
+          <div class="deckcard__top"><span class="deckcard__ic">🃏</span>${done?'<span class="deckcard__badge">✓ complete</span>':`<span class="deckcard__badge muted">${dp.total} cards</span>`}</div>
           <h3>${esc(d.title)}</h3>
           <div class="progressbar"><span style="width:${dp.pct}%"></span></div>
-          <div class="deckcard__sub">${dp.known}/${dp.total} gelernt</div>
+          <div class="deckcard__sub">${dp.known}/${dp.total} learned</div>
         </div>`;}).join('')}
       </div>
     </section>
@@ -744,23 +746,23 @@ function viewFlash(deckId){
     const inner=`
     <div class="wrap flash">
       <div class="quiz__top">
-        <button class="btn btn--ghost btn--sm" data-nav="#/vokabeln">← Decks</button>
+        <button class="btn btn--ghost btn--sm" data-nav="#/vokabeln">← All decks</button>
         <span class="chip chip--wash">${esc(deck.title)}</span>
       </div>
       <div class="quiz__meter"><span style="width:${Math.round(doneCount/deck.cards.length*100)}%"></span></div>
       <div class="fcard" data-flip>
-        <div class="fcard__hint">Karte ${pos+1} / ${queue.length} · ${doneCount}/${deck.cards.length} gelernt</div>
-        <div class="fcard__de">${esc(c.de)} <button class="fcard__say" data-say="${esc(sayText(c.de))}" title="Anhören">🔊</button></div>
+        <div class="fcard__hint">Card ${pos+1} / ${queue.length} · ${doneCount}/${deck.cards.length} learned</div>
+        <div class="fcard__de">${esc(c.de)} <button class="fcard__say" data-say="${esc(sayText(c.de))}" title="Listen">🔊</button></div>
         <div class="fcard__answer" style="display:${revealed?'block':'none'}">
           <div class="fcard__en">${esc(c.en)}</div>
           ${c.ex?`<div class="fcard__ex">${hl(c.ex)}</div>`:''}
         </div>
-        ${!revealed?`<button class="btn btn--primary" data-reveal>Übersetzung zeigen</button>`:''}
+        ${!revealed?`<button class="btn btn--primary" data-reveal>Show translation</button>`:''}
       </div>
       ${revealed?`<div class="fcard__actions">
-        <button class="btn btn--ghost" data-again>Nochmal üben</button>
-        <button class="btn btn--accent" data-known>Kannte ich ✓</button>
-      </div>`:`<p class="fcard__tip">Tipp: Karte antippen zum Umdrehen.</p>`}
+        <button class="btn btn--ghost" data-again>Practice again</button>
+        <button class="btn btn--accent" data-known>I knew it ✓</button>
+      </div>`:`<p class="fcard__tip">Tip: tap the card to flip it.</p>`}
     </div>`;
     render(inner);
     $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
@@ -778,11 +780,11 @@ function viewFlash(deckId){
     const inner=`
     <div class="wrap quiz"><div class="q result">
       <div class="result__emoji">${full?'🏆':'🎉'}</div>
-      <h2>${full?'Deck komplett gelernt!':'Gut gemacht!'}</h2>
-      <p class="msg">Du hast diese Runde <b>${learned}</b> neue Vokabel${learned===1?'':'n'} gelernt. Insgesamt kannst du <b>${dp.known}/${dp.total}</b> Karten in „${esc(deck.title)}“.</p>
+      <h2>${full?'Deck complete!':'Well done!'}</h2>
+      <p class="msg">You learned <b>${learned}</b> new word${learned===1?'':'s'} this round. In total you know <b>${dp.known}/${dp.total}</b> cards in “${esc(deck.title)}”.</p>
       <div class="result__actions">
-        <button class="btn btn--accent" data-nav="#/vokabeln">Andere Decks →</button>
-        <button class="btn btn--ghost" data-restart>Nochmal durchgehen 🔁</button>
+        <button class="btn btn--accent" data-nav="#/vokabeln">Other decks →</button>
+        <button class="btn btn--ghost" data-restart>Go through again 🔁</button>
       </div>
     </div></div>`;
     render(inner);
@@ -808,8 +810,8 @@ function viewBelohnungen(){
   const inner=`
   <div class="wrap">
     <section class="hero" style="padding:36px 0 6px">
-      <p class="eyebrow">Belohnungen</p>
-      <h1>Deine Erfolge 🏅</h1>
+      <p class="eyebrow">Rewards</p>
+      <h1>Your achievements 🏅</h1>
     </section>
     <section class="section">
       <div class="levelbanner">
@@ -817,19 +819,19 @@ function viewBelohnungen(){
         <div style="flex:1;min-width:200px">
           <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-family:var(--font-display);font-size:1.2rem">${esc(lv.title)}</b><span class="gcard__sub">${lv.xp} XP</span></div>
           <div class="progressbar" style="margin-top:8px"><span style="width:${lv.pct}%"></span></div>
-          <div class="gcard__sub">${lv.max?'Höchste Stufe erreicht!':`${lv.into}/${lv.span} XP bis „${esc(lv.nextTitle)}“`}</div>
+          <div class="gcard__sub">${lv.max?'Top level reached!':`${lv.into}/${lv.span} XP to “${esc(lv.nextTitle)}”`}</div>
         </div>
         <div class="ring" style="background:${ring}"><div class="ring__in">${dpct}%</div></div>
       </div>
       <div class="gband" style="margin-top:16px">
-        <div class="gcard gmini"><div class="n prim">${words}</div><div class="l">Vokabeln</div></div>
-        <div class="gcard gmini"><div class="n good">${p.done}/${p.total}</div><div class="l">Kapitel</div></div>
-        <div class="gcard gmini"><div class="n accent">${Store.get().streak.count}</div><div class="l">Tage-Serie</div></div>
-        <div class="gcard gmini"><div class="n">${lv.xp}</div><div class="l">XP gesamt</div></div>
+        <div class="gcard gmini"><div class="n prim">${words}</div><div class="l">Words</div></div>
+        <div class="gcard gmini"><div class="n good">${p.done}/${p.total}</div><div class="l">Chapters</div></div>
+        <div class="gcard gmini"><div class="n accent">${Store.get().streak.count}</div><div class="l">Day streak</div></div>
+        <div class="gcard gmini"><div class="n">${lv.xp}</div><div class="l">Total XP</div></div>
       </div>
     </section>
     <section class="section">
-      <div class="section__head"><div><h2>Abzeichen</h2><p>Sammle sie alle auf dem Weg zur Prüfung.</p></div></div>
+      <div class="section__head"><div><h2>Badges</h2><p>Collect them all on the way to the exam.</p></div></div>
       <div class="badgegrid">
       ${ACHIEVEMENTS.map(a=>{ const has=Store.hasBadge(a.id);
         return `<div class="badge ${has?'badge--on':'badge--off'}">
@@ -865,7 +867,9 @@ function route(){
   return viewHome();
 }
 
+let booted=false;
+function boot(){ if(booted) return; booted=true; mountMascotFab(); route(); }
 window.addEventListener('hashchange', route);
-window.addEventListener('DOMContentLoaded', ()=>{ mountMascotFab(); route(); });
-// DOMContentLoaded may have already fired (module is deferred):
-if(document.readyState!=='loading'){ mountMascotFab(); route(); }
+window.addEventListener('DOMContentLoaded', boot);
+// The module is deferred and may run after DOMContentLoaded already fired:
+if(document.readyState!=='loading') boot();

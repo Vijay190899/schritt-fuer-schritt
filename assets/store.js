@@ -4,14 +4,14 @@ const DAILY_GOAL = 50;
 
 /* Level ladder (feminine titles, for Natasha). */
 const LEVELS = [
-  { min:0,    title:'Neuling' },
-  { min:100,  title:'Anfängerin' },
-  { min:250,  title:'Entdeckerin' },
-  { min:500,  title:'Lernerin' },
-  { min:850,  title:'Fortgeschrittene' },
-  { min:1300, title:'Kennerin' },
-  { min:1900, title:'Sprachprofi' },
-  { min:2700, title:'B1-Heldin' }
+  { min:0,    title:'Newcomer' },
+  { min:100,  title:'Beginner' },
+  { min:250,  title:'Explorer' },
+  { min:500,  title:'Learner' },
+  { min:850,  title:'Rising Star' },
+  { min:1300, title:'Achiever' },
+  { min:1900, title:'Language Pro' },
+  { min:2700, title:'B1 Hero' }
 ];
 
 const defaults = () => ({

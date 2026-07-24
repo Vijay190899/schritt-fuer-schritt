@@ -588,10 +588,10 @@ export const EXAM_INFO = {
   intro_en:'The DTZ is a scaled exam: your result can be A2 or B1 depending on your score. It has a written part (~100 min) and an oral part (~15 min, in pairs). You need roughly 60% to reach B1 in each part.',
   intro_de:'Der DTZ ist eine skalierte Prüfung: Ihr Ergebnis kann A2 oder B1 sein – je nach Punktzahl. Es gibt einen schriftlichen Teil (~100 Min.) und einen mündlichen Teil (~15 Min., zu zweit). Für B1 brauchen Sie etwa 60% pro Teil.',
   parts:[
-    { k:'Hören', points:'~45 Min', desc:'4 Teile: Ansagen/Nachrichten, Radio, Gespräche, Meinungen.' },
-    { k:'Lesen', points:'~45 Min', desc:'5 Teile: Anzeigen zuordnen, Infotexte, offizielle Briefe, Schilder.' },
-    { k:'Schreiben', points:'~30 Min', desc:'Ein halbformeller Brief/E-Mail zu einer Alltagssituation.' },
-    { k:'Sprechen', points:'~15 Min', desc:'Teil 1: sich vorstellen. Teil 2: über ein Bild/Erfahrung sprechen. Teil 3: gemeinsam etwas planen.' }
+    { k:'Hören', points:'~45 min', desc:'4 parts: announcements/messages, radio, conversations, opinions.' },
+    { k:'Lesen', points:'~45 min', desc:'5 parts: matching ads, info texts, official letters, signs.' },
+    { k:'Schreiben', points:'~30 min', desc:'A semi-formal letter/email about an everyday situation.' },
+    { k:'Sprechen', points:'~15 min', desc:'Part 1: introduce yourself. Part 2: talk about a picture/experience. Part 3: plan something together.' }
   ]
 };
 
@@ -630,12 +630,12 @@ export const SKILLS = {
     lead_en:'DTZ writing = a half-formal letter. You get 4 bullet points and must cover ALL of them. Structure: greeting → reason for writing → the 4 points → closing. ~30 min.',
     lead_de:'DTZ-Schreiben = ein halbformeller Brief. Du bekommst 4 Punkte und musst ALLE bearbeiten. Aufbau: Anrede → Grund → die 4 Punkte → Gruß. ~30 Min.',
     phrases:{
-      title:'Nützliche Bausteine',
+      title:'Useful building blocks',
       groups:[
-        { h:'Anrede', items:['Sehr geehrte Damen und Herren,','Liebe/r … , (informell)'] },
-        { h:'Einleitung', items:['ich schreibe Ihnen, weil …','vielen Dank für Ihre E-Mail.','ich habe ein Problem mit …'] },
-        { h:'Bitte / Vorschlag', items:['Könnten Sie mir bitte …?','Ich würde vorschlagen, dass …','Wäre es möglich, … ?'] },
-        { h:'Gruß', items:['Mit freundlichen Grüßen','Viele Grüße (informell)'] }
+        { h:'Greeting', items:['Sehr geehrte Damen und Herren,','Liebe/r … , (informell)'] },
+        { h:'Opening', items:['ich schreibe Ihnen, weil …','vielen Dank für Ihre E-Mail.','ich habe ein Problem mit …'] },
+        { h:'Request / suggestion', items:['Könnten Sie mir bitte …?','Ich würde vorschlagen, dass …','Wäre es möglich, … ?'] },
+        { h:'Sign-off', items:['Mit freundlichen Grüßen','Viele Grüße (informell)'] }
       ]
     },
     tasks:[
@@ -893,18 +893,18 @@ export const VOCAB = [
    ACHIEVEMENTS (badges). Unlock logic lives in app.js (needs progress).
    ===================================================================== */
 export const ACHIEVEMENTS = [
-  { id:'first_step', icon:'👣', title:'Erster Schritt',   desc:'Öffne dein erstes Kapitel.' },
-  { id:'first_pass', icon:'✅', title:'Bestanden!',       desc:'Bestehe dein erstes Quiz.' },
-  { id:'perfect',    icon:'💯', title:'Perfekt',          desc:'Hol dir 100% in einem Quiz.' },
-  { id:'words25',    icon:'📚', title:'Wortschatz 25',    desc:'Lerne 25 Vokabeln.' },
-  { id:'words100',   icon:'🧠', title:'Wortschatz 100',   desc:'Lerne 100 Vokabeln.' },
-  { id:'deck_done',  icon:'🃏', title:'Deck geschafft',   desc:'Lerne ein Vokabeldeck komplett.' },
-  { id:'streak3',    icon:'🔥', title:'Drei am Stück',    desc:'Lerne 3 Tage in Folge.' },
-  { id:'streak7',    icon:'⚡', title:'Eine ganze Woche', desc:'Lerne 7 Tage in Folge.' },
-  { id:'speaker',    icon:'🎙️', title:'Laut gesprochen',  desc:'Nutze die Sprech-Übung.' },
-  { id:'writer',     icon:'✍️', title:'Erster Brief',     desc:'Speichere einen Schreib-Entwurf.' },
-  { id:'a2done',     icon:'🌱', title:'A2 aufgefrischt',  desc:'Bestehe alle A2-Kapitel.' },
-  { id:'b11done',    icon:'🚀', title:'B1.1 gemeistert',  desc:'Bestehe alle Kapitel aus Schritte 5.' },
-  { id:'half',       icon:'⛰️', title:'Bergmitte',        desc:'Schaffe 50% des Kurses.' },
-  { id:'graduate',   icon:'🏆', title:'Prüfungsbereit',   desc:'Bestehe alle Kapitel!' }
+  { id:'first_step', icon:'👣', title:'First step',      desc:'Open your first chapter.' },
+  { id:'first_pass', icon:'✅', title:'Passed!',         desc:'Pass your first quiz.' },
+  { id:'perfect',    icon:'💯', title:'Perfect',         desc:'Score 100% on a quiz.' },
+  { id:'words25',    icon:'📚', title:'25 words',        desc:'Learn 25 vocabulary words.' },
+  { id:'words100',   icon:'🧠', title:'100 words',       desc:'Learn 100 vocabulary words.' },
+  { id:'deck_done',  icon:'🃏', title:'Deck cleared',    desc:'Learn a whole vocabulary deck.' },
+  { id:'streak3',    icon:'🔥', title:'Three in a row',  desc:'Study 3 days in a row.' },
+  { id:'streak7',    icon:'⚡', title:'A full week',     desc:'Study 7 days in a row.' },
+  { id:'speaker',    icon:'🎙️', title:'Spoke out loud',  desc:'Use the speaking practice.' },
+  { id:'writer',     icon:'✍️', title:'First letter',    desc:'Save a writing draft.' },
+  { id:'a2done',     icon:'🌱', title:'A2 refreshed',    desc:'Pass all A2 chapters.' },
+  { id:'b11done',    icon:'🚀', title:'B1.1 mastered',   desc:'Pass every chapter of Schritte 5.' },
+  { id:'half',       icon:'⛰️', title:'Halfway up',      desc:'Complete 50% of the course.' },
+  { id:'graduate',   icon:'🏆', title:'Exam-ready',      desc:'Pass every chapter!' }
 ];

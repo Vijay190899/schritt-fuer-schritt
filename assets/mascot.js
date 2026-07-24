@@ -29,17 +29,17 @@ const KB = [
 ];
 
 const ENCOURAGE = [
-  'Du machst das großartig! Jeder kleine Schritt zählt. 🌱',
-  'Fehler sind Freunde, so lernt das Gehirn. Weiter so!',
-  'Ich bin stolz auf dich. Ernsthaft. 🦉',
-  'Atme durch. Du bist weiter, als du denkst.',
-  'Sprachenlernen ist ein Marathon, kein Sprint. Und du läufst gut!',
-  'Denk dran: Vor einem Monat konntest du das noch nicht. 🚀'
+  'You are doing great! Every small step counts. 🌱',
+  'Mistakes are friends, that is how the brain learns. Keep going!',
+  'I am proud of you. Really. 🦉',
+  'Take a breath. You are further along than you think.',
+  'Learning a language is a marathon, not a sprint, and you are running well!',
+  'Remember: a month ago you could not do this yet. 🚀'
 ];
 
 const GREETINGS = (name) => [
-  `Hallo ${name || 'du'}, ich bin Lumikuttan, deine Deutsch-Begleiterin. 🦉 Frag mich alles über Deutsch: Grammatik, Wörter, oder wenn du kurz etwas Mut brauchst.`,
-  `Hi ${name || 'du'}, Lumikuttan hier. 🦉 Ich bin für dich da bei Grammatik, Wörtern und Prüfungsfragen. Womit fangen wir an?`
+  `Hi ${name || 'there'}, I'm Lumikuttan, your German study buddy. 🦉 Ask me anything about German: grammar, words, or when you just need a little encouragement.`,
+  `Hey ${name || 'there'}, Lumikuttan here. 🦉 I'm here for grammar, vocabulary and exam questions. Where shall we start?`
 ];
 
 function findKB(text) {
@@ -82,10 +82,10 @@ export const Lumikuttan = {
     const kb = findKB(question);
     if (kb) return { text: kb, canDeepen: true };
     return {
-      text: 'Gute Frage! Dazu habe ich keine feste Erklärung parat. '
+      text: 'Good question! I do not have a set explanation for that one. '
           + (CFG.MASCOT_WORKER_URL && CFG.DEEP_ANSWER_ENABLED
-              ? 'Tippe auf <b>„Tiefer erklären“</b> und ich denke gründlicher nach. 🧠'
-              : 'Versuch, es anders zu formulieren, zum Beispiel „Wie funktioniert das Perfekt?“ oder „Wann benutze ich Dativ?“'),
+              ? 'Tap <b>“Explain deeper”</b> and I will think it through. 🧠'
+              : 'Try rephrasing it, for example “How does the Perfekt work?” or “When do I use Dativ?”'),
       canDeepen: true
     };
   },

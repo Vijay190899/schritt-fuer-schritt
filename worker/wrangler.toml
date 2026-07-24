@@ -7,7 +7,8 @@ compatibility_date = "2024-11-01"
 [ai]
 binding = "AI"
 
-# Optional: pick a different open model without editing code, then redeploy.
+# The Worker already tries current models in order and falls back automatically.
+# To force one specific model, uncomment and redeploy:
 #   [vars]
-#   MODEL = "@cf/mistral/mistral-7b-instruct-v0.1"      # cheaper / faster
-#   MODEL = "@cf/meta/llama-3.1-70b-instruct"           # higher quality, more neurons
+#   MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"   # higher quality
+#   MODEL = "@cf/meta/llama-3.1-8b-instruct-fast"        # fast / cheap (default)

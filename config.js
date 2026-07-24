@@ -16,8 +16,8 @@
     Deploy steps: see /worker/README.md
 */
 window.SFS_CONFIG = {
-  MASCOT_WORKER_URL: "",          // paste your Worker URL here to enable the AI brain
-  APP_VERSION: "1.1.0",
+  MASCOT_WORKER_URL: "https://lumikuttan.vijayananthyt.workers.dev",   // AI brain (Cloudflare Workers AI)
+  APP_VERSION: "1.2.0",
   DEEP_ANSWER_ENABLED: true,      // set false to force offline mode even if a URL is set
   PASS_THRESHOLD: 0.70,           // 70% to unlock the next step
   QUESTIONS_PER_QUIZ: 7           // questions drawn from each bank per attempt

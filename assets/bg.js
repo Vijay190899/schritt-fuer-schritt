@@ -1,115 +1,75 @@
-/* 
-  Ambient Mesh Gradient Background
-  Ultra-smooth fluid blobs that are heavily blurred via CSS.
-*/
-class DynamicBackground {
-  constructor() {
-    this.canvas = document.getElementById('dynamic-bg');
-    if (!this.canvas) return;
-    this.ctx = this.canvas.getContext('2d');
-    
-    // Low resolution is fine, it will be heavily blurred by CSS!
-    const scale = 0.5;
-    this.width = window.innerWidth * scale;
-    this.height = window.innerHeight * scale;
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
-    
-    this.time = 0;
-    this.blobs = [];
-    
-    this.init();
-    
-    window.addEventListener('resize', () => {
-      this.width = window.innerWidth * scale;
-      this.height = window.innerHeight * scale;
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-      this.init();
-    });
-    
-    this.loop();
-  }
-  
-  getColors() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-      return [
-        { r: 91, g: 127, b: 255 },  // soft blue
-        { r: 62, g: 91, b: 217 },   // deep primary
-        { r: 121, g: 73, b: 232 },  // purple/indigo
-        { r: 217, g: 87, b: 62 }    // muted accent coral
-      ];
-    }
-    return [
-      { r: 180, g: 200, b: 255 },
-      { r: 255, g: 216, b: 206 },
-      { r: 195, g: 242, b: 224 },
-      { r: 233, g: 226, b: 255 }
-    ];
-  }
-
-  init() {
-    this.blobs = [];
-    const colors = this.getColors();
-    const count = 4;
-    for (let i = 0; i < count; i++) {
-        // Massive, screen-filling radii
-        const radius = Math.random() * (this.width * 0.4) + this.width * 0.3;
-        this.blobs.push({
-            color: colors[i % colors.length],
-            xBase: Math.random() * this.width,
-            yBase: Math.random() * this.height,
-            xAmp: Math.random() * 200 + 100,
-            yAmp: Math.random() * 200 + 100,
-            xSpeed: Math.random() * 0.003 + 0.001,
-            ySpeed: Math.random() * 0.003 + 0.001,
-            xPhase: Math.random() * Math.PI * 2,
-            yPhase: Math.random() * Math.PI * 2,
-            radius: radius
-        });
-    }
-  }
-
-  loop() {
-    this.time += 1;
-
-    // Check theme for dynamic opacity
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const bgOpacity = isDark ? 0.35 : 0.6; // High opacity so the blur catches it well
-
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    // Smooth composite blending
-    this.ctx.globalCompositeOperation = isDark ? 'screen' : 'multiply';
-
-    const colors = this.getColors();
-
-    this.blobs.forEach((blob, i) => {
-        // Live update colors if theme shifts
-        blob.color = colors[i % colors.length];
-        
-        // Very slow drifting math
-        const x = blob.xBase + Math.sin(this.time * blob.xSpeed + blob.xPhase) * blob.xAmp;
-        const y = blob.yBase + Math.cos(this.time * blob.ySpeed + blob.yPhase) * blob.yAmp;
-
-        this.ctx.beginPath();
-        this.ctx.arc(x, y, blob.radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = `rgba(${blob.color.r}, ${blob.color.g}, ${blob.color.b}, ${bgOpacity})`;
-        this.ctx.fill();
-    });
-
-    requestAnimationFrame(() => this.loop());
-  }
-}
-
-// Initialise reliably
-(function startBg() {
+/* =========================================================================
+   Ambient animated mesh-gradient background (vector-style, theme-aware).
+   Draws slow-drifting soft radial-gradient blobs on a canvas. A light CSS
+   blur fuses them into one flowing liquid gradient. Reacts to light/dark
+   instantly and honours prefers-reduced-motion.
+   ========================================================================= */
+(function () {
   const canvas = document.getElementById('dynamic-bg');
-  if (canvas) {
-    new DynamicBackground();
-  } else if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', () => new DynamicBackground());
-  } else {
-    window.addEventListener('load', () => new DynamicBackground());
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const PALETTES = {
+    light: ['#7FA0FF', '#FFB49A', '#9FE7C8', '#C9B8FF', '#FFD98A'],
+    dark:  ['#5B7FFF', '#3E5BD9', '#7949E8', '#1FB47F', '#E8573E'],
+  };
+  const N = 5;
+  let W = 0, H = 0, blobs = [];
+
+  function size() {
+    // low internal resolution is fine, it gets blurred anyway (keeps it light)
+    W = canvas.width  = Math.max(2, Math.round(window.innerWidth  * 0.5));
+    H = canvas.height = Math.max(2, Math.round(window.innerHeight * 0.5));
   }
+  function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+  function hexA(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+
+  function build() {
+    size();
+    blobs = [];
+    for (let i = 0; i < N; i++) {
+      blobs.push({
+        i,
+        r:  (Math.random() * 0.35 + 0.38) * Math.max(W, H),
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        ax: Math.random() * 0.16 + 0.06,   // drift amplitude (fraction of W/H)
+        ay: Math.random() * 0.16 + 0.06,
+        sx: (Math.random() * 0.6 + 0.3) * (Math.random() < 0.5 ? 1 : -1),
+        sy: (Math.random() * 0.6 + 0.3) * (Math.random() < 0.5 ? 1 : -1),
+        px: Math.random() * Math.PI * 2,
+        py: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function draw(t) {
+    const dark = isDark();
+    const pal = dark ? PALETTES.dark : PALETTES.light;
+    const alpha = dark ? 0.55 : 0.72;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = dark ? 'lighter' : 'source-over';
+    for (const b of blobs) {
+      const cx = b.x + Math.sin(t * 0.00008 * b.sx + b.px) * b.ax * W;
+      const cy = b.y + Math.cos(t * 0.00008 * b.sy + b.py) * b.ay * H;
+      const col = pal[b.i % pal.length];
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, b.r);
+      g.addColorStop(0, hexA(col, alpha));
+      g.addColorStop(1, hexA(col, 0));
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, cy, b.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function loop(t) { draw(t); requestAnimationFrame(loop); }
+
+  build();
+  window.addEventListener('resize', build);
+  if (reduce) draw(0); else requestAnimationFrame(loop);
 })();

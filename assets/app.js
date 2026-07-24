@@ -2,7 +2,7 @@
    Schritt für Schritt, application core
    ========================================================================= */
 import { Store } from './store.js';
-import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK } from './data.js';
+import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS } from './data.js';
 import { Speech, compareSpoken } from './speech.js';
 import { Lumikuttan } from './mascot.js';
 
@@ -35,23 +35,92 @@ function nextModule(id) {
   return ALL[i + 1] || null;
 }
 
+/* =====================================================================
+   GAME LAYER: decks, levels, badges, celebrations
+   ===================================================================== */
+const deckById = id => VOCAB.find(d => d.id === id);
+const deckForModule = mid => VOCAB.find(d => d.moduleId === mid);
+const cardId = (deck, i) => deck.id + ':' + i;
+function deckProgress(deck) {
+  const known = deck.cards.filter((_, i) => Store.isKnown(cardId(deck, i))).length;
+  return { known, total: deck.cards.length, pct: Math.round(known / deck.cards.length * 100) };
+}
+
+function computeStats() {
+  const passed = ALL.filter(m => Store.isPassed(m.id)).length;
+  return {
+    passed, total: ALL.length,
+    words: Store.learnedWords(),
+    streak: Store.get().streak.count,
+    perfect: Store.flag('perfect'),
+    micUsed: Store.flag('micUsed'),
+    wroteDraft: Store.flag('wroteDraft'),
+    a2done: SYLLABUS[0].modules.every(m => Store.isPassed(m.id)),
+    b11done: SYLLABUS[1].modules.every(m => Store.isPassed(m.id)),
+    firstStep: Object.keys(Store.get().visited).length > 0,
+    deckDone: VOCAB.some(d => deckProgress(d).known === d.cards.length)
+  };
+}
+function badgeUnlocked(id, st) {
+  switch (id) {
+    case 'first_step': return st.firstStep;
+    case 'first_pass': return st.passed >= 1;
+    case 'perfect':    return st.perfect;
+    case 'words25':    return st.words >= 25;
+    case 'words100':   return st.words >= 100;
+    case 'deck_done':  return st.deckDone;
+    case 'streak3':    return st.streak >= 3;
+    case 'streak7':    return st.streak >= 7;
+    case 'speaker':    return st.micUsed;
+    case 'writer':     return st.wroteDraft;
+    case 'a2done':     return st.a2done;
+    case 'b11done':    return st.b11done;
+    case 'half':       return st.passed / st.total >= 0.5;
+    case 'graduate':   return st.passed === st.total;
+    default: return false;
+  }
+}
+function syncBadges() {
+  const st = computeStats(); const newly = [];
+  for (const a of ACHIEVEMENTS)
+    if (!Store.hasBadge(a.id) && badgeUnlocked(a.id, st)) { Store.unlockBadge(a.id); newly.push(a); }
+  return newly;
+}
+function celebrateBadges(list) {
+  list.forEach((a, i) => setTimeout(() => { toast(`${a.icon} Neues Abzeichen: <b>${esc(a.title)}</b>!`, 'good'); confetti(); }, i * 900));
+}
+/* Call after any state change; pass the level index captured BEFORE an XP gain to detect level-ups. */
+function gameCheck(prevLevelIdx) {
+  if (typeof prevLevelIdx === 'number') {
+    const now = Store.levelInfo();
+    if (now.idx > prevLevelIdx)
+      setTimeout(() => { toast(`⭐ Level ${now.level}! Du bist jetzt <b>${esc(now.title)}</b>.`, 'good'); confetti(); }, 300);
+  }
+  const newly = syncBadges();
+  if (newly.length) celebrateBadges(newly);
+}
+
 /* ---------- shell ---------- */
 function shell(inner, active='') {
   const s = Store.get();
   const streak = s.streak.count;
+  const lv = Store.levelInfo();
   return `
   <header class="topbar"><div class="topbar__in">
     <div class="brand" data-nav="#/"><span class="logo">🦉</span> Schritt für Schritt</div>
     <nav class="nav">
       <a data-nav="#/" class="${active==='home'?'active':''}">Start</a>
       <a data-nav="#/roadmap" class="${active==='roadmap'?'active':''}">Roadmap</a>
+      <a data-nav="#/vokabeln" class="${active==='vokabeln'?'active':''}">Vokabeln</a>
       <a data-nav="#/pruefung" class="${active==='pruefung'?'active':''}">Prüfung</a>
+      <a data-nav="#/belohnungen" class="${active==='belohnungen'?'active':''}">Belohnungen</a>
     </nav>
-    ${streak>0?`<span class="streak" title="Lern-Serie">🔥 ${streak} Tag${streak>1?'e':''}</span>`:''}
+    <span class="lvchip" data-nav="#/belohnungen" title="Dein Level"><b>Lv ${lv.level}</b><span class="lvbar"><span style="width:${lv.pct}%"></span></span></span>
+    ${streak>0?`<span class="streak" title="Lern-Serie">🔥 ${streak}</span>`:''}
   </div></header>
   <main>${inner}</main>
   <footer class="footer"><div class="wrap">
-    Mit 💛 für deine Deutschprüfung gebaut · Fortschritt wird nur in deinem Browser gespeichert ·
+    Fortschritt wird nur in deinem Browser gespeichert ·
     <a href="#" data-action="reset">Fortschritt zurücksetzen</a>
   </div></footer>`;
 }
@@ -75,9 +144,14 @@ function overallProgress() {
 function viewHome() {
   const name = Store.name;
   const p = overallProgress();
-  const s = Store.get();
-  // find current recommended module = first unlocked, not passed
+  const lv = Store.levelInfo();
+  const daily = Store.daily();
+  const words = Store.learnedWords();
+  const badgeCount = ACHIEVEMENTS.filter(a => Store.hasBadge(a.id)).length;
   const current = ALL.find(m => isUnlocked(m) && !Store.isPassed(m.id)) || ALL[ALL.length-1];
+  const curDeck = deckForModule(current.id) || VOCAB[0];
+  const dpct = Math.min(100, Math.round(daily.xp / daily.goal * 100));
+  const ring = `conic-gradient(var(--success) ${dpct*3.6}deg, var(--bg-tint) 0)`;
   const inner = `
   <div class="wrap">
     <section class="hero"><div class="hero__grid">
@@ -87,17 +161,28 @@ function viewHome() {
         <p class="lead">Ganz ruhig. Wir gehen das <b>Schritt für Schritt</b> an, ohne Eile. Heute ein kleiner Schritt, morgen der nächste. Ich bleibe die ganze Zeit an deiner Seite.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
           <button class="btn btn--accent" data-nav="#/lesson/${current.id}">▶︎ Weiterlernen: ${esc(current.title)}</button>
-          <button class="btn btn--ghost" data-nav="#/roadmap">Ganze Roadmap ansehen</button>
-        </div>
-        <div class="stats">
-          <div class="stat"><div class="n prim">${p.done}/${p.total}</div><div class="l">Kapitel geschafft</div></div>
-          <div class="stat"><div class="n accent">${s.xp}</div><div class="l">XP gesammelt</div></div>
-          <div class="stat"><div class="n good">${s.streak.count}</div><div class="l">Tage in Folge</div></div>
-          <div class="stat"><div class="n">${p.pct}%</div><div class="l">Gesamtfortschritt</div></div>
+          <button class="btn btn--ghost" data-nav="#/flash/${curDeck.id}">🃏 Vokabeln üben</button>
         </div>
       </div>
       <div class="hero__owl">🦉</div>
     </div></section>
+
+    <section class="section">
+      <div class="gband">
+        <div class="gcard glevel" data-nav="#/belohnungen">
+          <div class="gcard__top"><span>Level ${lv.level}</span><b>${esc(lv.title)}</b></div>
+          <div class="progressbar"><span style="width:${lv.pct}%"></span></div>
+          <div class="gcard__sub">${lv.max?`${lv.xp} XP · höchste Stufe!`:`${lv.into}/${lv.span} XP bis „${esc(lv.nextTitle)}“`}</div>
+        </div>
+        <div class="gcard gdaily">
+          <div class="ring" style="background:${ring}"><div class="ring__in">${dpct}%</div></div>
+          <div><b>Tagesziel</b><div class="gcard__sub">${daily.xp}/${daily.goal} XP heute</div></div>
+        </div>
+        <div class="gcard gmini" data-nav="#/vokabeln"><div class="n prim">${words}</div><div class="l">Vokabeln gelernt</div></div>
+        <div class="gcard gmini" data-nav="#/roadmap"><div class="n good">${p.done}/${p.total}</div><div class="l">Kapitel geschafft</div></div>
+        <div class="gcard gmini" data-nav="#/belohnungen"><div class="n accent">${badgeCount}/${ACHIEVEMENTS.length}</div><div class="l">Abzeichen</div></div>
+      </div>
+    </section>
 
     <section class="section">
       <div class="section__head"><div><h2>Deine vier Prüfungsfertigkeiten</h2><p>Der DTZ prüft alle vier. Sprechen ist dabei besonders wichtig.</p></div></div>
@@ -190,6 +275,13 @@ function viewLesson(id){
   if(!isUnlocked(m)){ toast('Dieses Kapitel ist noch gesperrt 🔒','warn'); go('#/roadmap'); return; }
   Store.visitLesson(id); Store.touchStreak();
   const q = Store.quiz(id);
+  const deck = deckForModule(id);
+  const dp = deck ? deckProgress(deck) : null;
+  const deckHtml = deck ? `
+    <div class="card pad" style="display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:20px">
+      <div><h3 style="margin:0">🃏 Vokabeln: ${esc(deck.title)}</h3><p style="color:var(--ink-soft);margin:4px 0 0">${dp.known}/${dp.total} gelernt. Kurze Karten mit „Umdrehen“.</p></div>
+      <button class="btn btn--ghost" data-nav="#/flash/${deck.id}">Karten üben →</button>
+    </div>` : '';
   const inner = `
   <div class="wrap lesson">
     <div class="lesson__hero" style="background:linear-gradient(135deg,${m.color},${m.color}cc)">
@@ -210,6 +302,8 @@ function viewLesson(id){
         ${g.blocks.map(renderBlock).join('')}
       </div>`).join('')}
 
+    ${deckHtml}
+
     <div class="card pad" style="text-align:center;margin-top:20px">
       <h3 style="margin-top:0">Bereit für ein kleines Quiz? 🧠</h3>
       <p style="color:var(--ink-soft)">${q.passed?'Du hast dieses Quiz schon bestanden, aber Wiederholung schadet nie. Neue Fragen warten.':'Keine Sorge, du hast unendlich viele Versuche und jedes Mal neue Fragen. Du brauchst 70%.'}</p>
@@ -222,6 +316,7 @@ function viewLesson(id){
     $$('.gtoc button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
     $('#'+b.dataset.jump).scrollIntoView({behavior:'smooth'});
   });
+  gameCheck();
 }
 
 /* =====================================================================
@@ -311,6 +406,7 @@ function viewQuiz(id){
   function finish(){
     const frac=correct/set.length;
     const pct=Math.round(frac*100);
+    const prevIdx=Store.levelInfo().idx;
     const rec=Store.recordQuiz(id, frac, THRESHOLD);
     Store.touchStreak();
     const passed=frac>=THRESHOLD;
@@ -340,6 +436,7 @@ function viewQuiz(id){
     const r=$('[data-retry]'); if(r) r.onclick=()=>viewQuiz(id);
     if(passed) confetti();
     if(!passed) setTimeout(()=>toast(Lumikuttan.encourage()), 500);
+    gameCheck(prevIdx);
   }
 
   paint();
@@ -493,7 +590,7 @@ function viewSkill(name){
     const count=()=>{ const n=(ta.value.trim().match(/\S+/g)||[]).length; wc.textContent=n+' Wörter'; };
     ta.addEventListener('input',count); count();
   });
-  $$('[data-savew]').forEach(b=>b.onclick=()=>{const id=b.dataset.savew;Store.saveWriting(id,$(`.writing-area[data-w="${id}"]`).value);toast('Entwurf gespeichert 💾','good');});
+  $$('[data-savew]').forEach(b=>b.onclick=()=>{const id=b.dataset.savew;Store.saveWriting(id,$(`.writing-area[data-w="${id}"]`).value);Store.setFlag('wroteDraft');toast('Entwurf gespeichert 💾','good');gameCheck();});
   $$('[data-model]').forEach(b=>b.onclick=()=>{const el=$('#model-'+b.dataset.model);el.style.display=el.style.display==='none'?'block':'none';});
 
   // Sprechen mic
@@ -507,6 +604,7 @@ function viewSkill(name){
         if(err==='unsupported'){ out.innerHTML='⚠️ Bitte Google Chrome benutzen fürs Mikrofon.'; return; }
         if(err&&err!=='no-speech'){ out.innerHTML='Hmm, ich konnte nichts hören. Versuch es nochmal 🎙️'; return; }
         out.innerHTML=`<div class="h">Klasse, du hast gesprochen! 🎉</div><b>Verstanden:</b> ${esc(final||'-')}<br><small style="color:var(--ink-faint)">Vergleiche mit den Satzanfängen. Jeder Versuch macht dich sicherer.</small>`;
+        Store.setFlag('micUsed'); gameCheck();
       }
     );
   });
@@ -594,6 +692,159 @@ function confetti(){ const c=document.createElement('div'); c.className='confett
 window.__toast=toast;
 
 /* =====================================================================
+   VIEW: Vocabulary decks list
+   ===================================================================== */
+function viewVokabeln(){
+  const known=Store.learnedWords();
+  const total=VOCAB.reduce((s,d)=>s+d.cards.length,0);
+  const inner=`
+  <div class="wrap">
+    <section class="hero" style="padding:36px 0 6px">
+      <p class="eyebrow">Wortschatz</p>
+      <h1>Vokabeltrainer 🃏</h1>
+      <p class="lead">Karteikarten mit „Umdrehen“. Deutsch vorne, Übersetzung auf Knopfdruck. Was du kannst, merkt sich die App. <b>${known}/${total}</b> Vokabeln gelernt.</p>
+    </section>
+    <section class="section">
+      <div class="deckgrid">
+      ${VOCAB.map(d=>{ const dp=deckProgress(d); const done=dp.known===dp.total;
+        return `<div class="deckcard ${done?'deckcard--done':''}" data-nav="#/flash/${d.id}">
+          <div class="deckcard__top"><span class="deckcard__ic">🃏</span>${done?'<span class="deckcard__badge">✓ komplett</span>':`<span class="deckcard__badge muted">${dp.total} Karten</span>`}</div>
+          <h3>${esc(d.title)}</h3>
+          <div class="progressbar"><span style="width:${dp.pct}%"></span></div>
+          <div class="deckcard__sub">${dp.known}/${dp.total} gelernt</div>
+        </div>`;}).join('')}
+      </div>
+    </section>
+  </div>`;
+  render(inner,'vokabeln');
+  $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+}
+
+/* =====================================================================
+   VIEW: Flashcard study session (reveal + Kannte ich / Nochmal)
+   ===================================================================== */
+function viewFlash(deckId){
+  const deck=deckById(deckId);
+  if(!deck){ go('#/vokabeln'); return; }
+  Store.touchStreak();
+  const prevIdx=Store.levelInfo().idx;
+  // unknown cards first, then the rest, all shuffled within groups
+  const idxs=deck.cards.map((_,i)=>i);
+  const unknown=shuffle(idxs.filter(i=>!Store.isKnown(cardId(deck,i))));
+  const knownAlready=shuffle(idxs.filter(i=>Store.isKnown(cardId(deck,i))));
+  let queue=[...unknown,...knownAlready];
+  let pos=0, revealed=false, learned=0;
+
+  function sayText(de){ return de.replace(/[¨]/g,'').split(',')[0].trim(); }
+
+  function paintCard(){
+    if(pos>=queue.length) return finishDeck();
+    const i=queue[pos]; const c=deck.cards[i];
+    const doneCount=deck.cards.filter((_,j)=>Store.isKnown(cardId(deck,j))).length;
+    const inner=`
+    <div class="wrap flash">
+      <div class="quiz__top">
+        <button class="btn btn--ghost btn--sm" data-nav="#/vokabeln">← Decks</button>
+        <span class="chip chip--wash">${esc(deck.title)}</span>
+      </div>
+      <div class="quiz__meter"><span style="width:${Math.round(doneCount/deck.cards.length*100)}%"></span></div>
+      <div class="fcard" data-flip>
+        <div class="fcard__hint">Karte ${pos+1} / ${queue.length} · ${doneCount}/${deck.cards.length} gelernt</div>
+        <div class="fcard__de">${esc(c.de)} <button class="fcard__say" data-say="${esc(sayText(c.de))}" title="Anhören">🔊</button></div>
+        <div class="fcard__answer" style="display:${revealed?'block':'none'}">
+          <div class="fcard__en">${esc(c.en)}</div>
+          ${c.ex?`<div class="fcard__ex">${hl(c.ex)}</div>`:''}
+        </div>
+        ${!revealed?`<button class="btn btn--primary" data-reveal>Übersetzung zeigen</button>`:''}
+      </div>
+      ${revealed?`<div class="fcard__actions">
+        <button class="btn btn--ghost" data-again>Nochmal üben</button>
+        <button class="btn btn--accent" data-known>Kannte ich ✓</button>
+      </div>`:`<p class="fcard__tip">Tipp: Karte antippen zum Umdrehen.</p>`}
+    </div>`;
+    render(inner);
+    $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+    $$('[data-say]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); Speech.speak(b.dataset.say, Store.get().settings.ttsRate); });
+    const reveal=()=>{ revealed=true; paintCard(); };
+    const rv=$('[data-reveal]'); if(rv) rv.onclick=reveal;
+    const card=$('[data-flip]'); if(card && !revealed) card.onclick=e=>{ if(!e.target.closest('[data-say]')) reveal(); };
+    const again=$('[data-again]'); if(again) again.onclick=()=>{ queue.push(i); revealed=false; pos++; paintCard(); };
+    const kn=$('[data-known]'); if(kn) kn.onclick=()=>{ const r=Store.recordFlash(cardId(deck,i)); if(r.isNew) learned++; revealed=false; pos++; paintCard(); };
+  }
+
+  function finishDeck(){
+    const dp=deckProgress(deck);
+    const full=dp.known===dp.total;
+    const inner=`
+    <div class="wrap quiz"><div class="q result">
+      <div class="result__emoji">${full?'🏆':'🎉'}</div>
+      <h2>${full?'Deck komplett gelernt!':'Gut gemacht!'}</h2>
+      <p class="msg">Du hast diese Runde <b>${learned}</b> neue Vokabel${learned===1?'':'n'} gelernt. Insgesamt kannst du <b>${dp.known}/${dp.total}</b> Karten in „${esc(deck.title)}“.</p>
+      <div class="result__actions">
+        <button class="btn btn--accent" data-nav="#/vokabeln">Andere Decks →</button>
+        <button class="btn btn--ghost" data-restart>Nochmal durchgehen 🔁</button>
+      </div>
+    </div></div>`;
+    render(inner);
+    $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+    const rs=$('[data-restart]'); if(rs) rs.onclick=()=>viewFlash(deckId);
+    if(full) confetti();
+    gameCheck(prevIdx);
+  }
+
+  paintCard();
+}
+
+/* =====================================================================
+   VIEW: Belohnungen (rewards / achievements)
+   ===================================================================== */
+function viewBelohnungen(){
+  const lv=Store.levelInfo();
+  const daily=Store.daily();
+  const p=overallProgress();
+  const words=Store.learnedWords();
+  const dpct=Math.min(100,Math.round(daily.xp/daily.goal*100));
+  const ring=`conic-gradient(var(--success) ${dpct*3.6}deg, var(--bg-tint) 0)`;
+  const inner=`
+  <div class="wrap">
+    <section class="hero" style="padding:36px 0 6px">
+      <p class="eyebrow">Belohnungen</p>
+      <h1>Deine Erfolge 🏅</h1>
+    </section>
+    <section class="section">
+      <div class="levelbanner">
+        <div class="levelbanner__lv">Lv ${lv.level}</div>
+        <div style="flex:1;min-width:200px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-family:var(--font-display);font-size:1.2rem">${esc(lv.title)}</b><span class="gcard__sub">${lv.xp} XP</span></div>
+          <div class="progressbar" style="margin-top:8px"><span style="width:${lv.pct}%"></span></div>
+          <div class="gcard__sub">${lv.max?'Höchste Stufe erreicht!':`${lv.into}/${lv.span} XP bis „${esc(lv.nextTitle)}“`}</div>
+        </div>
+        <div class="ring" style="background:${ring}"><div class="ring__in">${dpct}%</div></div>
+      </div>
+      <div class="gband" style="margin-top:16px">
+        <div class="gcard gmini"><div class="n prim">${words}</div><div class="l">Vokabeln</div></div>
+        <div class="gcard gmini"><div class="n good">${p.done}/${p.total}</div><div class="l">Kapitel</div></div>
+        <div class="gcard gmini"><div class="n accent">${Store.get().streak.count}</div><div class="l">Tage-Serie</div></div>
+        <div class="gcard gmini"><div class="n">${lv.xp}</div><div class="l">XP gesamt</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section__head"><div><h2>Abzeichen</h2><p>Sammle sie alle auf dem Weg zur Prüfung.</p></div></div>
+      <div class="badgegrid">
+      ${ACHIEVEMENTS.map(a=>{ const has=Store.hasBadge(a.id);
+        return `<div class="badge ${has?'badge--on':'badge--off'}">
+          <div class="badge__ic">${has?a.icon:'🔒'}</div>
+          <div class="badge__t">${esc(a.title)}</div>
+          <div class="badge__d">${esc(a.desc)}</div>
+        </div>`;}).join('')}
+      </div>
+    </section>
+  </div>`;
+  render(inner,'belohnungen');
+  $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+}
+
+/* =====================================================================
    Router
    ===================================================================== */
 function route(){
@@ -602,9 +853,13 @@ function route(){
   const mLesson=h.match(/^#\/lesson\/(.+)$/);
   const mQuiz=h.match(/^#\/quiz\/(.+)$/);
   const mSkill=h.match(/^#\/skill\/(.+)$/);
+  const mFlash=h.match(/^#\/flash\/(.+)$/);
   if(mLesson) return viewLesson(mLesson[1]);
   if(mQuiz) return viewQuiz(mQuiz[1]);
   if(mSkill) return viewSkill(decodeURIComponent(mSkill[1]));
+  if(mFlash) return viewFlash(mFlash[1]);
+  if(h.startsWith('#/vokabeln')) return viewVokabeln();
+  if(h.startsWith('#/belohnungen')) return viewBelohnungen();
   if(h.startsWith('#/roadmap')) return viewRoadmap();
   if(h.startsWith('#/pruefung')) return viewPruefung();
   return viewHome();

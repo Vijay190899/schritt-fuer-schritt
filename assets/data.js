@@ -677,3 +677,234 @@ export const PHONETIK = [
   ['Auslautverhärtung','b/d/g am Wortende klingen wie p/t/k: Tag → „Tak“.'],
   ['ch nach Konsonant','„Milch, durch“ – weicher ich-Laut.']
 ];
+
+/* =====================================================================
+   VOCABULARY DECKS (flashcards). Each deck links to a lesson via moduleId.
+   Card: { de: German (with article/plural), en: English, ex?: example }
+   ===================================================================== */
+export const VOCAB = [
+  { id:'voc-a2-verben', moduleId:'a2-verben', title:'Alltag: Tagesablauf', cards:[
+    {de:'aufstehen', en:'to get up', ex:'Ich stehe um 6 Uhr auf.'},
+    {de:'frühstücken', en:'to have breakfast'},
+    {de:'sich anziehen', en:'to get dressed'},
+    {de:'einkaufen', en:'to go shopping'},
+    {de:'kochen', en:'to cook'},
+    {de:'aufräumen', en:'to tidy up'},
+    {de:'sich ausruhen', en:'to rest'},
+    {de:'einschlafen', en:'to fall asleep'},
+    {de:'spazieren gehen', en:'to go for a walk'},
+    {de:'sich treffen (mit)', en:'to meet (with)'}
+  ]},
+  { id:'voc-a2-kasus', moduleId:'a2-kasus', title:'Wohnung & Gegenstände', cards:[
+    {de:'der Tisch, -e', en:'table'},
+    {de:'der Stuhl, ¨-e', en:'chair'},
+    {de:'das Fenster, -', en:'window'},
+    {de:'die Tür, -en', en:'door'},
+    {de:'der Schrank, ¨-e', en:'cupboard / wardrobe'},
+    {de:'das Regal, -e', en:'shelf'},
+    {de:'die Lampe, -n', en:'lamp'},
+    {de:'das Bett, -en', en:'bed'},
+    {de:'der Teppich, -e', en:'carpet'},
+    {de:'die Küche, -n', en:'kitchen'}
+  ]},
+  { id:'voc-a2-perfekt', moduleId:'a2-perfekt', title:'Reise & Erlebnisse', cards:[
+    {de:'die Reise, -n', en:'trip, journey'},
+    {de:'der Ausflug, ¨-e', en:'excursion'},
+    {de:'das Erlebnis, -se', en:'experience'},
+    {de:'der Koffer, -', en:'suitcase'},
+    {de:'die Fahrkarte, -n', en:'ticket'},
+    {de:'der Bahnhof, ¨-e', en:'train station'},
+    {de:'die Unterkunft, ¨-e', en:'accommodation'},
+    {de:'besichtigen', en:'to visit, to sightsee'},
+    {de:'sich erholen', en:'to recover, to relax'},
+    {de:'die Erinnerung, -en', en:'memory'}
+  ]},
+  { id:'voc-l1', moduleId:'b1-l1', title:'Ankommen: Familie & Wohnformen', cards:[
+    {de:'der/die Verwandte, -n', en:'relative'},
+    {de:'der Neffe, -n', en:'nephew'},
+    {de:'die Nichte, -n', en:'niece'},
+    {de:'die Schwiegermutter, ¨-', en:'mother-in-law'},
+    {de:'der Enkel, -', en:'grandson'},
+    {de:'alleinerziehend', en:'single-parent (raising alone)'},
+    {de:'die Wohngemeinschaft (WG), -en', en:'shared flat'},
+    {de:'das Reihenhaus, ¨-er', en:'terraced house'},
+    {de:'die Umgebung, -en', en:'surroundings'},
+    {de:'sich kümmern um', en:'to take care of'}
+  ]},
+  { id:'voc-l2', moduleId:'b1-l2', title:'Zu Hause: Miete & Mietshaus', cards:[
+    {de:'die Miete, -n', en:'rent'},
+    {de:'der Vermieter, -', en:'landlord'},
+    {de:'der Mieter, -', en:'tenant'},
+    {de:'die Nebenkosten (Pl.)', en:'utility costs'},
+    {de:'die Kaution, -en', en:'deposit'},
+    {de:'der Aufzug, ¨-e', en:'elevator'},
+    {de:'der Hausflur, -e', en:'hallway'},
+    {de:'die Hausordnung, -en', en:'house rules'},
+    {de:'der Nachbar, -n', en:'neighbour'},
+    {de:'umziehen', en:'to move (house)'}
+  ]},
+  { id:'voc-l3', moduleId:'b1-l3', title:'Essen: Geschirr & Restaurant', cards:[
+    {de:'der Teller, -', en:'plate'},
+    {de:'die Gabel, -n', en:'fork'},
+    {de:'das Messer, -', en:'knife'},
+    {de:'der Löffel, -', en:'spoon'},
+    {de:'die Serviette, -n', en:'napkin'},
+    {de:'die Vorspeise, -n', en:'starter'},
+    {de:'die Hauptspeise, -n', en:'main course'},
+    {de:'die Nachspeise, -n', en:'dessert'},
+    {de:'die Rechnung, -en', en:'bill'},
+    {de:'das Trinkgeld, -er', en:'tip'}
+  ]},
+  { id:'voc-l4', moduleId:'b1-l4', title:'Arbeitswelt', cards:[
+    {de:'der Betrieb, -e', en:'company, business'},
+    {de:'die Abteilung, -en', en:'department'},
+    {de:'der Kollege, -n', en:'colleague'},
+    {de:'die Schicht, -en', en:'shift'},
+    {de:'die Überstunde, -n', en:'overtime hour'},
+    {de:'die Besprechung, -en', en:'meeting'},
+    {de:'der Termin, -e', en:'appointment'},
+    {de:'kündigen', en:'to resign, to terminate'},
+    {de:'die Bewerbung, -en', en:'application'},
+    {de:'der Lohn, ¨-e', en:'wage'}
+  ]},
+  { id:'voc-l5', moduleId:'b1-l5', title:'Sport & Gesundheit', cards:[
+    {de:'sich bewegen', en:'to move, to exercise'},
+    {de:'die Bewegung, -en', en:'movement'},
+    {de:'trainieren', en:'to train'},
+    {de:'der Verein, -e', en:'club'},
+    {de:'die Mannschaft, -en', en:'team'},
+    {de:'die Verletzung, -en', en:'injury'},
+    {de:'sich verletzen', en:'to injure oneself'},
+    {de:'die Ausdauer (Sg.)', en:'stamina'},
+    {de:'gesund', en:'healthy'},
+    {de:'ungesund', en:'unhealthy'}
+  ]},
+  { id:'voc-l6', moduleId:'b1-l6', title:'Schule & Ausbildung', cards:[
+    {de:'der Abschluss, ¨-e', en:'degree, qualification'},
+    {de:'die Ausbildung, -en', en:'vocational training'},
+    {de:'das Zeugnis, -se', en:'certificate, report card'},
+    {de:'die Note, -n', en:'grade, mark'},
+    {de:'das Fach, ¨-er', en:'(school) subject'},
+    {de:'der Azubi, -s', en:'apprentice, trainee'},
+    {de:'das Praktikum, Praktika', en:'internship'},
+    {de:'die Hochschule, -n', en:'university, college'},
+    {de:'bestehen', en:'to pass (an exam)'},
+    {de:'durchfallen', en:'to fail (an exam)'}
+  ]},
+  { id:'voc-l7', moduleId:'b1-l7', title:'Feste & Geschenke', cards:[
+    {de:'das Fest, -e', en:'celebration, festival'},
+    {de:'die Hochzeit, -en', en:'wedding'},
+    {de:'das Geschenk, -e', en:'gift'},
+    {de:'gratulieren', en:'to congratulate'},
+    {de:'einladen', en:'to invite'},
+    {de:'die Einladung, -en', en:'invitation'},
+    {de:'feiern', en:'to celebrate'},
+    {de:'das Brautpaar, -e', en:'bridal couple'},
+    {de:'die Kerze, -n', en:'candle'},
+    {de:'sich freuen über', en:'to be glad about'}
+  ]},
+  { id:'voc-l8', moduleId:'b1-l8', title:'Glück & Vergangenheit', cards:[
+    {de:'das Glück (Sg.)', en:'luck, happiness'},
+    {de:'der Zufall, ¨-e', en:'coincidence'},
+    {de:'der Unfall, ¨-e', en:'accident'},
+    {de:'das Ereignis, -se', en:'event'},
+    {de:'die Erinnerung, -en', en:'memory'},
+    {de:'gewinnen', en:'to win'},
+    {de:'verlieren', en:'to lose'},
+    {de:'das Pech (Sg.)', en:'bad luck'},
+    {de:'verletzt', en:'injured'},
+    {de:'sich erinnern an', en:'to remember'}
+  ]},
+  { id:'voc-l9', moduleId:'b1-l9', title:'Unterhaltung', cards:[
+    {de:'die Sendung, -en', en:'(TV) show, programme'},
+    {de:'die Serie, -n', en:'series'},
+    {de:'der Zuschauer, -', en:'viewer'},
+    {de:'die Werbung, -en', en:'advertising'},
+    {de:'die Folge, -n', en:'episode'},
+    {de:'spannend', en:'exciting'},
+    {de:'langweilig', en:'boring'},
+    {de:'die Nachrichten (Pl.)', en:'the news'},
+    {de:'unterhaltsam', en:'entertaining'},
+    {de:'das Publikum (Sg.)', en:'audience'}
+  ]},
+  { id:'voc-l10', moduleId:'b1-l10', title:'Gesund bleiben', cards:[
+    {de:'die Vorsorge (Sg.)', en:'check-up, prevention'},
+    {de:'die Untersuchung, -en', en:'examination'},
+    {de:'die Behandlung, -en', en:'treatment'},
+    {de:'das Rezept, -e', en:'prescription, recipe'},
+    {de:'die Beschwerden (Pl.)', en:'complaints, symptoms'},
+    {de:'sich krankmelden', en:'to call in sick'},
+    {de:'die Krankmeldung, -en', en:'sick note'},
+    {de:'heilen', en:'to heal'},
+    {de:'die Apotheke, -n', en:'pharmacy'},
+    {de:'der Termin, -e', en:'appointment'}
+  ]},
+  { id:'voc-l11', moduleId:'b1-l11', title:'Sprachen', cards:[
+    {de:'die Muttersprache, -n', en:'native language'},
+    {de:'die Fremdsprache, -n', en:'foreign language'},
+    {de:'mehrsprachig', en:'multilingual'},
+    {de:'die Aussprache (Sg.)', en:'pronunciation'},
+    {de:'der Akzent, -e', en:'accent'},
+    {de:'übersetzen', en:'to translate'},
+    {de:'der Ausdruck, ¨-e', en:'expression'},
+    {de:'die Redewendung, -en', en:'idiom'},
+    {de:'fließend', en:'fluent'},
+    {de:'sich verständigen', en:'to make oneself understood'}
+  ]},
+  { id:'voc-l12', moduleId:'b1-l12', title:'Eine Arbeit finden', cards:[
+    {de:'die Stelle, -n', en:'job, position'},
+    {de:'die Anzeige, -n', en:'advertisement'},
+    {de:'der Lebenslauf, ¨-e', en:'CV, résumé'},
+    {de:'das Anschreiben, -', en:'cover letter'},
+    {de:'das Vorstellungsgespräch, -e', en:'job interview'},
+    {de:'die Qualifikation, -en', en:'qualification'},
+    {de:'die Erfahrung, -en', en:'experience'},
+    {de:'sich bewerben um', en:'to apply for'},
+    {de:'einstellen', en:'to hire'},
+    {de:'der Arbeitgeber, -', en:'employer'}
+  ]},
+  { id:'voc-l13', moduleId:'b1-l13', title:'Dienstleistung', cards:[
+    {de:'der Kunde, -n', en:'customer'},
+    {de:'die Reklamation, -en', en:'complaint'},
+    {de:'die Reparatur, -en', en:'repair'},
+    {de:'umtauschen', en:'to exchange'},
+    {de:'die Garantie, -n', en:'guarantee, warranty'},
+    {de:'die Lieferung, -en', en:'delivery'},
+    {de:'sich beschweren über', en:'to complain about'},
+    {de:'die Rechnung, -en', en:'invoice'},
+    {de:'der Auftrag, ¨-e', en:'order, task'},
+    {de:'zufrieden', en:'satisfied'}
+  ]},
+  { id:'voc-l14', moduleId:'b1-l14', title:'Rund ums Wohnen', cards:[
+    {de:'der Streit, -e', en:'argument, dispute'},
+    {de:'die Regel, -n', en:'rule'},
+    {de:'der Lärm (Sg.)', en:'noise'},
+    {de:'der Müll (Sg.)', en:'rubbish, trash'},
+    {de:'sich einigen', en:'to reach an agreement'},
+    {de:'der Kompromiss, -e', en:'compromise'},
+    {de:'die Nachbarschaft, -en', en:'neighbourhood'},
+    {de:'der Umzug, ¨-e', en:'move, relocation'},
+    {de:'rücksichtsvoll', en:'considerate'},
+    {de:'der Fortschritt, -e', en:'progress'}
+  ]}
+];
+
+/* =====================================================================
+   ACHIEVEMENTS (badges). Unlock logic lives in app.js (needs progress).
+   ===================================================================== */
+export const ACHIEVEMENTS = [
+  { id:'first_step', icon:'👣', title:'Erster Schritt',   desc:'Öffne dein erstes Kapitel.' },
+  { id:'first_pass', icon:'✅', title:'Bestanden!',       desc:'Bestehe dein erstes Quiz.' },
+  { id:'perfect',    icon:'💯', title:'Perfekt',          desc:'Hol dir 100% in einem Quiz.' },
+  { id:'words25',    icon:'📚', title:'Wortschatz 25',    desc:'Lerne 25 Vokabeln.' },
+  { id:'words100',   icon:'🧠', title:'Wortschatz 100',   desc:'Lerne 100 Vokabeln.' },
+  { id:'deck_done',  icon:'🃏', title:'Deck geschafft',   desc:'Lerne ein Vokabeldeck komplett.' },
+  { id:'streak3',    icon:'🔥', title:'Drei am Stück',    desc:'Lerne 3 Tage in Folge.' },
+  { id:'streak7',    icon:'⚡', title:'Eine ganze Woche', desc:'Lerne 7 Tage in Folge.' },
+  { id:'speaker',    icon:'🎙️', title:'Laut gesprochen',  desc:'Nutze die Sprech-Übung.' },
+  { id:'writer',     icon:'✍️', title:'Erster Brief',     desc:'Speichere einen Schreib-Entwurf.' },
+  { id:'a2done',     icon:'🌱', title:'A2 aufgefrischt',  desc:'Bestehe alle A2-Kapitel.' },
+  { id:'b11done',    icon:'🚀', title:'B1.1 gemeistert',  desc:'Bestehe alle Kapitel aus Schritte 5.' },
+  { id:'half',       icon:'⛰️', title:'Bergmitte',        desc:'Schaffe 50% des Kurses.' },
+  { id:'graduate',   icon:'🏆', title:'Prüfungsbereit',   desc:'Bestehe alle Kapitel!' }
+];

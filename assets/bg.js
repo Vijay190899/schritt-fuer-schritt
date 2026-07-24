@@ -127,7 +127,7 @@ class DynamicBackground {
         gradient.addColorStop(0.85, `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, ${bgOpacity})`);
         gradient.addColorStop(1, `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, 0)`);
         
-        this.ctx.lineWidth = line.thickness;
+        this.ctx.lineWidth = line.thickness * 1.5; // Thicker lines for visibility
         this.ctx.strokeStyle = gradient;
         
         // Add subtle drop shadow
@@ -147,7 +147,14 @@ class DynamicBackground {
   }
 }
 
-// Initialise
-window.addEventListener('DOMContentLoaded', () => {
-  new DynamicBackground();
-});
+// Initialise reliably
+(function startBg() {
+  const canvas = document.getElementById('dynamic-bg');
+  if (canvas) {
+    new DynamicBackground();
+  } else if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', () => new DynamicBackground());
+  } else {
+    window.addEventListener('load', () => new DynamicBackground());
+  }
+})();

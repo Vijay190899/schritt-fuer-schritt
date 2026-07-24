@@ -631,7 +631,7 @@ function mountMascotFab(){
   const root=$('#mascot-root');
   root.innerHTML=`<div class="mascot-fab">
     <div class="mascot-fab__bubble" id="lumi-bubble">Hi, I'm Lumikuttan. Need a hand? 🦉</div>
-    <button class="mascot-fab__btn" id="lumi-open">🦉</button>
+    <button class="mascot-fab__btn" id="lumi-open" title="Ask Lumikuttan">🦉</button>
   </div>`;
   $('#lumi-open').onclick=openChat;
   setTimeout(()=>{const b=$('#lumi-bubble'); if(b) b.style.display='none';}, 6000);

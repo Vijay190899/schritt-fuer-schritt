@@ -176,22 +176,7 @@ function viewHome() {
           <button class="btn btn--ghost" data-nav="#/flash/${curDeck.id}">🃏 Practice vocabulary</button>
         </div>
       </div>
-      <div class="hero__owl">
-        <span class="owl__bird">🦉</span>
-        <svg class="owl__branch" viewBox="0 0 240 80" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 34 C74 47, 168 38, 234 51" stroke="#8B5E3C" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M150 44 C176 40, 198 44, 216 39" stroke="#7A4E2E" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <g fill="#79B072">
-            <ellipse cx="40" cy="22" rx="16" ry="7" transform="rotate(-34 40 22)"/>
-            <ellipse cx="120" cy="22" rx="15" ry="6.5" transform="rotate(-20 120 22)"/>
-            <ellipse cx="206" cy="27" rx="15" ry="7" transform="rotate(-28 206 27)"/>
-          </g>
-          <g fill="#8CC084">
-            <ellipse cx="74" cy="26" rx="12" ry="5.5" transform="rotate(-18 74 26)"/>
-            <ellipse cx="168" cy="26" rx="12" ry="5.5" transform="rotate(-24 168 26)"/>
-          </g>
-        </svg>
-      </div>
+      <div class="hero__owl"><span class="owl__bird">🦉</span></div>
     </div></section>
 
     <section class="section">

@@ -78,11 +78,9 @@ a { color: var(--primary-ink); text-decoration: none; }
 button { font-family: inherit; }
 :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 6px; }
 
-/* Dynamic Background Canvas (Mesh Gradient) */
+/* Animated park scene background container */
 #dynamic-bg {
-  position: fixed; inset: -10%; width: 120vw; height: 120vh;
-  z-index: 0; pointer-events: none;
-  filter: blur(72px) saturate(1.18); /* fuse the soft radial blobs into liquid gradient */
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
 }
 
 /* Subtle Film Grain Noise */
@@ -145,10 +143,9 @@ button { font-family: inherit; }
 .hero__grid { display: grid; grid-template-columns: 1.3fr .9fr; gap: 32px; align-items: center; }
 .hero h1 { font-size: clamp(2rem, 4.5vw, 3.1rem); }
 .hero .lead { font-size: 1.12rem; color: var(--ink-soft); max-width: 46ch; }
-.hero__owl { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-.owl__bird { font-size: clamp(90px, 16vw, 150px); line-height: 1; position: relative; z-index: 2; margin-bottom: -16px; transform-origin: 50% 100%; animation: perch 4.4s var(--ease) infinite; filter: drop-shadow(0 14px 14px rgba(0,0,0,.20)); }
-.owl__branch { width: min(300px, 82%); height: auto; position: relative; z-index: 1; filter: drop-shadow(0 10px 10px rgba(0,0,0,.14)); }
-@keyframes perch { 0%,100% { transform: translateY(0) rotate(-1.4deg); } 50% { transform: translateY(-4px) rotate(1.4deg); } }
+.hero__owl { position: relative; text-align: center; }
+.owl__bird { display: inline-block; font-size: clamp(90px, 16vw, 150px); line-height: 1; animation: float 5.5s var(--ease) infinite; filter: drop-shadow(0 20px 16px rgba(0,0,0,.22)); }
+@keyframes float { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
 .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .76rem; font-weight: 700; color: var(--accent-ink); margin-bottom: 10px; }
 
 /* progress ring stat row */
@@ -477,3 +474,78 @@ button { font-family: inherit; }
 
 /* Grain reads too strong on dark; soften it */
 :root[data-theme="dark"] .noise-overlay { opacity: 0.03; mix-blend-mode: soft-light; }
+
+/* ========================================================================
+   PARK SCENE BACKGROUND (day / night)
+   ======================================================================== */
+#dynamic-bg .sky { position:absolute; inset:0; transition:opacity .9s ease; }
+#dynamic-bg .sky--day   { background:linear-gradient(180deg,#7cc4ff 0%,#a9dcff 40%,#dff3ea 100%); opacity:1; }
+#dynamic-bg .sky--night { background:linear-gradient(180deg,#060a1e 0%,#101838 55%,#1a2140 100%); opacity:0; }
+:root[data-theme="dark"] #dynamic-bg .sky--day   { opacity:0; }
+:root[data-theme="dark"] #dynamic-bg .sky--night { opacity:1; }
+
+#dynamic-bg .scene { position:absolute; inset:0; width:100%; height:100%; }
+/* smooth day<->night colour change on repaint of scene shapes */
+#dynamic-bg .hill, #dynamic-bg .grass, #dynamic-bg .trunk, #dynamic-bg .foliage,
+#dynamic-bg .cloud-shape > * { transition:fill .9s ease; }
+
+/* day-only / night-only element groups */
+#dynamic-bg .day-only   { opacity:1; transition:opacity .9s ease; }
+#dynamic-bg .night-only { opacity:0; transition:opacity .9s ease; }
+:root[data-theme="dark"] #dynamic-bg .day-only   { opacity:0; }
+:root[data-theme="dark"] #dynamic-bg .night-only { opacity:1; }
+
+/* sun & moon */
+#dynamic-bg .sun  { fill:#ffdf6e; transform-box:fill-box; transform-origin:center; animation:sunpulse 6s ease-in-out infinite; }
+#dynamic-bg .sun-glow { animation:glowpulse 6s ease-in-out infinite; }
+#dynamic-bg .moon { fill:#eef0e6; }
+#dynamic-bg .crater { fill:#d8dacb; }
+@keyframes sunpulse  { 0%,100%{transform:scale(1)} 50%{transform:scale(1.045)} }
+@keyframes glowpulse { 0%,100%{opacity:.8} 50%{opacity:1} }
+
+/* clouds */
+#dynamic-bg { --cloud:#ffffff; }
+:root[data-theme="dark"] #dynamic-bg { --cloud:#2a3352; }
+#dynamic-bg .cloud-shape > * { fill:var(--cloud); }
+#dynamic-bg .cloud-move { animation:drift linear infinite; will-change:transform; }
+@keyframes drift { from{transform:translateX(-360px)} to{transform:translateX(1980px)} }
+
+/* hills, grass, trees */
+#dynamic-bg .hill-back  { fill:#bfe39a; }
+#dynamic-bg .hill-front { fill:#a3d878; }
+#dynamic-bg .grass      { fill:#8fce5b; }
+#dynamic-bg .trunk      { fill:#8a5a34; }
+#dynamic-bg .foliage    { fill:#67ad46; }
+#dynamic-bg .foliage.f2 { fill:#5ba03c; }
+:root[data-theme="dark"] #dynamic-bg .hill-back  { fill:#173a30; }
+:root[data-theme="dark"] #dynamic-bg .hill-front { fill:#122d27; }
+:root[data-theme="dark"] #dynamic-bg .grass      { fill:#0e231f; }
+:root[data-theme="dark"] #dynamic-bg .trunk      { fill:#3a2a20; }
+:root[data-theme="dark"] #dynamic-bg .foliage    { fill:#1b3a2b; }
+:root[data-theme="dark"] #dynamic-bg .foliage.f2 { fill:#173124; }
+#dynamic-bg .sway { transform-box:fill-box; transform-origin:bottom center; animation:sway 6.5s ease-in-out infinite; }
+@keyframes sway { 0%,100%{transform:rotate(-1.7deg)} 50%{transform:rotate(1.7deg)} }
+
+/* stars */
+#dynamic-bg .star { fill:#ffffff; animation:twinkle 3.2s ease-in-out infinite; }
+@keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
+
+/* birds */
+#dynamic-bg .bird { animation:flyacross linear infinite; will-change:transform; }
+#dynamic-bg .bird .wing { fill:none; stroke:#5a5a66; stroke-width:3; stroke-linecap:round; transform-box:fill-box; transform-origin:center; animation:flap .5s ease-in-out infinite; }
+@keyframes flyacross { from{transform:translateX(-90px)} to{transform:translateX(1760px)} }
+@keyframes flap { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(.5)} }
+
+/* fireflies */
+#dynamic-bg .firefly { fill:#ffe79a; filter:drop-shadow(0 0 6px #ffdf8a); animation:flit ease-in-out infinite; }
+@keyframes flit { 0%{transform:translate(0,0);opacity:.15} 25%{opacity:1} 50%{transform:translate(16px,-20px);opacity:.6} 75%{opacity:1} 100%{transform:translate(0,0);opacity:.15} }
+
+/* reduced motion: freeze the scene */
+#dynamic-bg.no-motion .cloud-move,
+#dynamic-bg.no-motion .bird,
+#dynamic-bg.no-motion .bird .wing,
+#dynamic-bg.no-motion .firefly,
+#dynamic-bg.no-motion .star,
+#dynamic-bg.no-motion .sway,
+#dynamic-bg.no-motion .sun,
+#dynamic-bg.no-motion .sun-glow { animation:none; }

@@ -35,26 +35,42 @@ export const Speech = {
   recSupported() {
     return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
   },
+  // Press to start; keeps listening (auto-restarts) until the returned
+  // controller's .stop() is called. Returns { stop } or null if unsupported.
   listen(onResult, onEnd) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { onEnd && onEnd('unsupported'); return null; }
     const rec = new SR();
     rec.lang = 'de-DE';
     rec.interimResults = true;
-    rec.continuous = false;
+    rec.continuous = true;        // keep the mic open, don't stop on first pause
+    rec.maxAlternatives = 1;
     let final = '';
+    let stopped = false;
+    let restarts = 0;
+
     rec.onresult = (e) => {
       let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const t = e.results[i][0].transcript;
-        if (e.results[i].isFinal) final += t; else interim += t;
+        if (e.results[i].isFinal) final += t + ' '; else interim += t;
       }
-      onResult(final, interim);
+      onResult(final.trim(), interim);
     };
-    rec.onerror = (e) => onEnd && onEnd(e.error);
-    rec.onend = () => onEnd && onEnd(null, final);
-    rec.start();
-    return rec;
+    rec.onerror = (e) => {
+      // 'no-speech' / 'aborted' are recoverable while the user keeps the mic on
+      if ((e.error === 'no-speech' || e.error === 'aborted') && !stopped) return;
+      stopped = true;
+      onEnd && onEnd(e.error, final.trim());
+    };
+    rec.onend = () => {
+      // Chrome auto-ends even in continuous mode; restart until the user stops.
+      if (!stopped && restarts < 100) { restarts++; try { rec.start(); return; } catch (_) {} }
+      onEnd && onEnd(null, final.trim());
+    };
+    try { rec.start(); }
+    catch (e) { onEnd && onEnd(e.name || 'start-failed'); return null; }
+    return { stop() { stopped = true; try { rec.stop(); } catch (_) {} } };
   }
 };
 

@@ -432,3 +432,45 @@ button { font-family: inherit; }
   .lvchip .lvbar { display:none; }
   .fcard__de { font-size:1.6rem; }
 }
+
+/* ========================================================================
+   DARK MODE CONTRAST FIXES
+   Components that used hardcoded light colors would go white-on-white (or
+   look like light islands) in dark mode. Re-map them to theme variables.
+   ======================================================================== */
+:root[data-theme="dark"] {
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.35);
+  --shadow-md: 0 6px 20px rgba(0,0,0,.45);
+  --shadow-lg: 0 14px 44px rgba(0,0,0,.55);
+}
+:root[data-theme="dark"] .btn--primary { background: var(--primary); color: #fff; }
+:root[data-theme="dark"] .toast { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+:root[data-theme="dark"] .toast.good { background: var(--success); color:#062018; border:none; }
+:root[data-theme="dark"] .toast.warn { background: var(--accent); color:#2b0f08; border:none; }
+
+/* Chat / mascot */
+:root[data-theme="dark"] .chat__head { background: var(--surface-2); }
+:root[data-theme="dark"] .msg.me { background: var(--primary); color: #fff; }
+:root[data-theme="dark"] .msg.bot b { color: var(--primary-ink); }
+:root[data-theme="dark"] .mascot-fab__btn { background: radial-gradient(circle at 35% 30%, var(--surface-2), var(--surface)); }
+:root[data-theme="dark"] .mascot-fab__bubble { color: var(--ink); }
+:root[data-theme="dark"] .deep-hint { color: var(--ink-faint); }
+
+/* Game cards / badges / level banner (were near-white gradients) */
+:root[data-theme="dark"] .glevel,
+:root[data-theme="dark"] .levelbanner { background: linear-gradient(135deg, var(--surface-2), var(--surface)); }
+:root[data-theme="dark"] .badge--on { background: linear-gradient(180deg, var(--surface-2), var(--surface)); border-color: var(--gold); }
+
+/* Washes / tips / feedback boxes */
+:root[data-theme="dark"] .chip--gram { background: color-mix(in srgb, var(--gold) 18%, var(--surface)); color: var(--gold); }
+:root[data-theme="dark"] .tipbox { background: color-mix(in srgb, var(--warn) 14%, var(--surface)); border-color: color-mix(in srgb, var(--warn) 34%, var(--surface)); color: var(--ink); }
+:root[data-theme="dark"] .tipbox .h { color: var(--gold); }
+:root[data-theme="dark"] .callout-danger { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 34%, var(--surface)); }
+:root[data-theme="dark"] .callout-danger .h { color: var(--accent-ink); }
+:root[data-theme="dark"] .opt.wrong { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+:root[data-theme="dark"] .explain.bad { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+:root[data-theme="dark"] .example b { color: var(--primary-ink); }
+:root[data-theme="dark"] .gtable em { color: var(--primary-ink); }
+
+/* Grain reads too strong on dark; soften it */
+:root[data-theme="dark"] .noise-overlay { opacity: 0.03; mix-blend-mode: soft-light; }

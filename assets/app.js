@@ -2,8 +2,8 @@
    Schritt für Schritt, application core
    ========================================================================= */
 import { Store } from './store.js';
-import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS } from './data.js';
-import { Speech, compareSpoken } from './speech.js';
+import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS } from './data.js?v=5';
+import { Speech, compareSpoken } from './speech.js?v=5';
 import { Lumikuttan } from './mascot.js';
 
 const CFG = window.SFS_CONFIG || { PASS_THRESHOLD:0.7, QUESTIONS_PER_QUIZ:7 };
@@ -519,7 +519,7 @@ function viewSkill(name){
     <div class="task">
       <span class="chip chip--wash">${t.level}</span>
       <h3>${esc(t.title)}</h3>
-      <div class="explain" style="background:var(--surface-2)">${esc(t.text)}</div>
+      <div class="explain" style="background:var(--surface-2);line-height:1.65">${esc(t.text).replace(/\n/g,'<br>')}</div>
       <div class="q" style="box-shadow:none;border:1px dashed var(--line);margin-top:12px">
         <div class="q__prompt" style="font-size:1.05rem">${esc(t.q.q)}</div>
         <div class="opts">${t.q.options.map((o,i)=>`<button class="opt" data-q="${t.id}" data-i="${i}" data-a="${t.q.answer}">${esc(o)}</button>`).join('')}</div>
@@ -562,7 +562,7 @@ function viewSkill(name){
       <div><b>Sentence starters:</b><ul>${t.starters.map(s=>`<li>${esc(s)} <button class="btn btn--ghost btn--sm" data-say="${esc(s)}">🔊</button></li>`).join('')}</ul></div>
       <div style="text-align:center;margin-top:14px">
         <button class="mic" data-mic="${t.id}">🎙️</button>
-        <div style="color:var(--ink-faint);font-size:.85rem;margin-top:8px">Tap and speak freely. I'll show what I heard.</div>
+        <div style="color:var(--ink-faint);font-size:.85rem;margin-top:8px">Press to start, then speak. Press again to stop. I'll show what I heard.</div>
         <div class="explain" id="mic-${t.id}" style="display:none;text-align:left"></div>
       </div>
     </div>`).join('')}`;
@@ -605,20 +605,28 @@ function viewSkill(name){
   $$('[data-savew]').forEach(b=>b.onclick=()=>{const id=b.dataset.savew;Store.saveWriting(id,$(`.writing-area[data-w="${id}"]`).value);Store.setFlag('wroteDraft');toast('Draft saved 💾','good');gameCheck();});
   $$('[data-model]').forEach(b=>b.onclick=()=>{const el=$('#model-'+b.dataset.model);el.style.display=el.style.display==='none'?'block':'none';});
 
-  // Sprechen mic
-  $$('[data-mic]').forEach(btn=>btn.onclick=()=>{
-    const id=btn.dataset.mic; const out=$('#mic-'+id);
-    out.style.display='block'; out.innerHTML='🎧 Listening… speak now!';
-    btn.classList.add('rec');
-    Speech.listen(
-      (final,interim)=>{ out.innerHTML='<b>I hear:</b> '+esc(final||interim); },
-      (err,final)=>{ btn.classList.remove('rec');
-        if(err==='unsupported'){ out.innerHTML='⚠️ Please use Google Chrome for the mic.'; return; }
-        if(err&&err!=='no-speech'){ out.innerHTML='Hmm, I did not catch anything. Try again 🎙️'; return; }
-        out.innerHTML=`<div class="h">Nice, you spoke! 🎉</div><b>I heard:</b> ${esc(final||'-')}<br><small style="color:var(--ink-faint)">Compare it with the sentence starters. Every try makes you more confident.</small>`;
-        Store.setFlag('micUsed'); gameCheck();
-      }
-    );
+  // Sprechen mic (press to start, press again to stop)
+  $$('[data-mic]').forEach(btn=>{
+    let controller=null;
+    btn.onclick=()=>{
+      const id=btn.dataset.mic; const out=$('#mic-'+id);
+      if(controller){ controller.stop(); controller=null; return; }  // second press = stop
+      out.style.display='block'; out.innerHTML='🎧 Listening… speak now, then press 🎙️ again to stop.';
+      btn.classList.add('rec');
+      controller=Speech.listen(
+        (final,interim)=>{ out.innerHTML='<b>I hear:</b> '+esc(final||interim||'…'); },
+        (err,final)=>{ btn.classList.remove('rec'); controller=null;
+          if(err==='unsupported'||err==='not-allowed'||err==='service-not-allowed'){
+            out.innerHTML='⚠️ The mic needs permission and works best in <b>Google Chrome</b>. If a mic icon in the address bar is blocked, click it and choose <b>Allow</b>.'; return; }
+          if(err==='network'){ out.innerHTML='⚠️ Speech recognition needs internet. Check your connection and try again.'; return; }
+          if(err){ out.innerHTML='Hmm, the mic stopped unexpectedly. Press 🎙️ to try again.'; return; }
+          if(!final){ out.innerHTML='I did not catch anything. Press 🎙️ and speak a little louder 🙂'; return; }
+          out.innerHTML=`<div class="h">Nice, you spoke! 🎉</div><b>I heard:</b> ${esc(final)}<br><small style="color:var(--ink-faint)">Compare it with the sentence starters. Every try makes you more confident.</small>`;
+          Store.setFlag('micUsed'); gameCheck();
+        }
+      );
+      if(!controller) btn.classList.remove('rec');
+    };
   });
 }
 

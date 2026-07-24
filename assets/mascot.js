@@ -34,17 +34,16 @@ const KB = [
 ];
 
 const ENCOURAGE = [
-  'You are doing great! Every small step counts. 🌱',
-  'Mistakes are friends, that is how the brain learns. Keep going!',
-  'I am proud of you. Really. 🦉',
-  'Take a breath. You are further along than you think.',
-  'Learning a language is a marathon, not a sprint, and you are running well!',
-  'Remember: a month ago you could not do this yet. 🚀'
+  'That is normal, especially before an exam. Take it one step at a time.',
+  'Feeling unsure is part of learning. You have already come a long way.',
+  'It is okay to find this hard. Small, regular practice adds up.',
+  'Nerves before a test are common. Focus on one thing at a time.',
+  'You do not have to be perfect. Steady practice is what counts.'
 ];
 
 const GREETINGS = (name) => [
-  `Hi ${name || 'there'}, I'm Lumikuttan 🦉. Ask me anything, German grammar and vocabulary, the exam, or just a normal question you have. I'm here for all of it.`,
-  `Hey ${name || 'there'}, Lumikuttan here 🦉. Grammar, words, exam tips, or anything else on your mind, go ahead and ask.`
+  `Hi ${name || 'there'}, I'm Lumikuttan. Ask me anything about German (grammar, vocabulary, the exam) or any other question you have.`,
+  `Hi ${name || 'there'}, Lumikuttan here. What would you like to know?`
 ];
 
 function stripTags(s){ return String(s).replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(); }

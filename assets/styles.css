@@ -366,7 +366,8 @@ button { font-family: inherit; }
   .nav { display:none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: .001ms !important; transition-duration: .01ms !important; }
+  /* Calm the functional UI, but leave the ambient park scene (#dynamic-bg) alive. */
+  #app *, #mascot-root *, #toast-host * { animation-duration: .001ms !important; transition-duration: .01ms !important; }
 }
 
 /* ========================================================================
@@ -554,12 +555,16 @@ button { font-family: inherit; }
 #dynamic-bg .clouds, #dynamic-bg .butterflies, #dynamic-bg .fireflies { position:absolute; inset:0; overflow:hidden; }
 
 #dynamic-bg .pcloud { position:absolute; left:0; animation:cloudDrift linear infinite; will-change:transform; }
-#dynamic-bg .pcloud-b { width:150px; height:52px; background:var(--cloud); border-radius:60px; filter:blur(.5px);
-  box-shadow: 44px 10px 0 -6px var(--cloud), -42px 13px 0 -9px var(--cloud), 16px -16px 0 -3px var(--cloud), 74px -6px 0 -11px var(--cloud); }
-@keyframes cloudDrift { from { transform:translateX(-260px); } to { transform:translateX(calc(100vw + 300px)); } }
+#dynamic-bg .pcloud-b { display:block; width:100%; height:auto; filter:drop-shadow(0 6px 8px rgba(0,0,0,.08)); }
+#dynamic-bg .pcloud-b path { fill:var(--cloud); transition:fill .9s ease; }
+@keyframes cloudDrift { from { transform:translateX(-280px); } to { transform:translateX(calc(100vw + 320px)); } }
 
 #dynamic-bg .bfly { position:absolute; left:0; animation:flyPath linear infinite; will-change:transform; }
-#dynamic-bg .bfly-w { display:inline-block; filter:drop-shadow(0 3px 3px rgba(0,0,0,.18)); animation:flutter .28s ease-in-out infinite; }
+#dynamic-bg .bfly-w { display:inline-block; width:1em; height:1em; overflow:visible; transform-origin:center; filter:drop-shadow(0 3px 3px rgba(0,0,0,.18)); animation:flutter .26s ease-in-out infinite; }
+#dynamic-bg .bfly-w .w { fill:var(--wing); }
+#dynamic-bg .bfly-w .wb { opacity:.85; }
+#dynamic-bg .bfly-w .body { fill:#2f241c; }
+#dynamic-bg .bfly-w .ant { fill:none; stroke:#2f241c; stroke-width:1; }
 @keyframes flyPath {
   0%   { transform:translate(-50px, 0); }
   25%  { transform:translate(26vw, -42px); }

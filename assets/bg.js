@@ -1,12 +1,12 @@
 /* =========================================================================
    Animated park scene background.
-   Light mode = sunny day: blue sky, sun, drifting clouds, hills, swaying
-   trees, grass, and fluttering BUTTERFLIES.
+   Light mode = sunny day: blue sky, sun, drifting SVG clouds, hills, swaying
+   trees, grass, and SVG BUTTERFLIES with flapping wings.
    Dark mode = night: deep sky, moon, twinkling stars, drifting clouds, and
    glowing FIREFLIES.
-   Static scenery is SVG; the moving creatures (clouds, butterflies, fireflies)
-   are plain DOM elements so their CSS transform animations run reliably in
-   every browser (including Safari). Day/night cross-fades with the theme.
+   Static scenery + creatures are SVG for crisp visuals; the flight PATH of
+   each creature runs on its wrapping DOM element, so motion is reliable in
+   every browser. Day/night cross-fades with the theme.
    ========================================================================= */
 (function () {
   const root = document.getElementById('dynamic-bg');
@@ -48,24 +48,33 @@
     '<path class="grass" d="M0 872 C 360 826, 720 886, 1060 846 C 1360 810, 1500 872, 1600 852 L1600 1000 L0 1000 Z"/>' +
     '</svg>';
 
-  /* ---------- DOM moving creatures (reliable everywhere) ---------- */
+  /* ---------- SVG creatures on DOM wrappers (path on wrapper = reliable) ---------- */
+  const CLOUD = '<svg class="pcloud-b" viewBox="0 0 200 92"><path d="M44 82 Q14 82 14 58 Q14 37 37 37 Q41 15 67 17 Q85 8 97 27 Q109 16 125 25 Q135 10 153 19 Q177 27 171 49 Q191 51 191 67 Q191 82 163 82 Z"/></svg>';
+  const BFLY = w =>
+    `<svg class="bfly-w" viewBox="-24 -22 48 44" style="--wing:${w}"><g>` +
+      '<ellipse class="w wa" cx="-11" cy="-8" rx="12" ry="9" transform="rotate(-18 -11 -8)"/>' +
+      '<ellipse class="w wb" cx="-9" cy="9" rx="9" ry="7" transform="rotate(20 -9 9)"/>' +
+      '<ellipse class="w wa" cx="11" cy="-8" rx="12" ry="9" transform="rotate(18 11 -8)"/>' +
+      '<ellipse class="w wb" cx="9" cy="9" rx="9" ry="7" transform="rotate(-20 9 9)"/>' +
+      '<ellipse class="body" cx="0" cy="0" rx="2" ry="11"/>' +
+      '<path class="ant" d="M0 -10 C -2 -16 -5 -18 -7 -19"/><path class="ant" d="M0 -10 C 2 -16 5 -18 7 -19"/>' +
+    '</g></svg>';
+
   let clouds = '';
-  [ { top: 8, dur: 52, delay: 0,  sc: 1.10, o: .95 },
-    { top: 16, dur: 72, delay: 22, sc: .80, o: .85 },
-    { top: 5,  dur: 60, delay: 40, sc: 1.28, o: .90 },
-    { top: 24, dur: 82, delay: 12, sc: .70, o: .72 },
-    { top: 13, dur: 64, delay: 50, sc: 1.00, o: .88 } ].forEach(c => {
-    clouds += `<div class="pcloud" style="top:${c.top}vh;animation-duration:${c.dur}s;animation-delay:-${c.delay}s">` +
-              `<div class="pcloud-b" style="transform:scale(${c.sc});opacity:${c.o}"></div></div>`;
+  [ { top: 8,  w: 220, dur: 52, delay: 0,  o: .95 },
+    { top: 16, w: 150, dur: 72, delay: 22, o: .85 },
+    { top: 5,  w: 260, dur: 60, delay: 40, o: .90 },
+    { top: 24, w: 130, dur: 82, delay: 12, o: .72 },
+    { top: 13, w: 190, dur: 64, delay: 50, o: .88 } ].forEach(c => {
+    clouds += `<div class="pcloud" style="top:${c.top}vh;animation-duration:${c.dur}s;animation-delay:-${c.delay}s;width:${c.w}px;opacity:${c.o}">${CLOUD}</div>`;
   });
 
   let bflies = '';
-  [ { top: 20, size: 26, dur: 20, delay: 0 },
-    { top: 34, size: 22, dur: 26, delay: 8 },
-    { top: 12, size: 30, dur: 23, delay: 15 },
-    { top: 44, size: 20, dur: 28, delay: 4 } ].forEach(b => {
-    bflies += `<div class="bfly" style="top:${b.top}vh;font-size:${b.size}px;animation-duration:${b.dur}s;animation-delay:-${b.delay}s">` +
-              '<span class="bfly-w">🦋</span></div>';
+  [ { top: 22, size: 34, dur: 20, delay: 0,  w: '#f2a03d' },
+    { top: 36, size: 26, dur: 27, delay: 8,  w: '#6aa6f0' },
+    { top: 14, size: 40, dur: 23, delay: 15, w: '#ef7fae' },
+    { top: 46, size: 24, dur: 30, delay: 4,  w: '#57c9a8' } ].forEach(b => {
+    bflies += `<div class="bfly" style="top:${b.top}vh;font-size:${b.size}px;animation-duration:${b.dur}s;animation-delay:-${b.delay}s">${BFLY(b.w)}</div>`;
   });
 
   let ffs = '';

@@ -1,17 +1,22 @@
 /* =========================================================================
    Lumikuttan 🦉, the mascot.
+
    Two brains:
-   1) GROUNDED BASE (always on, free, offline): answers common German questions
-      from a curated knowledge base + gives encouragement. Never hallucinates
-      because it only returns hand-written, verified snippets.
-   2) DEEP ANSWER (optional): if a Worker URL is set in config.js, the user can
-      send the question to an AI model via OpenRouter (key hidden in the Worker).
+   1) AI brain (when a Worker URL is set in config.js): a general-purpose
+      open-source LLM (Llama / Mistral via Cloudflare Workers AI) that answers
+      ANY question, not just German ones. For German questions we send along
+      "verified notes" retrieved from the built-in knowledge base so the model
+      stays accurate and does not invent grammar rules.
+   2) OFFLINE brain (fallback, free): a small curated knowledge base that
+      answers common German questions and gives encouragement, even with no
+      Worker / no internet.
    ========================================================================= */
 import { Store } from './store.js';
 
 const CFG = window.SFS_CONFIG || {};
 
-/* ---- Grounded knowledge base: keyword -> answer (HTML allowed) ---- */
+/* ---- Curated knowledge base: used BOTH as offline answers and as grounding
+        context for the AI brain. keyword -> answer (HTML allowed) ---- */
 const KB = [
   { keys:['weil','warum','grund','because'], a:'<b>weil</b> nennt einen Grund. Es ist eine Nebensatz-Konjunktion, also steht das Verb am <b>Ende</b>:<br>„Ich lerne Deutsch, <b>weil</b> ich hier <b>leben will</b>.“<br><i>weil = because; the verb goes to the end.</i>' },
   { keys:['weil oder denn','denn'], a:'<b>weil</b> = Nebensatz (Verb am Ende). <b>denn</b> = Hauptsatz (normale Wortstellung):<br>„…, <b>weil</b> ich müde <b>bin</b>.“ vs. „…, <b>denn</b> ich <b>bin</b> müde.“' },
@@ -38,9 +43,11 @@ const ENCOURAGE = [
 ];
 
 const GREETINGS = (name) => [
-  `Hi ${name || 'there'}, I'm Lumikuttan, your German study buddy. 🦉 Ask me anything about German: grammar, words, or when you just need a little encouragement.`,
-  `Hey ${name || 'there'}, Lumikuttan here. 🦉 I'm here for grammar, vocabulary and exam questions. Where shall we start?`
+  `Hi ${name || 'there'}, I'm Lumikuttan 🦉. Ask me anything, German grammar and vocabulary, the exam, or just a normal question you have. I'm here for all of it.`,
+  `Hey ${name || 'there'}, Lumikuttan here 🦉. Grammar, words, exam tips, or anything else on your mind, go ahead and ask.`
 ];
+
+function stripTags(s){ return String(s).replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim(); }
 
 function findKB(text) {
   const q = text.toLowerCase();
@@ -52,23 +59,43 @@ function findKB(text) {
   }
   return bestScore > 0 ? best.a : null;
 }
-
-function isEncouragementRequest(text) {
-  return /mut|angst|nervös|schaff|kann das nicht|zu schwer|aufgeben|müde|frust|stress|scared|nervous|give up/i.test(text);
+/* top matching KB notes, as plain text, to ground the AI on German questions */
+function retrieve(text) {
+  const q = text.toLowerCase();
+  const hits = [];
+  for (const item of KB) {
+    let score = 0;
+    for (const k of item.keys) if (q.includes(k)) score += k.length;
+    if (score > 0) hits.push({ score, a: item.a });
+  }
+  hits.sort((a, b) => b.score - a.score);
+  return hits.slice(0, 2).map(h => stripTags(h.a)).join('\n');
 }
 
-/* ---- Deep answer via Worker (optional) ---- */
-async function deepAnswer(question, context) {
+function isEncouragementRequest(text) {
+  return /mut|angst|nervös|schaff|kann das nicht|zu schwer|aufgeben|müde|frust|stress|scared|nervous|give up|anxious|worried/i.test(text);
+}
+
+/* ---- AI brain via the Worker (Cloudflare Workers AI, open-source model) ---- */
+async function ask(question, opts = {}) {
   const url = CFG.MASCOT_WORKER_URL;
   if (!url) throw new Error('no-worker');
+
+  const notes = retrieve(question);
+  const ctx = [];
+  if (Store.name) ctx.push(`The learner's name is ${Store.name}.`);
+  if (opts.lesson) ctx.push(`They are currently on this lesson: ${opts.lesson}.`);
+  if (notes) ctx.push(`Verified German notes (use these if relevant):\n${notes}`);
+
   const res = await fetch(url, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({ question, context })
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question, context: ctx.join('\n'), history: opts.history || [] })
   });
   if (!res.ok) throw new Error('worker-' + res.status);
   const data = await res.json();
-  return data.answer || 'Entschuldige, ich habe gerade keine Antwort.';
+  if (data.error) throw new Error(data.error);
+  return data.answer || '…';
 }
 
 /* Public API used by the chat UI */
@@ -76,20 +103,14 @@ export const Lumikuttan = {
   greeting() { const g = GREETINGS(Store.name); return g[Math.floor(Math.random()*g.length)]; },
   encourage() { return ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)]; },
 
-  // returns { text, canDeepen }
+  // offline / no-AI answer: KB grammar hit or gentle encouragement
   answerGrounded(question) {
-    if (isEncouragementRequest(question)) return { text: this.encourage(), canDeepen: false };
+    if (isEncouragementRequest(question)) return { text: this.encourage() };
     const kb = findKB(question);
-    if (kb) return { text: kb, canDeepen: true };
-    return {
-      text: 'Good question! I do not have a set explanation for that one. '
-          + (CFG.MASCOT_WORKER_URL && CFG.DEEP_ANSWER_ENABLED
-              ? 'Tap <b>“Explain deeper”</b> and I will think it through. 🧠'
-              : 'Try rephrasing it, for example “How does the Perfekt work?” or “When do I use Dativ?”'),
-      canDeepen: true
-    };
+    if (kb) return { text: kb };
+    return { text: 'For open questions I need my AI brain switched on. In the meantime, try a German topic like “How does the Perfekt work?” or “When do I use Dativ?” and I can help right away. 🦉' };
   },
 
-  deepEnabled() { return !!(CFG.MASCOT_WORKER_URL && CFG.DEEP_ANSWER_ENABLED); },
-  deepAnswer
+  aiEnabled() { return !!(CFG.MASCOT_WORKER_URL && (CFG.DEEP_ANSWER_ENABLED ?? true)); },
+  ask
 };

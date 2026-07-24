@@ -4,19 +4,21 @@
   This is the only file you normally touch after the first deploy.
 
   MASCOT_WORKER_URL:
-    Leave it as "" and the mascot (Lumikuttan the owl) still works fully in
-    "grounded mode": free, offline, no API key. It answers from the built-in
-    German knowledge base, gives hints, and encourages.
+    Leave it as "" and Lumikuttan still works in "offline mode": free, no
+    server, answering common German-grammar questions and giving encouragement
+    from the built-in knowledge base.
 
-    When you deploy the Cloudflare Worker, paste its URL here
-    (e.g. "https://lumikuttan.<your-subdomain>.workers.dev"). That unlocks
-    the optional "Deep answer" button, which routes questions through the
-    Worker. Your API key stays secret inside the Worker, never in this repo.
+    Paste your Worker URL here to switch on the AI BRAIN. Then Lumikuttan
+    becomes a general assistant (open-source LLM on Cloudflare Workers AI) and
+    can answer normal questions too, not only German ones. No API key is
+    involved; the model runs on Cloudflare's edge.
+    Example: "https://lumikuttan.<your-subdomain>.workers.dev"
+    Deploy steps: see /worker/README.md
 */
 window.SFS_CONFIG = {
-  MASCOT_WORKER_URL: "",          // paste your Worker URL here after deploy
-  APP_VERSION: "1.0.0",
-  DEEP_ANSWER_ENABLED: true,      // set false to hide the AI upgrade button entirely
+  MASCOT_WORKER_URL: "",          // paste your Worker URL here to enable the AI brain
+  APP_VERSION: "1.1.0",
+  DEEP_ANSWER_ENABLED: true,      // set false to force offline mode even if a URL is set
   PASS_THRESHOLD: 0.70,           // 70% to unlock the next step
   QUESTIONS_PER_QUIZ: 7           // questions drawn from each bank per attempt
 };

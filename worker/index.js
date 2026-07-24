@@ -1,24 +1,26 @@
 /* =========================================================================
-   Lumikuttan Worker, a tiny, safe proxy to OpenRouter.
-   The API key lives ONLY here (as a Cloudflare secret), never in the website.
+   Lumikuttan Worker, powered by Cloudflare Workers AI (open-source models).
 
-   Built-in safeguards:
-     • Defaults to a FREE OpenRouter model for normal questions.
-     • Hard cap on output length (max_tokens) keeps usage small.
-     • Trims the incoming context so prompts stay short.
-     • Only answers German-learning questions (focused system prompt).
+   Runs an open-weight LLM (Llama / Mistral / Qwen) on Cloudflare's edge.
+   No API key needed: the "AI" binding is provided by Cloudflare.
+   Free tier: ~10,000 neurons/day, plenty for one learner.
+
+   Lumikuttan is a GENERAL assistant: it answers everyday questions too,
+   not only German ones. For German questions it uses the "context" the
+   website sends (verified grammar notes) so it stays accurate.
    ========================================================================= */
 
-const FREE_MODEL = "meta-llama/llama-3.3-70b-instruct:free"; // free tier
-const PAID_MODEL = "anthropic/claude-3.5-haiku";             // optional, if you set MODEL
+const DEFAULT_MODEL = "@cf/meta/llama-3.1-8b-instruct";  // balanced, multilingual
 
-const SYSTEM_PROMPT = `You are Lumikuttan, a warm, patient German teacher preparing an adult learner for the B1 "Deutsch-Test für Zuwanderer" (DTZ).
-Rules:
-- Answer ONLY questions about the German language, grammar, vocabulary, or the DTZ/B1 exam. If asked anything else, gently steer back to German.
-- Be accurate. If unsure, say so plainly, never invent grammar rules.
-- Keep answers SHORT (max ~120 words). Give one clear rule + one example.
-- Explain in simple English AND give the German example. Be encouraging.
-- Use the learner's current lesson context if provided.`;
+const SYSTEM = `You are Lumikuttan, a warm and encouraging owl. You are the study companion of an adult who is preparing for the German B1 exam "Deutsch-Test für Zuwanderer" (DTZ), but you are also a general helper.
+
+How to answer:
+- Answer ANY question helpfully and briefly, not only German ones.
+- When the question is about German (grammar, vocabulary, the exam), be accurate and concrete: give one clear rule and a short German example. Never invent grammar rules; if you are unsure, say so honestly.
+- If "Context" is provided below, use it, it contains verified notes.
+- Keep replies warm and fairly short (2 to 5 sentences).
+- Reply in the same language the user writes in (English or German).
+- If the user sounds stressed or nervous, add a short, kind word of encouragement.`;
 
 const cors = {
   "Access-Control-Allow-Origin": "*",           // tighten to your Pages URL if you like
@@ -29,48 +31,36 @@ const cors = {
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: cors });
-    if (request.method !== "POST")
-      return json({ error: "POST only" }, 405);
-
-    if (!env.OPENROUTER_API_KEY)
-      return json({ error: "Worker not configured: set OPENROUTER_API_KEY secret." }, 500);
+    if (request.method !== "POST") return json({ error: "POST only" }, 405);
+    if (!env.AI) return json({ error: "Workers AI binding missing (add [ai] binding = \"AI\")." }, 500);
 
     let body;
     try { body = await request.json(); } catch { return json({ error: "bad json" }, 400); }
 
-    const question = String(body.question || "").slice(0, 500);
-    const context  = String(body.context  || "").slice(0, 300);
+    const question = String(body.question || "").slice(0, 1000);
+    const context  = String(body.context  || "").slice(0, 1800);
     if (!question) return json({ error: "no question" }, 400);
 
-    const model = (env.MODEL && env.MODEL.trim()) || FREE_MODEL;
+    const model = (env.MODEL && env.MODEL.trim()) || DEFAULT_MODEL;
 
-    const payload = {
-      model,
-      max_tokens: 260,
-      temperature: 0.3,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT + (context ? `\nLesson context: ${context}` : "") },
-        { role: "user", content: question },
-      ],
-    };
+    const messages = [
+      { role: "system", content: SYSTEM + (context ? `\n\nContext:\n${context}` : "") },
+    ];
+    // short conversation memory for natural follow-ups
+    if (Array.isArray(body.history)) {
+      for (const m of body.history.slice(-6)) {
+        if (m && (m.role === "user" || m.role === "assistant") && m.content)
+          messages.push({ role: m.role, content: String(m.content).slice(0, 800) });
+      }
+    }
+    messages.push({ role: "user", content: question });
 
     try {
-      const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://schritt-fuer-schritt",
-          "X-Title": "Schritt fuer Schritt",
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await r.json();
-      if (!r.ok) return json({ error: data.error?.message || "openrouter error" }, 502);
-      const answer = data.choices?.[0]?.message?.content?.trim() || "…";
+      const r = await env.AI.run(model, { messages, max_tokens: 320, temperature: 0.4 });
+      const answer = (r && r.response ? r.response : "").trim() || "…";
       return json({ answer, model });
     } catch (e) {
-      return json({ error: "upstream failed" }, 502);
+      return json({ error: "inference failed", detail: String(e && e.message || e) }, 502);
     }
   },
 };

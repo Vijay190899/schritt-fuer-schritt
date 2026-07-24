@@ -614,6 +614,7 @@ function viewSkill(name){
    Mascot chat dock
    ===================================================================== */
 let chatOpen=false;
+let chatHistory=[];
 function mountMascotFab(){
   const root=$('#mascot-root');
   root.innerHTML=`<div class="mascot-fab">
@@ -626,15 +627,19 @@ function mountMascotFab(){
 function openChat(){
   if(chatOpen) return; chatOpen=true;
   const root=$('#mascot-root');
+  const ai=Lumikuttan.aiEnabled();
   root.innerHTML=`<div class="chat">
-    <div class="chat__head"><span class="av">🦉</span><div class="who">Lumikuttan<small>your German study buddy</small></div><button class="x" id="lumi-close">×</button></div>
+    <div class="chat__head"><span class="av">🦉</span><div class="who">Lumikuttan<small>${ai?'your buddy · open-source AI':'your German study buddy'}</small></div><button class="x" id="lumi-close">×</button></div>
     <div class="chat__body" id="chat-body"></div>
     <div class="chat__quick" id="chat-quick"></div>
-    ${Lumikuttan.deepEnabled()?'<div class="deep-hint">“Explain deeper” uses AI, only when you need it.</div>':''}
+    ${ai?'<div class="deep-hint">Powered by an open-source LLM. Ask anything.</div>':'<div class="deep-hint">Offline mode: German grammar + encouragement. Turn on the AI brain for open questions.</div>'}
     <div class="chat__foot"><input id="chat-in" placeholder="Ask me anything, in English or German…" /><button id="chat-send">➤</button></div>
   </div>`;
   $('#lumi-close').onclick=()=>{chatOpen=false;mountMascotFab();};
-  const quick=['How does “weil” work?','Dativ or Akkusativ?','What is on the exam?','I feel nervous 😟'];
+  chatHistory=[];
+  const quick=ai
+    ? ['How does “weil” work?','Give me a quick study tip 🌟','What is on the DTZ exam?','I feel nervous 😟']
+    : ['How does “weil” work?','Dativ or Akkusativ?','What is on the exam?','I feel nervous 😟'];
   $('#chat-quick').innerHTML=quick.map(q=>`<button data-q="${esc(q)}">${esc(q)}</button>`).join('');
   $$('#chat-quick button').forEach(b=>b.onclick=()=>{ $('#chat-in').value=b.dataset.q; send(); });
   addBot(Lumikuttan.greeting());
@@ -646,26 +651,30 @@ function openChat(){
 function addBot(html){ const b=$('#chat-body'); if(!b) return; const d=document.createElement('div'); d.className='msg bot'; d.innerHTML=html; b.appendChild(d); b.scrollTop=b.scrollHeight; return d; }
 function addMe(text){ const b=$('#chat-body'); const d=document.createElement('div'); d.className='msg me'; d.textContent=text; b.appendChild(d); b.scrollTop=b.scrollHeight; }
 function typing(){ return addBot('<span class="typing"><i></i><i></i><i></i></span>'); }
+function lessonContext(){
+  const ctx=byId((location.hash.match(/lesson\/([^/]+)/)||[])[1]);
+  return ctx?`${ctx.title} (${(ctx.grammar||[]).map(g=>g.title).join(', ')})`:'';
+}
 async function send(){
   const input=$('#chat-in'); const text=(input.value||'').trim(); if(!text) return;
   addMe(text); input.value='';
   const t=typing();
-  await new Promise(r=>setTimeout(r,350));
-  const res=Lumikuttan.answerGrounded(text);
-  t.innerHTML=res.text;
-  if(res.canDeepen && Lumikuttan.deepEnabled()){
-    const wrap=document.createElement('div'); wrap.style.marginTop='8px';
-    const btn=document.createElement('button'); btn.className='btn btn--ghost btn--sm'; btn.textContent='🧠 Explain deeper';
-    btn.onclick=async()=>{ btn.disabled=true; btn.textContent='thinking…';
-      const tt=typing();
-      try{ const ctx=byId((location.hash.match(/lesson\/([^/]+)/)||[])[1]);
-        const ans=await Lumikuttan.deepAnswer(text, ctx?`Aktuelles Thema: ${ctx.title}: ${(ctx.grammar||[]).map(g=>g.title).join(', ')}`:'');
-        tt.innerHTML=esc(ans).replace(/\n/g,'<br>');
-      }catch(e){ tt.innerHTML='The AI answer is not reachable right now. But my basic explanation above is correct! 🦉'; }
-      btn.remove();
-    };
-    wrap.appendChild(btn); $('#chat-body').appendChild(wrap);
+
+  if(Lumikuttan.aiEnabled()){
+    try{
+      const ans=await Lumikuttan.ask(text, { lesson: lessonContext(), history: chatHistory.slice(-6) });
+      t.innerHTML=esc(ans).replace(/\n/g,'<br>');
+      chatHistory.push({role:'user',content:text},{role:'assistant',content:ans});
+    }catch(e){
+      const res=Lumikuttan.answerGrounded(text);
+      t.innerHTML=res.text+'<br><small style="color:var(--ink-faint)">(offline answer, the AI brain is unreachable right now)</small>';
+    }
+    return;
   }
+
+  // offline mode: curated German answers + encouragement
+  await new Promise(r=>setTimeout(r,300));
+  t.innerHTML=Lumikuttan.answerGrounded(text).text;
 }
 
 /* =====================================================================

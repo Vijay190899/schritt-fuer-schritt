@@ -1,0 +1,12 @@
+name = "lumikuttan"
+main = "index.js"
+compatibility_date = "2024-11-01"
+
+# Optional: switch the model without redeploying code.
+# Leave unset to use the FREE model (recommended).
+# To use Claude Haiku instead, uncomment:
+# [vars]
+# MODEL = "anthropic/claude-3.5-haiku"
+
+# The API key is a SECRET, not a var. Set it with:
+#   npx wrangler secret put OPENROUTER_API_KEY

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schritt für Schritt · Dein Deutschkurs</title>
+  <meta name="description" content="Ein warmer, motivierender B1-Deutschkurs – Schritt für Schritt zur Prüfung." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦉</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <!-- Ambient background -->
+  <div class="aurora" aria-hidden="true"></div>
+
+  <!-- App shell -->
+  <div id="app">
+    <div class="boot">
+      <div class="boot__owl">🦉</div>
+      <p>Einen Moment …</p>
+    </div>
+  </div>
+
+  <!-- Mascot dock (injected) -->
+  <div id="mascot-root"></div>
+
+  <!-- Toast host -->
+  <div id="toast-host" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>

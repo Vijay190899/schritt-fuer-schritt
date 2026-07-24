@@ -1,0 +1,8 @@
+node_modules/
+.wrangler/
+.DS_Store
+*.log
+
+# Local-only docs (not committed by request)
+README.md
+worker/README.md

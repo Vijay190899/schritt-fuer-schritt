@@ -1,6 +1,5 @@
 /* 
-  Dynamic Animated Background 
-  Inspired by 21st.dev Premium Mesh Gradients
+  Dynamic Flowing Vector Background 
 */
 class DynamicBackground {
   constructor() {
@@ -12,11 +11,12 @@ class DynamicBackground {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
     
-    // Config
-    this.orbs = [];
-    this.numOrbs = 7;
-    this.mouse = { x: this.width / 2, y: this.height / 2, tx: this.width / 2, ty: this.height / 2 };
+    this.time = 0;
+    this.lines = [];
     
+    // Track mouse slowly over time
+    this.mouse = { x: this.width/2, y: this.height/2, tx: this.width/2, ty: this.height/2 };
+
     this.init();
     
     window.addEventListener('resize', () => {
@@ -26,7 +26,7 @@ class DynamicBackground {
       this.canvas.height = this.height;
       this.init();
     });
-    
+
     window.addEventListener('mousemove', (e) => {
       this.mouse.tx = e.clientX;
       this.mouse.ty = e.clientY;
@@ -42,10 +42,8 @@ class DynamicBackground {
         { r: 91, g: 127, b: 255 }, // primary
         { r: 255, g: 122, b: 89 }, // accent
         { r: 34, g: 185, b: 129 }, // success
-        { r: 123, g: 149, b: 255 },
-        { r: 232, g: 97, b: 61 },
-        { r: 62, g: 91, b: 217 },
-        { r: 245, g: 166, b: 35 } // warn
+        { r: 134, g: 160, b: 255 }, 
+        { r: 255, g: 148, b: 112 }
       ];
     }
     return [
@@ -53,80 +51,96 @@ class DynamicBackground {
       { r: 255, g: 122, b: 89 },
       { r: 34, g: 185, b: 129 },
       { r: 245, g: 196, b: 81 },
-      { r: 177, g: 161, b: 255 },
-      { r: 255, g: 153, b: 204 },
-      { r: 100, g: 180, b: 255 }
+      { r: 177, g: 161, b: 255 }
     ];
   }
 
   init() {
-    this.orbs = [];
+    this.lines = [];
     const colors = this.getColors();
-    for (let i = 0; i < this.numOrbs; i++) {
-        // larger orbs for a seamless mesh feel
-        const radius = Math.random() * (this.width * 0.4) + this.width * 0.4;
-        this.orbs.push({
-            x: Math.random() * this.width,
-            y: Math.random() * this.height,
-            vx: (Math.random() - 0.5) * 1.2,
-            vy: (Math.random() - 0.5) * 1.2,
-            radius: radius,
+    const count = 10;
+    for (let i = 0; i < count; i++) {
+        this.lines.push({
             color: colors[i % colors.length],
-            phase: Math.random() * Math.PI * 2,
-            speed: Math.random() * 0.015 + 0.005
+            yBase: this.height * (0.1 + 0.8 * (i / count)), // Spread vertically
+            amplitude: Math.random() * 100 + 40,
+            frequency: Math.random() * 0.0015 + 0.0005, // Wider waves
+            speed: Math.random() * 0.0015 + 0.0005,
+            phaseParams: [Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2],
+            thickness: Math.random() * 5 + 3
         });
     }
   }
 
   loop() {
-    // Smoothen mouse
-    this.mouse.x += (this.mouse.tx - this.mouse.x) * 0.04;
-    this.mouse.y += (this.mouse.ty - this.mouse.y) * 0.04;
+    this.time += 1;
+    this.mouse.x += (this.mouse.tx - this.mouse.x) * 0.02;
+    this.mouse.y += (this.mouse.ty - this.mouse.y) * 0.02;
 
-    // Check theme for dynamic opacity
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const bgOpacity = isDark ? 0.08 : 0.14; 
+    // Higher contrast for vectors
+    const bgOpacity = isDark ? 0.35 : 0.6; 
 
+    // Smooth trail effect slightly fades the previous frames
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ctx.globalCompositeOperation = 'lighter'; // or 'screen'
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
 
     const colors = this.getColors();
 
-    this.orbs.forEach((orb, i) => {
-        // Softly update color on theme switch without recreating orbs
-        orb.color = colors[i % colors.length];
+    this.lines.forEach((line, i) => {
+        // Adjust colors in case theme toggles
+        line.color = colors[i % colors.length];
         
-        orb.phase += orb.speed;
-        
-        // Gentle movement based on phase
-        orb.x += Math.cos(orb.phase) * 1.2 + orb.vx;
-        orb.y += Math.sin(orb.phase) * 1.2 + orb.vy;
-
-        // Subtle mouse influence (attract or repel slightly)
-        const dx = this.mouse.x - orb.x;
-        const dy = this.mouse.y - orb.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        
-        if (dist < 900) {
-            orb.x -= (dx * 0.007) * (1 - dist / 900);
-            orb.y -= (dy * 0.007) * (1 - dist / 900);
-        }
-
-        // Bounds check (bounce off edges gently)
-        if (orb.x < -orb.radius) orb.vx = Math.abs(orb.vx);
-        if (orb.x > this.width + orb.radius) orb.vx = -Math.abs(orb.vx);
-        if (orb.y < -orb.radius) orb.vy = Math.abs(orb.vy);
-        if (orb.y > this.height + orb.radius) orb.vy = -Math.abs(orb.vy);
-
-        // Draw orb with radial gradient
-        const grad = this.ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
-        grad.addColorStop(0, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${bgOpacity})`);
-        grad.addColorStop(1, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
-        
-        this.ctx.fillStyle = grad;
         this.ctx.beginPath();
-        this.ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
-        this.ctx.fill();
+        
+        // Draw the vector path horizontally across the screen
+        const step = 40; 
+        for (let x = -50; x <= this.width + 50; x += step) {
+            
+            // Generate fluid waveform
+            const wave1 = Math.sin(x * line.frequency + this.time * line.speed + line.phaseParams[0]);
+            const wave2 = Math.cos(x * line.frequency * 1.3 - this.time * line.speed * 0.8 + line.phaseParams[1]);
+            const wave3 = Math.sin(x * line.frequency * 0.6 + this.time * line.speed * 1.1 + line.phaseParams[2]);
+            
+            // Gentle mouse sway effect
+            const distX = x - this.mouse.x;
+            const mouseEffect = Math.sin(distX * 0.002 - this.time * 0.02) * 50;
+            const influence = Math.max(0, 1 - Math.abs(distX) / 1000);
+            
+            const totalWave = (wave1 + wave2 + wave3) / 3;
+            const y = line.yBase + totalWave * line.amplitude + (mouseEffect * influence * 0.5);
+            
+            if (x === -50) {
+                this.ctx.moveTo(x, y);
+            } else {
+                // Smooth bezier connects for vectors
+                this.ctx.lineTo(x, y);
+            }
+        }
+        
+        // Linear gradient so lines fade on edges
+        const gradient = this.ctx.createLinearGradient(0, 0, this.width, 0);
+        gradient.addColorStop(0, `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, 0)`);
+        gradient.addColorStop(0.15, `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, ${bgOpacity})`);
+        gradient.addColorStop(0.85, `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, ${bgOpacity})`);
+        gradient.addColorStop(1, `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, 0)`);
+        
+        this.ctx.lineWidth = line.thickness;
+        this.ctx.strokeStyle = gradient;
+        
+        // Add subtle drop shadow
+        this.ctx.shadowColor = `rgba(${line.color.r}, ${line.color.g}, ${line.color.b}, ${bgOpacity * 0.5})`;
+        this.ctx.shadowBlur = 12;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 2;
+        
+        this.ctx.stroke();
+        
+        // Reset shadow for performance on non-shadowed operations if any
+        this.ctx.shadowBlur = 0;
+        this.ctx.shadowColor = 'transparent';
     });
 
     requestAnimationFrame(() => this.loop());

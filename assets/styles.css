@@ -549,3 +549,32 @@ button { font-family: inherit; }
 #dynamic-bg.no-motion .sway,
 #dynamic-bg.no-motion .sun,
 #dynamic-bg.no-motion .sun-glow { animation:none; }
+
+/* ---- DOM moving creatures (clouds, butterflies, fireflies) ---- */
+#dynamic-bg .clouds, #dynamic-bg .butterflies, #dynamic-bg .fireflies { position:absolute; inset:0; overflow:hidden; }
+
+#dynamic-bg .pcloud { position:absolute; left:0; animation:cloudDrift linear infinite; will-change:transform; }
+#dynamic-bg .pcloud-b { width:150px; height:52px; background:var(--cloud); border-radius:60px; filter:blur(.5px);
+  box-shadow: 44px 10px 0 -6px var(--cloud), -42px 13px 0 -9px var(--cloud), 16px -16px 0 -3px var(--cloud), 74px -6px 0 -11px var(--cloud); }
+@keyframes cloudDrift { from { transform:translateX(-260px); } to { transform:translateX(calc(100vw + 300px)); } }
+
+#dynamic-bg .bfly { position:absolute; left:0; animation:flyPath linear infinite; will-change:transform; }
+#dynamic-bg .bfly-w { display:inline-block; filter:drop-shadow(0 3px 3px rgba(0,0,0,.18)); animation:flutter .28s ease-in-out infinite; }
+@keyframes flyPath {
+  0%   { transform:translate(-50px, 0); }
+  25%  { transform:translate(26vw, -42px); }
+  50%  { transform:translate(52vw, 14px); }
+  75%  { transform:translate(78vw, -30px); }
+  100% { transform:translate(calc(100vw + 60px), 4px); }
+}
+@keyframes flutter { 0%,100% { transform:scaleX(1); } 50% { transform:scaleX(.35); } }
+
+#dynamic-bg .ff { position:absolute; width:6px; height:6px; border-radius:50%; background:#ffe79a;
+  box-shadow:0 0 9px 2px rgba(255,224,138,.9); animation:flit2 ease-in-out infinite; will-change:transform, opacity; }
+@keyframes flit2 {
+  0%   { transform:translate(0,0);   opacity:.12; }
+  25%  { opacity:1; }
+  50%  { transform:translate(22px,-26px); opacity:.55; }
+  75%  { opacity:1; }
+  100% { transform:translate(0,0);   opacity:.12; }
+}

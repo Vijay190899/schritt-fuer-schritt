@@ -41,6 +41,25 @@
   --ease: cubic-bezier(.22, 1, .36, 1);
 }
 
+:root[data-theme="dark"] {
+  --bg:        #121212;
+  --bg-tint:   #1E1E1E;
+  --surface:   #1A1A1E;
+  --surface-2: #24242A;
+  --ink:       #FFFFFF;
+  --ink-soft:  #9C9CA2;
+  --ink-faint: #6A6A74;
+  --line:      #2D2D35;
+
+  --primary:      #5B7FFF;
+  --primary-ink:  #86A0FF;
+  --primary-wash: #212953;
+  --accent:       #FF7A59;
+  --accent-ink:   #FF9470;
+  --success:      #22B981;
+  --success-wash: #143525;
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
@@ -59,17 +78,11 @@ a { color: var(--primary-ink); text-decoration: none; }
 button { font-family: inherit; }
 :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 6px; }
 
-/* Ambient aurora background */
-.aurora {
-  position: fixed; inset: -20% -10% auto -10%; height: 70vh; z-index: 0;
-  background:
-    radial-gradient(50% 60% at 15% 10%, rgba(91,127,255,.14), transparent 60%),
-    radial-gradient(45% 55% at 85% 5%, rgba(255,122,89,.13), transparent 60%),
-    radial-gradient(40% 50% at 60% 30%, rgba(34,185,129,.10), transparent 60%);
-  filter: blur(10px); pointer-events: none;
-  animation: drift 26s ease-in-out infinite alternate;
+/* Dynamic Background Canvas */
+#dynamic-bg {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  z-index: 0; pointer-events: none;
 }
-@keyframes drift { to { transform: translate3d(0,-3%,0) scale(1.05); } }
 
 /* ---------- Layout shell ---------- */
 #app { position: relative; z-index: 1; }
@@ -82,17 +95,18 @@ button { font-family: inherit; }
 /* Top bar */
 .topbar {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(247,243,236,.82); backdrop-filter: blur(14px);
+  background: var(--bg); backdrop-filter: blur(14px); opacity: 0.94;
   border-bottom: 1px solid var(--line);
 }
 .topbar__in { max-width: var(--maxw); margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; cursor: pointer; }
 .brand .logo { width: 34px; height: 34px; display: grid; place-content: center; background: linear-gradient(140deg, var(--primary), #7B95FF); color: #fff; border-radius: 10px; box-shadow: var(--shadow-glow); font-size: 18px; }
-.nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
-.nav a { padding: 8px 14px; border-radius: 999px; color: var(--ink-soft); font-weight: 500; font-size: .92rem; transition: background .2s, color .2s; }
-.nav a:hover { background: var(--surface); color: var(--ink); }
-.nav a.active { background: var(--ink); color: #fff; }
-.streak { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .9rem; color: var(--accent-ink); background: #FFF0EB; padding: 6px 12px; border-radius: 999px; }
+.nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; align-items: center; }
+.nav a, .nav button { padding: 8px 14px; border-radius: 999px; color: var(--ink-soft); font-weight: 500; font-size: .92rem; transition: background .2s, color .2s; cursor: pointer; border: none; background: transparent; }
+.nav a:hover, .nav button:hover { background: var(--surface); color: var(--ink); }
+.nav a.active { background: var(--ink); color: var(--bg); }
+.nav button.theme-toggle { font-size: 1.1rem; padding: 6px 10px; }
+.streak { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .9rem; color: var(--accent-ink); background: var(--primary-wash); padding: 6px 12px; border-radius: 999px; }
 
 /* ---------- Buttons ---------- */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 999px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; transition: transform .15s var(--ease), box-shadow .2s, background .2s; }

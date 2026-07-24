@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <!-- Ambient background -->
-  <div class="aurora" aria-hidden="true"></div>
+  <!-- Dynamic background -->
+  <canvas id="dynamic-bg" aria-hidden="true"></canvas>
 
   <!-- App shell -->
   <div id="app">
@@ -29,6 +29,7 @@
   <!-- Toast host -->
   <div id="toast-host" aria-live="polite"></div>
 
+  <script src="assets/bg.js"></script>
   <script src="config.js"></script>
   <script type="module" src="assets/app.js"></script>
 </body>

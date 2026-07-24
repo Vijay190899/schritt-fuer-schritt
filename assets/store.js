@@ -26,7 +26,7 @@ const defaults = () => ({
   daily: { date:'', xp:0 }, // resets each calendar day
   streak: { count: 0, last: null },
   xp: 0,
-  settings: { ttsRate: 0.92 }
+  settings: { ttsRate: 0.92, theme: 'light' }
 });
 
 let state = load();
@@ -52,6 +52,8 @@ export const Store = {
   get: () => state,
   get name() { return state.name; },
   setName(n) { state.name = (n || '').trim(); save(); },
+  get theme() { return state.settings.theme || 'light'; },
+  setTheme(t) { state.settings.theme = t; save(); },
   hasOnboarded() { return !!state.name; },
 
   /* ---- levels & XP ---- */

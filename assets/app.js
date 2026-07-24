@@ -10,6 +10,8 @@ const CFG = window.SFS_CONFIG || { PASS_THRESHOLD:0.7, QUESTIONS_PER_QUIZ:7 };
 const THRESHOLD = CFG.PASS_THRESHOLD ?? 0.7;
 const N_Q = CFG.QUESTIONS_PER_QUIZ ?? 7;
 
+document.documentElement.setAttribute('data-theme', Store.theme);
+
 /* ---------- tiny utils ---------- */
 const $  = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -114,6 +116,7 @@ function shell(inner, active='') {
       <a data-nav="#/vokabeln" class="${active==='vokabeln'?'active':''}">Vocabulary</a>
       <a data-nav="#/pruefung" class="${active==='pruefung'?'active':''}">Exam</a>
       <a data-nav="#/belohnungen" class="${active==='belohnungen'?'active':''}">Rewards</a>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">${Store.theme==='dark'?'☀️':'🌙'}</button>
     </nav>
     <span class="lvchip" data-nav="#/belohnungen" title="Your level"><b>Lv ${lv.level}</b><span class="lvbar"><span style="width:${lv.pct}%"></span></span></span>
     ${streak>0?`<span class="streak" title="Day streak">🔥 ${streak}</span>`:''}
@@ -127,6 +130,15 @@ function shell(inner, active='') {
 function render(inner, active) {
   $('#app').innerHTML = shell(inner, active);
   $$('[data-nav]').forEach(b => b.onclick = () => go(b.dataset.nav));
+  const tt = $('#theme-toggle');
+  if (tt) {
+    tt.onclick = () => {
+      const nxt = Store.theme === 'dark' ? 'light' : 'dark';
+      Store.setTheme(nxt);
+      document.documentElement.setAttribute('data-theme', nxt);
+      tt.textContent = nxt === 'dark' ? '☀️' : '🌙';
+    };
+  }
   const rst = $('[data-action=reset]');
   if (rst) rst.onclick = e => { e.preventDefault(); if (confirm('Really erase all your saved progress?')) { Store.reset(); go('#/'); location.reload(); } };
   window.scrollTo(0,0);

@@ -175,7 +175,6 @@ function viewHome() {
           <li>New chapters: the full <b>B1.2 (Schritte 6, Lektion 8-14)</b>: Unter Kollegen, Virtuelle Welt, Werbung und Konsum, Miteinander, Soziales Engagement, Aus Politik und Geschichte, Alte und neue Heimat</li>
           <li><b>350 new vocabulary flashcards</b> for the new lessons (1200 words in total now)</li>
           <li>New <b>Phrases</b> section: cool German idioms that impress an examiner <button class="btn btn--ghost btn--sm" data-nav="#/phrases">Open →</button></li>
-          <li>An animated day / night <b>park background</b> with clouds, butterflies and fireflies</li>
         </ul>
       </div>
       <button class="update-banner__x" data-dismiss-update title="Got it">×</button>

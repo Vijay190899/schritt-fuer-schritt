@@ -354,7 +354,7 @@ export const SYLLABUS = [
    Note: the book photos label these Folge 1-14; grammar is the B1.2 arc.
    ===================================================================== */
 {
-  phase:'B1.2 · Schritte 6 (Lektion 8-14)', tone:'Der Endspurt zur Prüfung.', color:'#8B5CF6',
+  phase:'B1.2 · Grammatik-Training', tone:'Wichtige B1-Grammatik zum Üben.', color:'#8B5CF6',
   modules:[
     {
       id:'b1-l8', lektion:8, title:'Glück & Vergangenheit', subtitle:'Präteritum · als · Plusquamperfekt',
@@ -574,6 +574,233 @@ export const SYLLABUS = [
         mc('„Wäre ich früher ___, hätte ich den Zug erreicht.“ (gehen)',['gegangen','geganen','gehen','ging'],0,'wäre + Partizip → gegangen.'),
         fil('„Trotz ___ Wetters (das) gingen wir raus.“ (Genitiv neutral)','des','Genitiv neutral → des Wetters.'),
         mc('„Die Wohnung ist ___ klein, ___ gemütlich.“',['weder … noch','zwar … aber','entweder … oder','sowohl'],1,'Einräumung + Gegensatz → zwar … aber.')
+      ]
+    }
+  ]
+}
+,
+{
+  phase:'B1.2 · Schritte 6 (Lektion 8-14)', tone:'Der echte Prüfungsstoff. Letzte Etappe!', color:'#0EA5A0',
+  modules:[
+    {
+      id:'b1-uk8', title:'Unter Kollegen', subtitle:'falls · je … desto · n-Deklination',
+      color:'#5B7FFF', icon:'👔',
+      goals:['höflich am Arbeitsplatz kommunizieren','Bedingungen mit „falls“','Vergleiche mit „je … desto“'],
+      wortfelder:['Arbeit & Kollegen','Umgang im Büro'],
+      grammar:[
+        { id:'falls', title:'Konjunktion „falls“', en:'The conjunction „falls“ (in case / if)', de:'Die Konjunktion „falls“',
+          blocks:[
+            {t:'p', en:'„falls“ introduces a possible but uncertain condition (in case). Like every subordinate clause, the verb goes to the END.', de:'„falls“ nennt eine mögliche, aber unsichere Bedingung. Wie im Nebensatz steht das Verb am ENDE.'},
+            {t:'ex', de:'*Falls* du Zeit *hast*, ruf mich bitte an.', en:'In case you have time, please call me.'},
+            {t:'tip', h:'falls oder wenn?', body:'„falls“ betont die Unsicherheit („nur für den Fall, dass …“). „wenn“ ist neutraler und auch für Wiederholungen.'}
+          ]},
+        { id:'je-desto', title:'Zweiteilige Konjunktion „je … desto/umso“', en:'„the more … the more“', de:'„je … desto/umso“',
+          blocks:[
+            {t:'p', en:'Structure: „Je“ + comparative + (subject) + verb at the END, then „desto/umso“ + comparative + verb in position 2.', de:'Struktur: „Je“ + Komparativ + Verb am Ende, dann „desto/umso“ + Komparativ + Verb an Position 2.'},
+            {t:'ex', de:'*Je* mehr man *übt*, *desto* sicherer *wird* man.', en:'The more you practise, the more confident you become.'}
+          ]},
+        { id:'n-dekl', title:'n-Deklination', en:'Weak masculine nouns (n-declension)', de:'Die n-Deklination',
+          blocks:[
+            {t:'p', en:'Some masculine nouns (der Kollege, der Kunde, der Junge, der Mensch, der Nachbar, der Herr) take -(e)n in every case except the nominative singular.', de:'Manche maskuline Nomen (der Kollege, der Kunde, der Junge, der Mensch, der Nachbar, der Herr) bekommen in allen Fällen außer Nominativ Singular ein -(e)n.'},
+            {t:'table', head:['Fall','Kollege','Kunde','Herr'], rows:[['Nominativ','der Kollege','der Kunde','der Herr'],['Akkusativ','den Kolleg*en*','den Kund*en*','den Herr*n*'],['Dativ','dem Kolleg*en*','dem Kund*en*','dem Herr*n*'],['Genitiv','des Kolleg*en*','des Kund*en*','des Herr*n*']]}
+          ]}
+      ],
+      quiz:[
+        mc('„Nimm etwas Bargeld mit, ___ die Karte nicht funktioniert.“',['weil','falls','obwohl','dass'],1,'für einen möglichen Fall → falls (Verb am Ende).'),
+        mc('„___ mehr ich lerne, ___ besser verstehe ich.“',['Wenn … dann','Je … desto','So … wie','Zwar … aber'],1,'the more … the more → Je … desto.'),
+        fil('Ergänze: „Je länger die Pause, ___ schwerer der Anfang.“','desto','je … desto.'),
+        mc('„Ich helfe ___ Kollegen.“ (Dativ, n-Deklination)',['dem Kollege','dem Kollegen','den Kollegen','der Kollege'],1,'n-Deklination Dativ → dem Kollegen.'),
+        mc('„Wir begrüßen ___ neuen Kunden.“ (Akkusativ)',['der','den','dem','des'],1,'Akkusativ + n-Deklination → den Kunden.'),
+        mc('Welcher Satz mit „je … desto“ ist korrekt?',['Je es wird kälter, desto ich friere.','Je kälter es wird, desto mehr friere ich.','Je kälter wird es, desto friere ich mehr.','Desto kälter, je mehr friere ich.'],1,'Je + Komparativ + Verb am Ende, desto + Komparativ + Verb an 2.'),
+        fil('n-Deklination Genitiv: „Das ist das Auto ___ Nachbarn.“ (der Nachbar)','des','Genitiv → des Nachbarn.'),
+        mc('„___ du Fragen hast, melde dich gern.“',['Falls','Weil','Trotzdem','Denn'],0,'möglicher Fall → Falls, Verb am Ende.'),
+        mc('„Je mehr Gäste kommen, ___ die Feier.“',['desto schöner wird','schöner desto wird','desto wird schöner','so schöner wird'],0,'desto + Komparativ + Verb: desto schöner wird.'),
+        mc('„Kennst du ___ Herrn Müller?“ (Akkusativ von „Herr“)',['der Herr','den Herr','den Herrn','dem Herrn'],2,'n-Deklination: den Herrn.')
+      ]
+    },
+    {
+      id:'b1-uk9', title:'Virtuelle Welt', subtitle:'während · nachdem · bevor · als ob',
+      color:'#7BC950', icon:'💻',
+      goals:['über digitale Medien sprechen','Abläufe und Zeitfolge beschreiben','irreale Vergleiche (als ob)'],
+      wortfelder:['Technik & Alltag','digitale Medien'],
+      grammar:[
+        { id:'temporal', title:'während / nachdem / bevor', en:'Temporal conjunctions', de:'Temporale Konjunktionen',
+          blocks:[
+            {t:'p', en:'während = while (same time), bevor = before, nachdem = after. Verb to the end. With „nachdem“ the clauses use different tenses (nachdem + past perfect, main clause simple past).', de:'während = gleichzeitig, bevor = vorher, nachdem = danach. Verb am Ende. Bei „nachdem“: Vorzeitigkeit (nachdem + Plusquamperfekt, Hauptsatz Präteritum).'},
+            {t:'ex', de:'*Nachdem* ich die Datei gespeichert *hatte*, schloss ich das Programm.', en:'After I had saved the file, I closed the program.'},
+            {t:'ex', de:'*Während* das Video *lädt*, mache ich Kaffee. · *Bevor* du *klickst*, lies die Anleitung.', en:'While the video loads, I make coffee. · Before you click, read the instructions.'}
+          ]},
+        { id:'als-ob', title:'„als ob“ (irrealer Vergleich)', en:'„as if“ (unreal comparison)', de:'„als ob“',
+          blocks:[
+            {t:'p', en:'„als ob“ = as if. It makes an unreal comparison, so the verb goes to the end and is in Konjunktiv II.', de:'„als ob“ = irrealer Vergleich; das Verb steht am Ende im Konjunktiv II.'},
+            {t:'ex', de:'Er tut so, *als ob* er alles *wüsste*.', en:'He acts as if he knew everything.'},
+            {t:'tip', h:'Kurzform ohne „ob“', body:'Auch möglich: „als“ + Verb direkt danach: „Er tut so, *als wüsste* er alles.“'}
+          ]}
+      ],
+      quiz:[
+        mc('„___ ich den Ordner kopiert hatte, löschte ich das Original.“',['Während','Bevor','Nachdem','Falls'],2,'Vorzeitigkeit → Nachdem (+ Plusquamperfekt).'),
+        mc('„___ das Programm lädt, lese ich die Nachrichten.“ (gleichzeitig)',['Nachdem','Während','Bevor','Obwohl'],1,'gleichzeitig → Während.'),
+        mc('„___ du etwas herunterlädst, prüfe die Quelle.“ (vorher)',['Bevor','Nachdem','Während','Weil'],0,'vorher → Bevor.'),
+        mc('„Er tut so, als ob er alles ___.“',['weiß','wusste','wüsste','gewusst'],2,'als ob + Konjunktiv II → wüsste.'),
+        fil('„Sie sieht aus, als ob sie krank ___.“ (sein, Konj. II)','wäre','als ob + Konjunktiv II → wäre.'),
+        mc('Welcher Satz ist korrekt?',['Nachdem ich gegessen habe, ich ging schlafen.','Nachdem ich gegessen hatte, ging ich schlafen.','Nachdem ich hatte gegessen, ging ich.','Nachdem gegessen ich hatte, ging schlafen.'],1,'nachdem + Plusquamperfekt; Hauptsatz Verb an Position 2.'),
+        mc('„___ du gehst, mach bitte den Computer aus.“ (vorher)',['Bevor','Nachdem','Als ob','Indem'],0,'vorher → Bevor.'),
+        fil('„Er gibt Geld aus, als ob er reich ___.“ (sein)','wäre','als ob + Konjunktiv II.'),
+        mc('„Das klingt, ___ ob es einfach wäre.“',['als','wie','so','dass'],0,'irrealer Vergleich → als ob.'),
+        mc('„___ ich telefoniere, kann ich nicht tippen.“ (gleichzeitig)',['Bevor','Während','Nachdem','Falls'],1,'gleichzeitig → Während.')
+      ]
+    },
+    {
+      id:'b1-uk10', title:'Werbung und Konsum', subtitle:'Relativsätze mit wo/was · Partizip Präsens',
+      color:'#FF7A59', icon:'🛒',
+      goals:['Produkte beschreiben','Werbung bewerten','Dinge näher beschreiben (Partizip I)'],
+      wortfelder:['Produkte & Werbung','Reklamation'],
+      grammar:[
+        { id:'wo-was', title:'Relativsätze mit „wo“ und „was“', en:'Relative clauses with „wo“ and „was“', de:'Relativsätze mit „wo“ und „was“',
+          blocks:[
+            {t:'p', en:'Use „was“ after alles, nichts, etwas, vieles, das, and to refer back to a whole clause. Use „wo“ to refer to a place.', de:'„was“ nach alles, nichts, etwas, vieles, das und für einen ganzen Satz. „wo“ für Orte.'},
+            {t:'ex', de:'Das ist alles, *was* ich brauche. · Er kam zu spät, *was* mich ärgerte. · Die Stadt, *wo* ich wohne, ist klein.', en:'That is all I need. · He came late, which annoyed me. · The town where I live is small.'}
+          ]},
+        { id:'partizip1', title:'Partizip Präsens als Adjektiv', en:'Present participle as adjective', de:'Partizip Präsens (Partizip I) als Adjektiv',
+          blocks:[
+            {t:'p', en:'Present participle = infinitive + d. Used as an adjective it takes normal endings and describes an ongoing, active thing.', de:'Partizip I = Infinitiv + d. Als Adjektiv bekommt es normale Endungen und beschreibt etwas Gleichzeitiges/Aktives.'},
+            {t:'ex', de:'der *wohltuende* Tee (der Tee, der wohltut) · *spielende* Kinder · das *laufende* Programm', en:'the soothing tea · playing children · the running program.'},
+            {t:'tip', h:'Zweiteilige Konjunktionen (Wiederholung)', body:'*sowohl … als auch* (both … and), *weder … noch* (neither … nor): sowohl lecker als auch gesund.'}
+          ]}
+      ],
+      quiz:[
+        mc('„Das ist alles, ___ ich weiß.“',['das','was','wo','wie'],1,'nach „alles“ → was.'),
+        mc('„Er hat gelogen, ___ mich sehr enttäuscht hat.“ (ganzer Satz)',['das','was','wo','dass'],1,'Bezug auf den ganzen Satz → was.'),
+        mc('„Die Stadt, ___ ich geboren bin, liegt im Süden.“',['die','was','wo','wohin'],2,'Ort → wo.'),
+        fil('Partizip I von „laufen“ als Adjektiv: das ___ Wasser','laufende','laufen + d + Endung → laufende.'),
+        mc('„___ Kinder spielen im Park.“ (spielen, Partizip I)',['Gespielte','Spielende','Spielend','Spielten'],1,'Partizip I → spielende Kinder.'),
+        mc('„Ich mag den ___ Tee.“ (wohltuend, Akk. maskulin)',['wohlgetanen','wohltuenden','wohltuend','wohlgetan'],1,'wohltuend + Endung → wohltuenden.'),
+        mc('„Es gibt nichts, ___ mich überrascht.“',['das','was','wo','dass'],1,'nach „nichts“ → was.'),
+        fil('„Das Haus, ___ wir gewohnt haben, wurde verkauft.“ (Ort)','wo','Ort → wo (oder „in dem“).'),
+        mc('Ein Partizip I als Adjektiv beschreibt etwas …',['Abgeschlossenes (Passiv)','Gleichzeitiges/Aktives','aus der Vergangenheit','als Befehl'],1,'Partizip I = aktiv, gleichzeitig.'),
+        mc('„Der Spot war ___ lustig ___ informativ.“ (both … and)',['weder … noch','sowohl … als auch','entweder … oder','zwar … aber'],1,'both … and → sowohl … als auch.')
+      ]
+    },
+    {
+      id:'b1-uk11', title:'Miteinander', subtitle:'Futur I · Konjunktion „da“',
+      color:'#F5C451', icon:'🤝',
+      goals:['Vermutungen und Vorhersagen (Futur I)','über Umgangsformen sprechen','Gründe mit „da“'],
+      wortfelder:['Regeln & Umgangsformen','Straßenverkehr'],
+      grammar:[
+        { id:'futur1', title:'Futur I', en:'Future tense (Futur I)', de:'Das Futur I',
+          blocks:[
+            {t:'p', en:'Futur I = „werden“ (position 2) + infinitive (at the end). Used for the future, predictions and assumptions (often with „wohl“).', de:'Futur I = „werden“ + Infinitiv. Für Zukunft, Vorhersagen und Vermutungen (oft mit „wohl“).'},
+            {t:'ex', de:'Morgen *wird* es *regnen*. · Das *wird* schon *klappen*. · Sie *wird* wohl im Stau *stehen*.', en:'It will rain tomorrow. · It will work out. · She is probably stuck in traffic.'}
+          ]},
+        { id:'da', title:'Konjunktion „da“', en:'The conjunction „da“ (as / since)', de:'Die Konjunktion „da“',
+          blocks:[
+            {t:'p', en:'„da“ means „because/since“ (like weil) and often gives a known reason, frequently at the start of the sentence. Verb to the end.', de:'„da“ = weil; nennt oft einen bekannten Grund, häufig am Satzanfang. Verb am Ende.'},
+            {t:'ex', de:'*Da* ich krank *war*, blieb ich zu Hause.', en:'Since I was ill, I stayed home.'}
+          ]}
+      ],
+      quiz:[
+        mc('Futur I: „Morgen ___ ich dich ___.“ (besuchen)',['werde … besuchen','bin … besucht','habe … besucht','wurde … besuchen'],0,'werden + Infinitiv → werde … besuchen.'),
+        mc('„Das ___ schon klappen.“ (Vermutung)',['wird','ist','hat','war'],0,'Vermutung/Zukunft → wird.'),
+        fil('„Sie ___ wohl im Stau stehen.“ (werden)','wird','Vermutung → wird.'),
+        mc('„___ ich müde war, ging ich früh ins Bett.“ (bekannter Grund)',['Da','Ob','Dass','Trotzdem'],0,'Grund → Da (Verb am Ende).'),
+        mc('Welcher Satz steht im Futur I?',['Ich habe gelernt.','Ich lerne.','Ich werde lernen.','Ich lernte.'],2,'werden + Infinitiv.'),
+        mc('„___ das Wetter schlecht ist, bleiben wir drinnen.“',['Da','Als','Ob','Damit'],0,'Grund → Da.'),
+        fil('Futur I von „gehen“ (wir): Wir ___ morgen spazieren ___.','werden … gehen','werden + Infinitiv.'),
+        mc('„Er wird jetzt sofort ___.“ (weggehen)',['weggegangen','weggehen','geht weg','ging weg'],1,'Futur I: werden + Infinitiv (weggehen).'),
+        mc('„da“ und „weil“ …',['sind ganz verschieden','nennen beide einen Grund; Verb am Ende','stehen mit Verb an Position 2','brauchen kein Komma'],1,'da = weil (Grund, Verb am Ende).'),
+        mc('„Morgen ___ es bestimmt schön.“ (Vorhersage)',['wird','wäre','würde','ist geworden'],0,'Vorhersage → wird.')
+      ]
+    },
+    {
+      id:'b1-uk12', title:'Soziales Engagement', subtitle:'seit · bis · indem · ohne … zu · außer',
+      color:'#0EA5A0', icon:'🙌',
+      goals:['über Vereine und Ehrenamt sprechen','Mittel und Weg (indem)','Ausnahmen (außer)'],
+      wortfelder:['Vereine & Engagement','Ehrenamt'],
+      grammar:[
+        { id:'seit-bis-indem', title:'seit/seitdem · bis · indem', en:'since · until · by (means)', de:'seit/seitdem · bis · indem',
+          blocks:[
+            {t:'p', en:'seit/seitdem = since (a point in time), bis = until, indem = by …-ing (it names the method: how?). Verb to the end.', de:'seit/seitdem = seit einem Zeitpunkt, bis = bis wann, indem = Mittel/Methode (wie?). Verb am Ende.'},
+            {t:'ex', de:'*Seitdem* ich im Verein *bin*, habe ich viele Freunde. · Warte, *bis* der Film *endet*. · Man hilft, *indem* man Zeit *spendet*.', en:'Since I joined the club I have many friends. · Wait until the film ends. · You help by donating time.'}
+          ]},
+        { id:'ohne-ausser', title:'ohne … zu / ohne dass · außer + Dativ', en:'without …-ing · except (+ dative)', de:'ohne … zu / ohne dass · außer + Dativ',
+          blocks:[
+            {t:'p', en:'„ohne … zu“ + infinitive when the subject is the same; „ohne dass“ when the subjects differ. „außer“ + Dative = except.', de:'„ohne … zu“ bei gleichem Subjekt; „ohne dass“ bei verschiedenem Subjekt. „außer“ + Dativ = außer.'},
+            {t:'ex', de:'Er ging, *ohne* sich *zu verabschieden*. · Sie half, *ohne dass* jemand *fragte*. · Alle kamen, *außer meinem Bruder*.', en:'He left without saying goodbye. · She helped without anyone asking. · Everyone came except my brother.'}
+          ]}
+      ],
+      quiz:[
+        mc('„Man lernt eine Sprache, ___ man sie täglich benutzt.“ (Methode)',['weil','indem','damit','obwohl'],1,'Mittel/Methode → indem.'),
+        mc('„___ ich hier wohne, fühle ich mich wohl.“ (seit einem Zeitpunkt)',['Seitdem','Bis','Indem','Falls'],0,'Zeitpunkt → Seitdem.'),
+        mc('„Wir warten, ___ der Bus kommt.“',['seit','bis','indem','ohne'],1,'bis = until.'),
+        mc('„Er ging weg, ___ etwas zu sagen.“',['ohne','außer','indem','bis'],0,'gleiches Subjekt → ohne … zu.'),
+        mc('„Alle waren da, ___ meiner Schwester.“ (except, + Dativ)',['ohne','außer','bis','seit'],1,'außer + Dativ.'),
+        fil('„Sie half, ___ dass jemand sie darum bat.“','ohne','verschiedene Subjekte → ohne dass.'),
+        mc('„Du erreichst viel, ___ du jeden Tag ein bisschen tust.“',['obwohl','indem','damit','bis'],1,'Methode → indem.'),
+        mc('„___ meinem Freund kannten alle den Weg.“',['Ohne','Außer','Seit','Bis'],1,'außer + Dativ = except.'),
+        fil('„___ ich Sport mache, schlafe ich besser.“ (seit einem Zeitpunkt)','Seitdem','Seitdem/Seit.'),
+        mc('Welcher Satz ist korrekt?',['Er ging, ohne dass zu grüßen.','Er ging, ohne zu grüßen.','Er ging, ohne grüßen zu.','Er ging, ohne er grüßte.'],1,'gleiches Subjekt → ohne … zu + Infinitiv am Ende.')
+      ]
+    },
+    {
+      id:'b1-uk13', title:'Aus Politik und Geschichte', subtitle:'Passiv Perfekt & Präteritum · Adjektivdeklination',
+      color:'#8B5CF6', icon:'🏛️',
+      goals:['über Geschichte berichten','Passiv in der Vergangenheit','vergleichen (Komparativ/Superlativ)'],
+      wortfelder:['Politik & Gesellschaft','deutsche Geschichte'],
+      grammar:[
+        { id:'passiv-verg', title:'Passiv Perfekt & Präteritum', en:'Passive: perfect & simple past', de:'Passiv Perfekt und Präteritum',
+          blocks:[
+            {t:'p', en:'Past passive: Präteritum = „wurde“ + Partizip II; Perfekt = „ist … worden“ (note: worden, not geworden).', de:'Passiv Vergangenheit: Präteritum = „wurde“ + Partizip II; Perfekt = „ist … worden“ (nicht geworden).'},
+            {t:'table', head:['Zeit','Aktiv','Passiv'], rows:[['Präteritum','Man wählte sie.','Sie *wurde* gewählt.'],['Perfekt','Man hat sie gewählt.','Sie *ist* gewählt *worden*.']]},
+            {t:'ex', de:'1990 *wurde* Deutschland *vereinigt*. · Der Verein *ist* 1975 *gegründet worden*.', en:'In 1990 Germany was unified. · The club was founded in 1975.'}
+          ]},
+        { id:'adj-komp', title:'Adjektivdeklination im Komparativ/Superlativ', en:'Comparative/superlative adjective endings', de:'Adjektivdeklination im Komparativ und Superlativ',
+          blocks:[
+            {t:'p', en:'Comparative and superlative adjectives before a noun still take the normal adjective endings.', de:'Komparativ und Superlativ vor dem Nomen bekommen die normalen Adjektivendungen.'},
+            {t:'ex', de:'ein *größerer* Teil · der *größte* Teil · die *bessere* Lösung · das *schönste* Land', en:'a bigger part · the biggest part · the better solution · the most beautiful country.'}
+          ]}
+      ],
+      quiz:[
+        mc('Passiv Präteritum: „Das Gesetz ___ 2020 geändert.“',['ist','wurde','hat','war'],1,'wurde + Partizip.'),
+        mc('Passiv Perfekt: „Die Mauer ist 1989 geöffnet ___.“',['geworden','worden','wurden','werden'],1,'Passiv Perfekt → worden.'),
+        fil('Passiv Präteritum: „Sie ___ zur Bürgermeisterin gewählt.“','wurde','wurde + Partizip.'),
+        mc('„1949 ___ die Bundesrepublik gegründet.“ (Passiv Prät.)',['ist','wurde','hat','war'],1,'wurde gegründet.'),
+        mc('„ein ___ Teil der Menschen“ (groß, Komparativ, Nominativ)',['größer','größerer','größten','großer'],1,'Komparativ + Endung → größerer.'),
+        mc('„der ___ Teil“ (groß, Superlativ)',['größere','größte','größer','größten'],1,'Superlativ maskulin Nom. → der größte.'),
+        fil('Passiv Perfekt: „Das Haus ist renoviert ___.“','worden','ist … worden.'),
+        mc('„Wir suchen die ___ Lösung.“ (gut, Komparativ, Akk. feminin)',['besser','bessere','beste','besten'],1,'Komparativ + Endung → bessere.'),
+        mc('Welche Passiv-Perfekt-Form ist richtig?',['Es ist gebaut geworden.','Es ist gebaut worden.','Es hat gebaut worden.','Es wurde gebaut worden.'],1,'ist … worden.'),
+        mc('„das ___ Land der Welt“ (schön, Superlativ, neutral)',['schönere','schönste','schönsten','schöner'],1,'Superlativ neutral → das schönste.')
+      ]
+    },
+    {
+      id:'b1-uk14', title:'Alte und neue Heimat', subtitle:'Wortbildung · Verben mit Präpositionen (Wiederholung)',
+      color:'#EC4899', icon:'🌍',
+      goals:['über Heimat und Migration sprechen','lange Nomen bilden','Präpositionaladverbien (daran, woran)'],
+      wortfelder:['Heimat & Migration','Europa'],
+      grammar:[
+        { id:'wortbildung', title:'Wortbildung: zusammengesetzte Nomen', en:'Compound nouns', de:'Wortbildung: zusammengesetzte Nomen',
+          blocks:[
+            {t:'p', en:'German builds long nouns by joining words. The LAST word decides the gender and the core meaning; the earlier words describe it. Often a linking -s- appears.', de:'Deutsch bildet lange Nomen durch Zusammensetzen. Das LETZTE Wort bestimmt Genus und Grundbedeutung; oft mit Fugen-s.'},
+            {t:'ex', de:'das Volk + s + das Fest = *das Volksfest* · die Arbeit + s + der Platz = *der Arbeitsplatz* · der Garten + das Haus = *das Gartenhaus*', en:'folk + festival = folk festival · work + place = workplace · garden + house = garden house.'},
+            {t:'tip', h:'Merke', body:'Das Genus richtet sich immer nach dem *letzten* Nomen.'}
+          ]},
+        { id:'verb-praep-wh', title:'Verben mit Präpositionen & Präpositionaladverbien', en:'Verbs + prepositions (revision)', de:'Verben mit Präpositionen (Wiederholung)',
+          blocks:[
+            {t:'p', en:'Many verbs need a fixed preposition. For things use da(r)+preposition; ask with wo(r)+preposition. For people use the preposition + a pronoun.', de:'Viele Verben brauchen eine feste Präposition. Sachen: da(r)+Präp; Frage wo(r)+Präp. Personen: Präposition + Pronomen.'},
+            {t:'ex', de:'denken *an* → *daran* → *Woran* denkst du? · sich freuen *auf* → *darauf* · warten *auf* → *worauf*', en:'to think of → of it → What are you thinking of? · to look forward to → to it · to wait for → for what.'}
+          ]}
+      ],
+      quiz:[
+        mc('„das Volk + das Fest“ = ?',['das Volkfest','das Volksfest','der Volksfest','die Volksfest'],1,'Fugen-s → das Volksfest (Genus = Fest).'),
+        mc('Welches Genus hat „der Arbeitsplatz“?',['von „Arbeit“ (die)','von „Platz“ (der)','vom Fugen-s','egal'],1,'Genus = letztes Nomen (der Platz).'),
+        fil('„das Haus + die Tür“ → die ___','Haustür','Genus = Tür (feminin) → die Haustür.'),
+        mc('„Woran denkst du?“ – „___.“ (an die Prüfung)',['Daran','An sie','Darauf','Woran'],0,'Sache → daran.'),
+        mc('„Auf wen wartest du?“ – „___.“ (Person)',['Darauf','Auf ihn','Worauf','Aufihn'],1,'Person → Präposition + Pronomen: Auf ihn.'),
+        fil('„sich freuen auf“ → „Ich freue mich ___.“ (auf den Urlaub)','darauf','Sache → darauf.'),
+        mc('„___ interessierst du dich?“ (nach einer Sache)',['Wofür','Für wen','Woran','Für was'],0,'Sache + für → Wofür.'),
+        mc('„der Garten + das Haus“ = ?',['die Gartenhaus','der Gartenhaus','das Gartenhaus','das Gartenshaus'],2,'Genus = Haus (neutral), kein Fugen-s → das Gartenhaus.'),
+        fil('Frage nach einer Sache: „___ denkst du?“ (denken an)','Woran','wo(r)+an → Woran.'),
+        mc('„das Land + die Sprache“ = ?',['die Landessprache','der Landessprache','das Landsprache','die Landsprache'],0,'Fugen-es → die Landessprache (Genus = Sprache).')
       ]
     }
   ]
@@ -1620,6 +1847,137 @@ export const VOCAB = [
     {de:'sauber', en:'clean'},
     {de:'ordentlich', en:'tidy'}
   ]}
+,
+  { id:'voc-uk8', moduleId:'b1-uk8', title:'Unter Kollegen', cards:[
+    {de:'der Kollege, -n', en:'colleague (male)'},{de:'die Kollegin, -nen', en:'colleague (female)'},
+    {de:'der Chef, -s', en:'boss'},{de:'die Abteilung, -en', en:'department'},{de:'das Team, -s', en:'team'},
+    {de:'die Zusammenarbeit (Sg.)', en:'cooperation'},{de:'das Betriebsklima (Sg.)', en:'working atmosphere'},
+    {de:'der Arbeitsauftrag, ¨-e', en:'work assignment'},{de:'die Aufgabe, -n', en:'task'},
+    {de:'die Besprechung, -en', en:'meeting'},{de:'das Meeting, -s', en:'meeting'},{de:'der Termin, -e', en:'appointment'},
+    {de:'die Absprache, -n', en:'arrangement'},{de:'der Vorschlag, ¨-e', en:'suggestion'},{de:'die Kritik (Sg.)', en:'criticism'},
+    {de:'das Lob (Sg.)', en:'praise'},{de:'der Konflikt, -e', en:'conflict'},{de:'das Missverständnis, -se', en:'misunderstanding'},
+    {de:'die Höflichkeit (Sg.)', en:'politeness'},{de:'der Respekt (Sg.)', en:'respect'},{de:'das Vertrauen (Sg.)', en:'trust'},
+    {de:'die Verantwortung, -en', en:'responsibility'},{de:'die Pause, -n', en:'break'},{de:'die Kantine, -n', en:'canteen'},
+    {de:'der Feierabend, -e', en:'end of the workday'},{de:'die Überstunde, -n', en:'overtime hour'},
+    {de:'der Vorgesetzte, -n', en:'superior, manager'},{de:'der Mitarbeiter, -', en:'employee, co-worker'},
+    {de:'die Kommunikation (Sg.)', en:'communication'},{de:'die Anweisung, -en', en:'instruction'},
+    {de:'die Unterstützung (Sg.)', en:'support'},{de:'sich melden', en:'to get in touch'},{de:'siezen', en:'to address formally (Sie)'},
+    {de:'duzen', en:'to address informally (du)'},{de:'ablehnen', en:'to decline'},{de:'annehmen', en:'to accept'},
+    {de:'erledigen', en:'to get done, handle'},{de:'sich kümmern um', en:'to take care of'},{de:'sich einigen', en:'to agree'},
+    {de:'nachfragen', en:'to ask, to enquire'},{de:'zusammenarbeiten', en:'to work together'},{de:'unterstützen', en:'to support'},
+    {de:'kritisieren', en:'to criticize'},{de:'loben', en:'to praise'},{de:'höflich', en:'polite'},{de:'unhöflich', en:'impolite'},
+    {de:'zuverlässig', en:'reliable'},{de:'pünktlich', en:'punctual'},{de:'freundlich', en:'friendly'},{de:'kompetent', en:'competent'}
+  ]},
+  { id:'voc-uk9', moduleId:'b1-uk9', title:'Virtuelle Welt', cards:[
+    {de:'das Internet (Sg.)', en:'internet'},{de:'die Website, -s', en:'website'},{de:'die App, -s', en:'app'},
+    {de:'das Programm, -e', en:'program'},{de:'die Software (Sg.)', en:'software'},{de:'die Datei, -en', en:'file'},
+    {de:'der Ordner, -', en:'folder'},{de:'das Passwort, ¨-er', en:'password'},{de:'der Benutzer, -', en:'user'},
+    {de:'das Konto, Konten', en:'account'},{de:'die E-Mail, -s', en:'email'},{de:'die Nachricht, -en', en:'message'},
+    {de:'der Anhang, ¨-e', en:'attachment'},{de:'der Link, -s', en:'link'},{de:'die Suchmaschine, -n', en:'search engine'},
+    {de:'das Netzwerk, -e', en:'network'},{de:'das WLAN (Sg.)', en:'wifi'},{de:'die Verbindung, -en', en:'connection'},
+    {de:'das Gerät, -e', en:'device'},{de:'der Bildschirm, -e', en:'screen'},{de:'die Tastatur, -en', en:'keyboard'},
+    {de:'die Maus, ¨-e', en:'mouse'},{de:'das Smartphone, -s', en:'smartphone'},{de:'das Tablet, -s', en:'tablet'},
+    {de:'der Akku, -s', en:'battery'},{de:'die Kamera, -s', en:'camera'},{de:'das Update, -s', en:'update'},
+    {de:'die Einstellung, -en', en:'setting'},{de:'die Daten (Pl.)', en:'data'},{de:'der Datenschutz (Sg.)', en:'data protection'},
+    {de:'die Sicherheit (Sg.)', en:'security'},{de:'das Video, -s', en:'video'},{de:'das Foto, -s', en:'photo'},
+    {de:'der Chat, -s', en:'chat'},{de:'die sozialen Medien (Pl.)', en:'social media'},{de:'die Werbung, -en', en:'advertising'},
+    {de:'herunterladen', en:'to download'},{de:'hochladen', en:'to upload'},{de:'installieren', en:'to install'},
+    {de:'speichern', en:'to save'},{de:'löschen', en:'to delete'},{de:'klicken', en:'to click'},{de:'tippen', en:'to type'},
+    {de:'sich anmelden', en:'to log in'},{de:'sich abmelden', en:'to log out'},{de:'teilen', en:'to share'},
+    {de:'senden', en:'to send'},{de:'empfangen', en:'to receive'},{de:'online', en:'online'},{de:'digital', en:'digital'}
+  ]},
+  { id:'voc-uk10', moduleId:'b1-uk10', title:'Werbung und Konsum', cards:[
+    {de:'die Werbung, -en', en:'advertising'},{de:'der Werbespot, -s', en:'commercial, ad'},{de:'die Anzeige, -n', en:'advert'},
+    {de:'das Angebot, -e', en:'offer'},{de:'der Rabatt, -e', en:'discount'},{de:'der Preis, -e', en:'price'},
+    {de:'das Sonderangebot, -e', en:'special offer'},{de:'der Verkauf, ¨-e', en:'sale'},{de:'der Kauf, ¨-e', en:'purchase'},
+    {de:'der Kunde, -n', en:'customer'},{de:'der Verbraucher, -', en:'consumer'},{de:'der Konsum (Sg.)', en:'consumption'},
+    {de:'das Produkt, -e', en:'product'},{de:'die Ware, -n', en:'goods'},{de:'die Marke, -n', en:'brand'},
+    {de:'die Qualität (Sg.)', en:'quality'},{de:'die Garantie, -n', en:'guarantee'},{de:'die Rechnung, -en', en:'invoice'},
+    {de:'der Kassenbon, -s', en:'receipt'},{de:'die Reklamation, -en', en:'complaint'},{de:'die Beschwerde, -n', en:'complaint'},
+    {de:'der Umtausch (Sg.)', en:'exchange'},{de:'die Rückgabe, -n', en:'return'},{de:'die Lieferung, -en', en:'delivery'},
+    {de:'das Geschäft, -e', en:'shop'},{de:'der Supermarkt, ¨-e', en:'supermarket'},{de:'das Kaufhaus, ¨-er', en:'department store'},
+    {de:'der Onlineshop, -s', en:'online shop'},{de:'der Warenkorb, ¨-e', en:'shopping cart'},{de:'die Bestellung, -en', en:'order'},
+    {de:'die Rate, -n', en:'instalment'},{de:'die Schulden (Pl.)', en:'debts'},{de:'das Budget, -s', en:'budget'},
+    {de:'das Bedürfnis, -se', en:'need'},{de:'die Verpackung, -en', en:'packaging'},{de:'werben', en:'to advertise'},
+    {de:'kaufen', en:'to buy'},{de:'verkaufen', en:'to sell'},{de:'bestellen', en:'to order'},{de:'liefern', en:'to deliver'},
+    {de:'reklamieren', en:'to make a complaint'},{de:'umtauschen', en:'to exchange'},{de:'zurückgeben', en:'to return'},
+    {de:'sparen', en:'to save (money)'},{de:'ausgeben', en:'to spend'},{de:'vergleichen', en:'to compare'},
+    {de:'teuer', en:'expensive'},{de:'billig', en:'cheap'},{de:'günstig', en:'affordable'},{de:'nachhaltig', en:'sustainable'}
+  ]},
+  { id:'voc-uk11', moduleId:'b1-uk11', title:'Miteinander', cards:[
+    {de:'die Umgangsform, -en', en:'manners, etiquette'},{de:'das Benehmen (Sg.)', en:'behaviour'},{de:'die Regel, -n', en:'rule'},
+    {de:'die Höflichkeit (Sg.)', en:'politeness'},{de:'der Respekt (Sg.)', en:'respect'},{de:'die Rücksicht (Sg.)', en:'consideration'},
+    {de:'die Toleranz (Sg.)', en:'tolerance'},{de:'die Gewohnheit, -en', en:'habit'},{de:'die Vermutung, -en', en:'assumption'},
+    {de:'das Versprechen, -', en:'promise'},{de:'die Ausrede, -n', en:'excuse'},{de:'die Entschuldigung, -en', en:'apology'},
+    {de:'der Vorwurf, ¨-e', en:'reproach'},{de:'das Vertrauen (Sg.)', en:'trust'},{de:'die Ehrlichkeit (Sg.)', en:'honesty'},
+    {de:'der Streit, -e', en:'argument'},{de:'die Versöhnung (Sg.)', en:'reconciliation'},{de:'das Vorbild, -er', en:'role model'},
+    {de:'der Straßenverkehr (Sg.)', en:'road traffic'},{de:'der Fußgänger, -', en:'pedestrian'},{de:'der Radfahrer, -', en:'cyclist'},
+    {de:'die Ampel, -n', en:'traffic light'},{de:'der Zebrastreifen, -', en:'zebra crossing'},{de:'das Verkehrsschild, -er', en:'road sign'},
+    {de:'die Vorfahrt (Sg.)', en:'right of way'},{de:'das Tempolimit, -s', en:'speed limit'},{de:'der Stau, -s', en:'traffic jam'},
+    {de:'die Geschwindigkeit, -en', en:'speed'},{de:'die Sicherheit (Sg.)', en:'safety'},{de:'die Strafe, -n', en:'penalty'},
+    {de:'das Bußgeld, -er', en:'fine'},{de:'sich benehmen', en:'to behave'},{de:'sich entschuldigen', en:'to apologize'},
+    {de:'grüßen', en:'to greet'},{de:'versprechen', en:'to promise'},{de:'vermuten', en:'to assume'},{de:'sich verhalten', en:'to behave'},
+    {de:'beleidigen', en:'to insult'},{de:'respektieren', en:'to respect'},{de:'Rücksicht nehmen', en:'to be considerate'},
+    {de:'überholen', en:'to overtake'},{de:'bremsen', en:'to brake'},{de:'anhalten', en:'to stop'},{de:'beachten', en:'to observe, heed'},
+    {de:'pünktlich', en:'punctual'},{de:'rücksichtsvoll', en:'considerate'},{de:'aufmerksam', en:'attentive'},
+    {de:'verboten', en:'forbidden'},{de:'erlaubt', en:'allowed'},{de:'unhöflich', en:'rude'}
+  ]},
+  { id:'voc-uk12', moduleId:'b1-uk12', title:'Soziales Engagement', cards:[
+    {de:'das Engagement (Sg.)', en:'commitment, involvement'},{de:'das Ehrenamt, ¨-er', en:'honorary post'},
+    {de:'der/die Ehrenamtliche, -n', en:'volunteer'},{de:'der Verein, -e', en:'club, association'},{de:'das Mitglied, -er', en:'member'},
+    {de:'die Mitgliedschaft, -en', en:'membership'},{de:'die Organisation, -en', en:'organization'},{de:'die Initiative, -n', en:'initiative'},
+    {de:'die Gemeinschaft, -en', en:'community'},{de:'die Gesellschaft, -en', en:'society'},{de:'die Hilfe, -n', en:'help'},
+    {de:'die Unterstützung (Sg.)', en:'support'},{de:'die Spende, -n', en:'donation'},{de:'die Sammlung, -en', en:'collection'},
+    {de:'das Projekt, -e', en:'project'},{de:'die Aktion, -en', en:'campaign, event'},{de:'die Veranstaltung, -en', en:'event'},
+    {de:'die Demonstration, -en', en:'demonstration'},{de:'die Petition, -en', en:'petition'},{de:'die Solidarität (Sg.)', en:'solidarity'},
+    {de:'die Nachbarschaftshilfe (Sg.)', en:'neighbourly help'},{de:'das Flüchtlingsheim, -e', en:'refugee shelter'},
+    {de:'die Tafel, -n', en:'food bank'},{de:'die Umwelt (Sg.)', en:'environment'},{de:'der Umweltschutz (Sg.)', en:'environmental protection'},
+    {de:'die Freiwilligenarbeit (Sg.)', en:'volunteer work'},{de:'der Zusammenhalt (Sg.)', en:'cohesion, solidarity'},
+    {de:'das Gewissen (Sg.)', en:'conscience'},{de:'die Verantwortung, -en', en:'responsibility'},{de:'die Pflicht, -en', en:'duty'},
+    {de:'sich engagieren', en:'to get involved'},{de:'sich einsetzen für', en:'to stand up for'},{de:'helfen', en:'to help'},
+    {de:'unterstützen', en:'to support'},{de:'spenden', en:'to donate'},{de:'sammeln', en:'to collect'},{de:'teilnehmen', en:'to take part'},
+    {de:'organisieren', en:'to organize'},{de:'gründen', en:'to found'},{de:'beitreten', en:'to join'},{de:'sich beteiligen', en:'to participate'},
+    {de:'ehrenamtlich', en:'voluntary, honorary'},{de:'sozial', en:'social'},{de:'gemeinnützig', en:'non-profit'},
+    {de:'hilfsbereit', en:'helpful'},{de:'großzügig', en:'generous'},{de:'aktiv', en:'active'},{de:'freiwillig', en:'voluntary'},
+    {de:'verantwortlich', en:'responsible'},{de:'engagiert', en:'committed, dedicated'}
+  ]},
+  { id:'voc-uk13', moduleId:'b1-uk13', title:'Aus Politik und Geschichte', cards:[
+    {de:'die Politik (Sg.)', en:'politics'},{de:'der Politiker, -', en:'politician'},{de:'die Regierung, -en', en:'government'},
+    {de:'der Staat, -en', en:'state'},{de:'das Land, ¨-er', en:'country'},{de:'die Demokratie, -n', en:'democracy'},
+    {de:'die Diktatur, -en', en:'dictatorship'},{de:'die Freiheit, -en', en:'freedom'},{de:'das Recht, -e', en:'right, law'},
+    {de:'das Gesetz, -e', en:'law'},{de:'die Verfassung, -en', en:'constitution'},{de:'das Grundgesetz (Sg.)', en:'Basic Law'},
+    {de:'die Wahl, -en', en:'election'},{de:'die Partei, -en', en:'(political) party'},{de:'die Stimme, -n', en:'vote'},
+    {de:'der Bürger, -', en:'citizen'},{de:'das Parlament, -e', en:'parliament'},{de:'der Bundestag (Sg.)', en:'German federal parliament'},
+    {de:'der Kanzler, -', en:'chancellor'},{de:'der Präsident, -en', en:'president'},{de:'der Minister, -', en:'minister'},
+    {de:'die Opposition (Sg.)', en:'opposition'},{de:'die Mehrheit, -en', en:'majority'},{de:'die Minderheit, -en', en:'minority'},
+    {de:'die Geschichte, -n', en:'history'},{de:'die Vergangenheit (Sg.)', en:'past'},{de:'der Krieg, -e', en:'war'},
+    {de:'der Frieden (Sg.)', en:'peace'},{de:'die Mauer, -n', en:'wall'},{de:'die Wiedervereinigung (Sg.)', en:'reunification'},
+    {de:'die Grenze, -n', en:'border'},{de:'die Nation, -en', en:'nation'},{de:'die Europäische Union', en:'European Union'},
+    {de:'die Gesellschaft, -en', en:'society'},{de:'die Meinung, -en', en:'opinion'},{de:'die Rede, -n', en:'speech'},
+    {de:'die Macht, ¨-e', en:'power'},{de:'wählen', en:'to vote, to elect'},{de:'regieren', en:'to govern'},
+    {de:'abstimmen', en:'to vote (on)'},{de:'demonstrieren', en:'to demonstrate'},{de:'sich informieren', en:'to inform oneself'},
+    {de:'diskutieren', en:'to discuss'},{de:'entscheiden', en:'to decide'},{de:'kämpfen für', en:'to fight for'},
+    {de:'politisch', en:'political'},{de:'historisch', en:'historical'},{de:'frei', en:'free'},{de:'gerecht', en:'just, fair'},{de:'die Debatte, -n', en:'debate'}
+  ]},
+  { id:'voc-uk14', moduleId:'b1-uk14', title:'Alte und neue Heimat', cards:[
+    {de:'die Heimat, -en', en:'home, homeland'},{de:'das Heimatland, ¨-er', en:'home country'},{de:'das Ausland (Sg.)', en:'abroad'},
+    {de:'der Ausländer, -', en:'foreigner'},{de:'die Herkunft, ¨-e', en:'origin'},{de:'die Wurzeln (Pl.)', en:'roots'},
+    {de:'die Migration (Sg.)', en:'migration'},{de:'der Migrant, -en', en:'migrant'},{de:'der/die Geflüchtete, -n', en:'refugee'},
+    {de:'die Integration (Sg.)', en:'integration'},{de:'die Staatsangehörigkeit, -en', en:'nationality'},
+    {de:'die Staatsbürgerschaft, -en', en:'citizenship'},{de:'der Pass, ¨-e', en:'passport'},
+    {de:'die Aufenthaltserlaubnis, -se', en:'residence permit'},{de:'die Einbürgerung, -en', en:'naturalization'},
+    {de:'die Kultur, -en', en:'culture'},{de:'die Tradition, -en', en:'tradition'},{de:'die Sprache, -n', en:'language'},
+    {de:'die Muttersprache, -n', en:'mother tongue'},{de:'die Identität, -en', en:'identity'},{de:'die Gesellschaft, -en', en:'society'},
+    {de:'die Vielfalt (Sg.)', en:'diversity'},{de:'die Toleranz (Sg.)', en:'tolerance'},{de:'das Heimweh (Sg.)', en:'homesickness'},
+    {de:'die Sehnsucht, ¨-e', en:'longing'},{de:'die Erinnerung, -en', en:'memory'},{de:'die Zukunft (Sg.)', en:'future'},
+    {de:'die Chance, -n', en:'opportunity'},{de:'das Zuhause (Sg.)', en:'home'},{de:'der Nachbar, -n', en:'neighbour'},
+    {de:'die Gemeinschaft, -en', en:'community'},{de:'Europa', en:'Europe'},{de:'der Kontinent, -e', en:'continent'},
+    {de:'die Grenze, -n', en:'border'},{de:'die Fremde (Sg.)', en:'foreign parts'},{de:'die Anpassung, -en', en:'adaptation'},
+    {de:'auswandern', en:'to emigrate'},{de:'einwandern', en:'to immigrate'},{de:'fliehen', en:'to flee'},
+    {de:'sich integrieren', en:'to integrate'},{de:'sich anpassen', en:'to adapt'},{de:'sich fühlen', en:'to feel'},
+    {de:'vermissen', en:'to miss'},{de:'ankommen', en:'to arrive'},{de:'bleiben', en:'to stay'},{de:'zurückkehren', en:'to return'},
+    {de:'fremd', en:'foreign, strange'},{de:'vertraut', en:'familiar'},{de:'willkommen', en:'welcome'},{de:'multikulturell', en:'multicultural'}
+  ]}
 ];
 
 /* =====================================================================
@@ -1641,3 +1999,35 @@ export const ACHIEVEMENTS = [
   { id:'half',       icon:'⛰️', title:'Halfway up',      desc:'Complete 50% of the course.' },
   { id:'graduate',   icon:'🏆', title:'Exam-ready',      desc:'Pass every chapter!' }
 ];
+
+/* =====================================================================
+   REDEWENDUNGEN, vivid German idioms that impress in real conversation.
+   Each: de (idiom), lit (word-for-word), meaning, ex (German sentence), ex_en.
+   ===================================================================== */
+export const IDIOMS = [
+  { de:"die Kuh vom Eis holen", lit:"to get the cow off the ice", meaning:"to resolve a difficult, urgent situation", ex:"Nach langen Verhandlungen haben wir endlich die Kuh vom Eis geholt.", ex_en:"After long negotiations we finally got the tricky situation sorted out." },
+  { de:"den Nagel auf den Kopf treffen", lit:"to hit the nail on the head", meaning:"to say exactly the right thing", ex:"Mit deiner Analyse hast du den Nagel auf den Kopf getroffen.", ex_en:"You hit the nail on the head with your analysis." },
+  { de:"ins Fettnäpfchen treten", lit:"to step into the little bowl of fat", meaning:"to put your foot in it, to commit a faux pas", ex:"Mit der Frage nach ihrem Gehalt bin ich ins Fettnäpfchen getreten.", ex_en:"I put my foot in it by asking about her salary." },
+  { de:"die Nase voll haben", lit:"to have the nose full", meaning:"to be fed up with something", ex:"Ich habe die Nase voll von den ständigen Ausreden.", ex_en:"I'm fed up with the constant excuses." },
+  { de:"jemandem auf den Keks gehen", lit:"to go on someone's biscuit", meaning:"to get on someone's nerves", ex:"Sein lautes Kauen geht mir echt auf den Keks.", ex_en:"His loud chewing really gets on my nerves." },
+  { de:"die Katze im Sack kaufen", lit:"to buy the cat in the sack", meaning:"to buy something without checking it first", ex:"Ohne Probefahrt kaufe ich kein Auto, ich will nicht die Katze im Sack kaufen.", ex_en:"I won't buy a car without a test drive; I don't want to buy a pig in a poke." },
+  { de:"Schwein haben", lit:"to have pig", meaning:"to get lucky, to be fortunate", ex:"Der Zug war schon weg, aber ich hatte Schwein und ein Bus kam sofort.", ex_en:"The train had gone, but I got lucky and a bus came right away." },
+  { de:"nur Bahnhof verstehen", lit:"to understand only train station", meaning:"to not understand a thing", ex:"Bei dem Fachvortrag habe ich nur Bahnhof verstanden.", ex_en:"I couldn't understand a word of that technical talk." },
+  { de:"jemandem reinen Wein einschenken", lit:"to pour someone pure wine", meaning:"to tell someone the honest truth", ex:"Ich muss dir reinen Wein einschenken: Das Projekt ist gescheitert.", ex_en:"I have to be honest with you: the project has failed." },
+  { de:"auf dem Holzweg sein", lit:"to be on the wooden path", meaning:"to be mistaken, on the wrong track", ex:"Wenn du glaubst, das war Zufall, bist du auf dem Holzweg.", ex_en:"If you think that was a coincidence, you're on the wrong track." },
+  { de:"die Flinte ins Korn werfen", lit:"to throw the rifle into the grain", meaning:"to give up too easily", ex:"Gib nicht auf, wirf jetzt nicht die Flinte ins Korn!", ex_en:"Don't give up, don't throw in the towel now!" },
+  { de:"das Handtuch werfen", lit:"to throw the towel", meaning:"to throw in the towel, to quit", ex:"Nach dem dritten Fehlschlag warf er das Handtuch.", ex_en:"After the third failure he threw in the towel." },
+  { de:"da liegt der Hund begraben", lit:"that's where the dog is buried", meaning:"that's the real crux of the problem", ex:"Kein Budget für Personal, da liegt der Hund begraben.", ex_en:"No budget for staff, that's the crux of the matter." },
+  { de:"sich etwas hinter die Ohren schreiben", lit:"to write something behind one's ears", meaning:"to take something to heart, to remember it well", ex:"Sei pünktlich, das solltest du dir hinter die Ohren schreiben.", ex_en:"Be on time, you'd better take that to heart." },
+  { de:"jemandem einen Bären aufbinden", lit:"to tie a bear onto someone", meaning:"to pull someone's leg, to tell a tall tale", ex:"Du warst nie in Hollywood, du willst mir einen Bären aufbinden.", ex_en:"You've never been to Hollywood, you're pulling my leg." },
+  { de:"Öl ins Feuer gießen", lit:"to pour oil into the fire", meaning:"to make a bad situation worse", ex:"Mit dieser Bemerkung hat er nur Öl ins Feuer gegossen.", ex_en:"With that remark he just added fuel to the fire." },
+  { de:"jemanden auf die Palme bringen", lit:"to bring someone up the palm tree", meaning:"to make someone furious", ex:"Seine Unpünktlichkeit bringt mich auf die Palme.", ex_en:"His lateness drives me up the wall." },
+  { de:"die Daumen drücken", lit:"to press the thumbs", meaning:"to keep one's fingers crossed", ex:"Ich drücke dir für die Prüfung fest die Daumen!", ex_en:"I'll keep my fingers crossed for your exam!" },
+  { de:"alles in Butter", lit:"everything in butter", meaning:"everything is fine", ex:"Keine Sorge, bei uns ist alles in Butter.", ex_en:"Don't worry, everything is fine with us." },
+  { de:"Tomaten auf den Augen haben", lit:"to have tomatoes on one's eyes", meaning:"to fail to see something obvious", ex:"Der Ausgang war direkt da, hast du Tomaten auf den Augen?", ex_en:"The exit was right there, are you blind?" },
+  { de:"über den eigenen Schatten springen", lit:"to jump over one's own shadow", meaning:"to overcome one's inhibitions", ex:"Sie sprang über ihren eigenen Schatten und hielt die Rede auf Deutsch.", ex_en:"She overcame her fear and gave the speech in German." },
+  { de:"den Faden verlieren", lit:"to lose the thread", meaning:"to lose one's train of thought", ex:"Mitten im Satz habe ich den Faden verloren.", ex_en:"I lost my train of thought in the middle of the sentence." },
+  { de:"jemandem aus der Patsche helfen", lit:"to help someone out of the puddle", meaning:"to get someone out of a jam", ex:"Danke, dass du mir aus der Patsche geholfen hast.", ex_en:"Thanks for getting me out of that jam." },
+  { de:"die Ohren steif halten", lit:"to keep the ears stiff", meaning:"to hang in there, to keep your chin up", ex:"Es ist gerade schwer, aber halt die Ohren steif!", ex_en:"It's tough right now, but hang in there!" }
+];
+

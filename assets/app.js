@@ -2,7 +2,7 @@
    Schritt für Schritt, application core
    ========================================================================= */
 import { Store } from './store.js';
-import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS } from './data.js?v=5';
+import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS, IDIOMS } from './data.js?v=6';
 import { Speech, compareSpoken } from './speech.js?v=5';
 import { Lumikuttan } from './mascot.js?v=6';
 
@@ -115,6 +115,7 @@ function shell(inner, active='') {
       <a data-nav="#/roadmap" class="${active==='roadmap'?'active':''}">Roadmap</a>
       <a data-nav="#/vokabeln" class="${active==='vokabeln'?'active':''}">Vocabulary</a>
       <a data-nav="#/pruefung" class="${active==='pruefung'?'active':''}">Exam</a>
+      <a data-nav="#/phrases" class="${active==='phrases'?'active':''}">Phrases</a>
       <a data-nav="#/belohnungen" class="${active==='belohnungen'?'active':''}">Rewards</a>
       <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">${Store.theme==='dark'?'☀️':'🌙'}</button>
     </nav>
@@ -166,6 +167,19 @@ function viewHome() {
   const ring = `conic-gradient(var(--success) ${dpct*3.6}deg, var(--bg-tint) 0)`;
   const inner = `
   <div class="wrap">
+    ${Store.flag('seen_update_b12') ? '' : `
+    <div class="update-banner" id="update-banner">
+      <div>
+        <span class="update-banner__tag">✨ New update</span>
+        <ul class="update-banner__list">
+          <li>New chapters: the full <b>B1.2 (Schritte 6, Lektion 8-14)</b>: Unter Kollegen, Virtuelle Welt, Werbung und Konsum, Miteinander, Soziales Engagement, Aus Politik und Geschichte, Alte und neue Heimat</li>
+          <li><b>350 new vocabulary flashcards</b> for the new lessons (1200 words in total now)</li>
+          <li>New <b>Phrases</b> section: cool German idioms that impress an examiner <button class="btn btn--ghost btn--sm" data-nav="#/phrases">Open →</button></li>
+          <li>An animated day / night <b>park background</b> with clouds, butterflies and fireflies</li>
+        </ul>
+      </div>
+      <button class="update-banner__x" data-dismiss-update title="Got it">×</button>
+    </div>`}
     <section class="hero"><div class="hero__grid">
       <div>
         <p class="eyebrow">Your path to the B1 exam</p>
@@ -209,6 +223,8 @@ function viewHome() {
   </div>`;
   render(inner, 'home');
   $$('[data-nav]').forEach(b => b.onclick = () => go(b.dataset.nav));
+  const ub = $('[data-dismiss-update]');
+  if (ub) ub.onclick = () => { Store.setFlag('seen_update_b12'); const el = $('#update-banner'); if (el) el.remove(); };
 }
 
 /* =====================================================================
@@ -876,6 +892,38 @@ function viewBelohnungen(){
 }
 
 /* =====================================================================
+   VIEW: Redewendungen (impressive idioms)
+   ===================================================================== */
+function viewIdioms(){
+  Store.touchStreak();
+  const inner=`
+  <div class="wrap">
+    <section class="hero" style="padding:36px 0 6px">
+      <p class="eyebrow">Redewendungen</p>
+      <h1>Cool phrases that impress 🎯</h1>
+      <p class="lead">Real German idioms you rarely find in a textbook, but locals love. Drop one at the right moment and an examiner will smile. Tap 🔊 to hear it.</p>
+    </section>
+    <section class="section">
+      <div class="idiomgrid">
+      ${IDIOMS.map((it,i)=>`
+        <div class="idiom">
+          <div class="idiom__head">
+            <div class="idiom__de">${esc(it.de)}</div>
+            <button class="btn btn--ghost btn--sm" data-say="${esc(it.ex)}" title="Listen">🔊</button>
+          </div>
+          <div class="idiom__lit">literally: ${esc(it.lit)}</div>
+          <div class="idiom__meaning"><b>Meaning:</b> ${esc(it.meaning)}</div>
+          <div class="idiom__ex">„${esc(it.ex)}“<br><span class="idiom__ex-en">${esc(it.ex_en)}</span></div>
+        </div>`).join('')}
+      </div>
+    </section>
+  </div>`;
+  render(inner,'phrases');
+  $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+  $$('[data-say]').forEach(b=>b.onclick=()=>Speech.speak(b.dataset.say, Store.get().settings.ttsRate));
+}
+
+/* =====================================================================
    Router
    ===================================================================== */
 function route(){
@@ -890,6 +938,7 @@ function route(){
   if(mSkill) return viewSkill(decodeURIComponent(mSkill[1]));
   if(mFlash) return viewFlash(mFlash[1]);
   if(h.startsWith('#/vokabeln')) return viewVokabeln();
+  if(h.startsWith('#/phrases')) return viewIdioms();
   if(h.startsWith('#/belohnungen')) return viewBelohnungen();
   if(h.startsWith('#/roadmap')) return viewRoadmap();
   if(h.startsWith('#/pruefung')) return viewPruefung();

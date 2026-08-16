@@ -604,3 +604,13 @@ button { font-family: inherit; }
 .idiom__meaning b { color:var(--primary-ink); }
 .idiom__ex { margin-top:10px; padding:10px 12px; background:var(--surface-2); border-radius:var(--r-md); font-size:.9rem; color:var(--ink); border:1px solid var(--line); }
 .idiom__ex-en { color:var(--ink-faint); font-size:.86rem; }
+
+/* ---- Flashcard A2/B1 example sentences ---- */
+.fcard__ex-wrap { margin-top:14px; width:100%; text-align:left; }
+.fcard__exrow { display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line); }
+.fcard__exlvl { flex:0 0 auto; font-size:.7rem; font-weight:700; padding:2px 9px; border-radius:999px; margin-top:2px; }
+.fcard__exlvl.a2 { background:var(--success-wash); color:var(--success); }
+.fcard__exlvl.b1 { background:var(--primary-wash); color:var(--primary-ink); }
+.fcard__exde { font-size:1rem; color:var(--ink); font-weight:500; line-height:1.4; }
+.fcard__exen { font-size:.85rem; color:var(--ink-faint); margin-top:2px; }
+.fcard__exhint { font-size:.85rem; color:var(--ink-faint); padding:10px 0; text-align:center; }

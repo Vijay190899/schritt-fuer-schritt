@@ -64,8 +64,9 @@ export default {
     }
     messages.push({ role: "user", content: question });
 
-    // Preferred model first (env.MODEL override), then the fallback list.
+    // Preferred model first: client hint (allow-listed), then env.MODEL, then chain.
     const tryModels = [];
+    if (body.model && MODELS.includes(body.model)) tryModels.push(body.model);
     if (env.MODEL && env.MODEL.trim()) tryModels.push(env.MODEL.trim());
     for (const m of MODELS) if (!tryModels.includes(m)) tryModels.push(m);
 

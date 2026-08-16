@@ -1,10 +1,10 @@
 /* =========================================================================
    Schritt für Schritt, application core
    ========================================================================= */
-import { Store } from './store.js';
+import { Store } from './store.js?v=2';
 import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS, IDIOMS } from './data.js?v=6';
 import { Speech, compareSpoken } from './speech.js?v=5';
-import { Lumikuttan } from './mascot.js?v=6';
+import { Lumikuttan } from './mascot.js?v=7';
 
 const CFG = window.SFS_CONFIG || { PASS_THRESHOLD:0.7, QUESTIONS_PER_QUIZ:7 };
 const THRESHOLD = CFG.PASS_THRESHOLD ?? 0.7;
@@ -167,14 +167,12 @@ function viewHome() {
   const ring = `conic-gradient(var(--success) ${dpct*3.6}deg, var(--bg-tint) 0)`;
   const inner = `
   <div class="wrap">
-    ${Store.flag('seen_update_b12') ? '' : `
+    ${Store.flag('seen_update_examples') ? '' : `
     <div class="update-banner" id="update-banner">
       <div>
         <span class="update-banner__tag">✨ New update</span>
         <ul class="update-banner__list">
-          <li>New chapters: the full <b>B1.2 (Schritte 6, Lektion 8-14)</b>: Unter Kollegen, Virtuelle Welt, Werbung und Konsum, Miteinander, Soziales Engagement, Aus Politik und Geschichte, Alte und neue Heimat</li>
-          <li><b>350 new vocabulary flashcards</b> for the new lessons (1200 words in total now)</li>
-          <li>New <b>Phrases</b> section: cool German idioms that impress an examiner <button class="btn btn--ghost btn--sm" data-nav="#/phrases">Open →</button></li>
+          <li>Every <b>vocabulary flashcard</b> now shows the word with its article and English meaning, plus an <b>A2 and a B1 example sentence with translations</b>, so you see exactly how to use each word. <button class="btn btn--ghost btn--sm" data-nav="#/vokabeln">Open vocabulary →</button></li>
         </ul>
       </div>
       <button class="update-banner__x" data-dismiss-update title="Got it">×</button>
@@ -223,7 +221,7 @@ function viewHome() {
   render(inner, 'home');
   $$('[data-nav]').forEach(b => b.onclick = () => go(b.dataset.nav));
   const ub = $('[data-dismiss-update]');
-  if (ub) ub.onclick = () => { Store.setFlag('seen_update_b12'); const el = $('#update-banner'); if (el) el.remove(); };
+  if (ub) ub.onclick = () => { Store.setFlag('seen_update_examples'); const el = $('#update-banner'); if (el) el.remove(); };
 }
 
 /* =====================================================================
@@ -769,6 +767,24 @@ function viewVokabeln(){
 /* =====================================================================
    VIEW: Flashcard study session (reveal + Kannte ich / Nochmal)
    ===================================================================== */
+/* A2 + B1 example sentences for a flashcard: from the card, the cache, or the AI. */
+function renderEx(a2de,a2en,b1de,b1en){
+  const row=(lvl,cls,de,en)=>`<div class="fcard__exrow"><span class="fcard__exlvl ${cls}">${lvl}</span><div><div class="fcard__exde">${esc(de||'…')}</div>${en?`<div class="fcard__exen">${esc(en)}</div>`:''}</div></div>`;
+  return row('A2','a2',a2de,a2en)+row('B1','b1',b1de,b1en);
+}
+function fillExamples(card){
+  const box=$('#fex'); if(!box) return;
+  box.dataset.forDe=card.de;
+  if(card.a2 && card.b1){ box.innerHTML=renderEx(card.a2[0],card.a2[1],card.b1[0],card.b1[1]); return; }
+  const cached=Store.getExamples(card.de);
+  if(cached){ box.innerHTML=renderEx(cached.a2de,cached.a2en,cached.b1de,cached.b1en); return; }
+  if(!Lumikuttan.aiEnabled()){ box.innerHTML='<div class="fcard__exhint">Turn on Lumikuttan\'s AI brain to see A2 &amp; B1 examples.</div>'; return; }
+  box.innerHTML='<div class="fcard__exhint">✨ Writing A2 &amp; B1 examples…</div>';
+  Lumikuttan.examples(card.de, card.en).then(ex=>{
+    if(ex && (ex.a2de||ex.b1de)) Store.setExamples(card.de, ex);
+    const b=$('#fex'); if(b && b.dataset.forDe===card.de) b.innerHTML=renderEx(ex.a2de,ex.a2en,ex.b1de,ex.b1en);
+  }).catch(()=>{ const b=$('#fex'); if(b && b.dataset.forDe===card.de) b.innerHTML='<div class="fcard__exhint">Examples are unavailable right now. They will appear next time.</div>'; });
+}
 function viewFlash(deckId){
   const deck=deckById(deckId);
   if(!deck){ go('#/vokabeln'); return; }
@@ -799,7 +815,7 @@ function viewFlash(deckId){
         <div class="fcard__de">${esc(c.de)} <button class="fcard__say" data-say="${esc(sayText(c.de))}" title="Listen">🔊</button></div>
         <div class="fcard__answer" style="display:${revealed?'block':'none'}">
           <div class="fcard__en">${esc(c.en)}</div>
-          ${c.ex?`<div class="fcard__ex">${hl(c.ex)}</div>`:''}
+          <div class="fcard__ex-wrap" id="fex"></div>
         </div>
         ${!revealed?`<button class="btn btn--primary" data-reveal>Show translation</button>`:''}
       </div>
@@ -816,6 +832,7 @@ function viewFlash(deckId){
     const card=$('[data-flip]'); if(card && !revealed) card.onclick=e=>{ if(!e.target.closest('[data-say]')) reveal(); };
     const again=$('[data-again]'); if(again) again.onclick=()=>{ queue.push(i); revealed=false; pos++; paintCard(); };
     const kn=$('[data-known]'); if(kn) kn.onclick=()=>{ const r=Store.recordFlash(cardId(deck,i)); if(r.isNew) learned++; revealed=false; pos++; paintCard(); };
+    if(revealed) fillExamples(c);
   }
 
   function finishDeck(){

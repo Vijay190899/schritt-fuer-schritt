@@ -11,7 +11,7 @@
       answers common German questions and gives encouragement, even with no
       Worker / no internet.
    ========================================================================= */
-import { Store } from './store.js';
+import { Store } from './store.js?v=2';
 
 const CFG = window.SFS_CONFIG || {};
 
@@ -97,6 +97,38 @@ async function ask(question, opts = {}) {
   return data.answer || '…';
 }
 
+/* ---- Generate A2 + B1 example sentences for a vocabulary card ----
+   Uses a small, cheap open model and a strict 4-line format. Returns
+   { a2de, a2en, b1de, b1en }. The caller caches the result per word. */
+async function examples(de, en) {
+  const url = CFG.MASCOT_WORKER_URL;
+  if (!url) throw new Error('no-worker');
+  const q = `Write example sentences for a German vocabulary flashcard. The word is "${de}" and it means "${en}". Use this exact word in both sentences. Reply in EXACTLY four lines, nothing else, no intro:
+A2: <one very simple German sentence, present tense>
+A2EN: <English translation of the A2 sentence>
+B1: <one richer German sentence at B1 level, for example with a connector like weil or deshalb>
+B1EN: <English translation of the B1 sentence>`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: q, model: '@cf/meta/llama-3.2-3b-instruct' })
+  });
+  if (!res.ok) throw new Error('worker-' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  const out = { a2de: '', a2en: '', b1de: '', b1en: '' };
+  for (const raw of String(data.answer || '').split('\n')) {
+    const ln = raw.trim(); if (!ln) continue;
+    const low = ln.toLowerCase();
+    const val = ln.replace(/^[^:]*:\s*/, '').trim();
+    if (low.startsWith('a2en') || low.startsWith('a2 en') || low.startsWith('a2-en')) out.a2en = val;
+    else if (low.startsWith('a2')) out.a2de = val;
+    else if (low.startsWith('b1en') || low.startsWith('b1 en') || low.startsWith('b1-en')) out.b1en = val;
+    else if (low.startsWith('b1')) out.b1de = val;
+  }
+  return out;
+}
+
 /* Public API used by the chat UI */
 export const Lumikuttan = {
   greeting() { const g = GREETINGS(Store.name); return g[Math.floor(Math.random()*g.length)]; },
@@ -111,5 +143,6 @@ export const Lumikuttan = {
   },
 
   aiEnabled() { return !!(CFG.MASCOT_WORKER_URL && (CFG.DEEP_ANSWER_ENABLED ?? true)); },
-  ask
+  ask,
+  examples
 };

@@ -21,6 +21,7 @@ const defaults = () => ({
   visited: {},              // moduleId -> true (grammar opened)
   writing: {},              // taskId -> saved draft
   flash: { known: {} },     // cardId -> true (permanently learned)
+  examples: {},             // German word -> { a2de, a2en, b1de, b1en } (generated once, cached)
   badges: {},               // badgeId -> timestamp
   flags: {},                // micUsed, wroteDraft, perfect, deckDone …
   daily: { date:'', xp:0 }, // resets each calendar day
@@ -133,6 +134,8 @@ export const Store = {
   forgetFlash(cardId) { if (state.flash.known[cardId]) { delete state.flash.known[cardId]; save(); } },
   isKnown(id) { return !!state.flash.known[id]; },
   learnedWords() { return Object.keys(state.flash.known).length; },
+  getExamples(de) { return state.examples[de] || null; },
+  setExamples(de, obj) { state.examples[de] = obj; save(); },
 
   /* ---- writing ---- */
   saveWriting(taskId, text) { state.writing[taskId] = text; save(); },

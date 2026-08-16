@@ -4,7 +4,7 @@
 import { Store } from './store.js?v=2';
 import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS, IDIOMS } from './data.js?v=6';
 import { Speech, compareSpoken } from './speech.js?v=5';
-import { Lumikuttan } from './mascot.js?v=7';
+import { Lumikuttan } from './mascot.js?v=8';
 
 const CFG = window.SFS_CONFIG || { PASS_THRESHOLD:0.7, QUESTIONS_PER_QUIZ:7 };
 const THRESHOLD = CFG.PASS_THRESHOLD ?? 0.7;

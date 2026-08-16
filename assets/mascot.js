@@ -111,7 +111,7 @@ B1EN: <English translation of the B1 sentence>`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question: q, model: '@cf/meta/llama-3.2-3b-instruct' })
+    body: JSON.stringify({ question: q, model: '@cf/mistralai/mistral-small-3.1-24b-instruct' })
   });
   if (!res.ok) throw new Error('worker-' + res.status);
   const data = await res.json();

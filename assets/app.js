@@ -1007,7 +1007,7 @@ function viewFeel(){
     if(round.mode==='gender'){
       const btn=(g)=>{ let cls='feelbtn '+g; if(answered){ if(g===it.art) cls+=' correct'; else if(g===round.chosen) cls+=' wrong'; } return `<button class="${cls}" data-g="${g}" ${answered?'disabled':''}>${g}</button>`; };
       body=`<div class="feel__q">der, die oder das?</div>
-        <div class="feel__word">${esc(it.noun)} <button class="fcard__say" data-say="${esc(it.art+' '+it.noun)}" title="Listen">🔊</button></div>
+        <div class="feel__word">${esc(it.noun)} <button class="fcard__say" data-say="${esc(it.noun)}" title="Listen">🔊</button></div>
         <div class="feel__opts">${btn('der')}${btn('die')}${btn('das')}</div>`;
     } else {
       const btns=round.opts.map((o,idx)=>{ let cls='feelopt'; if(answered){ if(idx===round.answer) cls+=' correct'; else if(idx===round.chosen) cls+=' wrong'; } return `<button class="${cls}" data-o="${idx}" ${answered?'disabled':''}>${esc(o)}</button>`; }).join('');
@@ -1021,7 +1021,7 @@ function viewFeel(){
       const hint = round.mode==='gender' ? genderHint(it.noun) : null;
       reveal=`<div class="feel__reveal">
         <div class="feel__msg ${ok?'good':''}">${ok?'Genau! 🎉':'Kein Problem 💛'}</div>
-        <div class="feel__ans"><span class="art ${it.art}">${it.art}</span> ${esc(it.noun)} <span class="feel__en">= ${esc(it.en)}</span></div>
+        <div class="feel__ans"><span class="art ${it.art}">${it.art}</span> ${esc(it.noun)} <button class="fcard__say" data-say="${esc(it.art+' '+it.noun)}" title="Listen">🔊</button> <span class="feel__en">= ${esc(it.en)}</span></div>
         ${hint?`<div class="feel__hint">💡 ${esc(hint)}</div>`:''}
       </div>`;
     }

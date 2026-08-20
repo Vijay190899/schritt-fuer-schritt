@@ -658,3 +658,8 @@ button { font-family: inherit; }
 .pron__ok { color:var(--success); font-weight:600; }
 .pron__soft { color:var(--ink-soft); }
 .pron__check { color:var(--ink-faint); }
+.pron__heard { color:var(--ink-faint); font-weight:400; }
+.pron__speed { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center; margin:2px 0 16px; }
+.pron__speed-lbl { color:var(--ink-faint); font-size:.85rem; font-weight:600; letter-spacing:.02em; text-transform:uppercase; margin-right:2px; }
+.speedchip { padding:6px 13px; border-radius:999px; border:1px solid var(--line); background:var(--surface); font-weight:600; cursor:pointer; font-size:.88rem; color:var(--ink-soft); }
+.speedchip.active { background:var(--accent); color:#fff; border-color:transparent; }

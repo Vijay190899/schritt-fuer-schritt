@@ -1,10 +1,10 @@
 /* =========================================================================
    Schritt für Schritt, application core
    ========================================================================= */
-import { Store } from './store.js?v=2';
+import { Store } from './store.js?v=3';
 import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS, IDIOMS, SOUNDS } from './data.js?v=7';
 import { Speech, compareSpoken } from './speech.js?v=6';
-import { Lumikuttan } from './mascot.js?v=9';
+import { Lumikuttan } from './mascot.js?v=10';
 
 const CFG = window.SFS_CONFIG || { PASS_THRESHOLD:0.7, QUESTIONS_PER_QUIZ:7 };
 const THRESHOLD = CFG.PASS_THRESHOLD ?? 0.7;
@@ -1063,18 +1063,30 @@ function viewFeel(){
    ===================================================================== */
 function viewPronounce(){
   Store.touchStreak();
-  const rate = Store.get().settings.ttsRate;
+  const SPEEDS=[{r:0.6,lbl:'🐢 Slow'},{r:0.9,lbl:'Normal'},{r:1.15,lbl:'🐇 Fast'}];
   let si=0, wi=0, rec=null, myUrl=null;
 
   function resetRec(){ if(rec){ try{ rec.stop(); }catch(_){} rec=null; } if(myUrl){ URL.revokeObjectURL(myUrl); myUrl=null; } }
   function showCheck(transcript, word, status){
-    const norm=s=>String(s).toLowerCase().replace(/[.,!?;:„“"'`-]/g,'').replace(/\s+/g,' ').trim();
+    // Whisper often spells short German words phonetically (e.g. "der Bäcker" -> "Deer Becker"),
+    // so match forgivingly: fold umlauts, keep letters only, and accept close matches.
+    const norm=s=>String(s).toLowerCase()
+      .replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss')
+      .replace(/[^a-z]/g,'');
     const stripArt=w=>w.replace(/^(der|die|das)\s+/i,'');
-    const target=norm(stripArt(word)), heard=norm(transcript);
-    const ok = target && heard && (heard.includes(target) || target.includes(heard));
+    const lev=(a,b)=>{ const m=a.length,n=b.length; if(!m)return n; if(!n)return m;
+      let p=Array.from({length:n+1},(_,i)=>i);
+      for(let i=1;i<=m;i++){ let prev=p[0]; p[0]=i;
+        for(let j=1;j<=n;j++){ const t=p[j]; p[j]=Math.min(p[j]+1,p[j-1]+1,prev+(a[i-1]===b[j-1]?0:1)); prev=t; } }
+      return p[n]; };
+    const sim=(a,b)=>{ if(!a||!b) return 0; return 1 - lev(a,b)/Math.max(a.length,b.length); };
+    const targetNoun=norm(stripArt(word)), targetFull=norm(word);
+    let best=sim(norm(transcript), targetFull);
+    for(const tok of String(transcript).split(/\s+/)){ const t=norm(tok); if(t){ best=Math.max(best, sim(t, targetNoun), sim(t, targetFull)); } }
+    const ok = best>=0.55;   // forgiving: close attempts count as clear
     const line = ok
-      ? `<span class="pron__ok">✅ Clear! I heard: „${esc(transcript)}“</span>`
-      : `<span class="pron__soft">💛 I heard: „${esc(transcript||'…')}“. No stress, say it again and lean into the ${esc(SOUNDS[si].label)} sound.</span>`;
+      ? `<span class="pron__ok">✅ Nice, that sounds right!${transcript?` <span class="pron__heard">(I heard „${esc(transcript)}“)</span>`:''}</span>`
+      : `<span class="pron__soft">💛 I heard „${esc(transcript||'…')}“. No stress, say it once more and lean into the ${esc(SOUNDS[si].label)} sound.</span>`;
     const c=status.querySelector('.pron__check'); if(c) c.outerHTML=line; else status.innerHTML+='<br>'+line;
   }
   function paint(){
@@ -1091,6 +1103,10 @@ function viewPronounce(){
       <div class="card pad">
         <div class="tipbox"><div class="ic">💡</div><div><div class="h">${esc(s.label)}</div>${esc(s.tip_en)}<br><span style="color:var(--ink-faint)">${esc(s.tip_de)}</span></div></div>
         <div class="pron__word">${esc(word)}</div>
+        <div class="pron__speed">
+          <span class="pron__speed-lbl">Speed</span>
+          ${SPEEDS.map(s=>`<button class="speedchip ${Math.abs(Store.ttsRate-s.r)<0.13?'active':''}" data-rate="${s.r}">${s.lbl}</button>`).join('')}
+        </div>
         <div class="pron__actions">
           <button class="btn btn--ghost" data-hear>▶︎ Hear</button>
           ${canRec?`<button class="mic pron__mic" data-mic title="Record">🎙️</button>
@@ -1109,12 +1125,13 @@ function viewPronounce(){
     render(inner);
     $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
     $$('.soundchip').forEach(b=>b.onclick=()=>{ resetRec(); si=+b.dataset.si; wi=0; paint(); });
-    $('[data-hear]').onclick=()=>Speech.speak(word, rate);
+    $$('.speedchip').forEach(b=>b.onclick=()=>{ Store.setTtsRate(+b.dataset.rate); Speech.speak(word, Store.ttsRate); paint(); });
+    $('[data-hear]').onclick=()=>Speech.speak(word, Store.ttsRate);
     const prev=$('[data-prev]'); if(prev) prev.onclick=()=>{ if(wi>0){ resetRec(); wi--; paint(); } };
     const next=$('[data-next]'); if(next) next.onclick=()=>{ resetRec(); if(wi+1<s.words.length) wi++; else { si=(si+1)%SOUNDS.length; wi=0; } paint(); };
     const status=$('#pstatus'), mine=$('[data-mine]'), compare=$('[data-compare]'), micBtn=$('[data-mic]');
     if(mine) mine.onclick=()=>{ if(myUrl) new Audio(myUrl).play(); };
-    if(compare) compare.onclick=()=>{ if(!myUrl) return; Speech.speak(word, rate, ()=>setTimeout(()=>{ if(myUrl) new Audio(myUrl).play(); }, 250)); };
+    if(compare) compare.onclick=()=>{ if(!myUrl) return; Speech.speak(word, Store.ttsRate, ()=>setTimeout(()=>{ if(myUrl) new Audio(myUrl).play(); }, 250)); };
     if(micBtn) micBtn.onclick=async()=>{
       if(rec){
         micBtn.classList.remove('rec');

@@ -11,7 +11,7 @@
       answers common German questions and gives encouragement, even with no
       Worker / no internet.
    ========================================================================= */
-import { Store } from './store.js?v=2';
+import { Store } from './store.js?v=3';
 
 const CFG = window.SFS_CONFIG || {};
 

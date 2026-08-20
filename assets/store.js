@@ -55,6 +55,8 @@ export const Store = {
   setName(n) { state.name = (n || '').trim(); save(); },
   get theme() { return state.settings.theme || 'light'; },
   setTheme(t) { state.settings.theme = t; save(); },
+  get ttsRate() { const r = state.settings.ttsRate; return (typeof r === 'number' && r > 0) ? r : 0.9; },
+  setTtsRate(r) { state.settings.ttsRate = r; save(); },
   hasOnboarded() { return !!state.name; },
 
   /* ---- levels & XP ---- */

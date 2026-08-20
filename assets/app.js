@@ -978,6 +978,13 @@ function genderHint(noun){
 function viewFeel(){
   Store.touchStreak();
   const pool = genderPool();
+  // Walk a shuffled queue so every noun appears once before any repeats.
+  // Reshuffle when exhausted, avoiding an immediate repeat across the seam.
+  let queue = shuffle(pool.slice()), last = null;
+  function nextItem(){
+    if(!queue.length){ queue = shuffle(pool.slice()); if(queue.length>1 && queue[queue.length-1]===last) queue.unshift(queue.pop()); }
+    const it = queue.pop(); last = it; return it;
+  }
   let recent = [];   // last 12 gut-feelings (soft radar, not a score)
   let round = null, answered = false;
 
@@ -988,7 +995,7 @@ function viewFeel(){
   }
   function nextRound(){
     answered=false;
-    const item = pool[Math.floor(Math.random()*pool.length)];
+    const item = nextItem();
     if(Math.random()<0.28 && pool.length>=6){
       const opts = shuffle([item.en, ...distractors(item,2)]);
       round = { mode:'meaning', item, opts, answer:opts.indexOf(item.en), chosen:-1 };
@@ -1063,7 +1070,7 @@ function viewFeel(){
    ===================================================================== */
 function viewPronounce(){
   Store.touchStreak();
-  const SPEEDS=[{r:0.6,lbl:'🐢 Slow'},{r:0.9,lbl:'Normal'},{r:1.15,lbl:'🐇 Fast'}];
+  const SPEEDS=[{r:0.55,lbl:'🐢 Slow'},{r:1.0,lbl:'Normal'}];
   let si=0, wi=0, rec=null, myUrl=null;
 
   function resetRec(){ if(rec){ try{ rec.stop(); }catch(_){} rec=null; } if(myUrl){ URL.revokeObjectURL(myUrl); myUrl=null; } }
@@ -1105,7 +1112,7 @@ function viewPronounce(){
         <div class="pron__word">${esc(word)}</div>
         <div class="pron__speed">
           <span class="pron__speed-lbl">Speed</span>
-          ${SPEEDS.map(s=>`<button class="speedchip ${Math.abs(Store.ttsRate-s.r)<0.13?'active':''}" data-rate="${s.r}">${s.lbl}</button>`).join('')}
+          ${SPEEDS.map(s=>`<button class="speedchip ${Math.abs(Store.ttsRate-s.r)<0.2?'active':''}" data-rate="${s.r}">${s.lbl}</button>`).join('')}
         </div>
         <div class="pron__actions">
           <button class="btn btn--ghost" data-hear>▶︎ Hear</button>

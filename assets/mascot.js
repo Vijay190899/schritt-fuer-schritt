@@ -129,6 +129,18 @@ B1EN: <English translation of the B1 sentence>`;
   return out;
 }
 
+/* ---- Transcribe a recorded audio blob via the Worker (Whisper) ---- */
+async function transcribe(blob) {
+  const url = CFG.MASCOT_WORKER_URL;
+  if (!url) throw new Error('no-worker');
+  const u = url + (url.includes('?') ? '&' : '?') + 'mode=stt';
+  const res = await fetch(u, { method: 'POST', headers: { 'Content-Type': blob.type || 'application/octet-stream' }, body: blob });
+  if (!res.ok) throw new Error('worker-' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return (data.text || '').trim();
+}
+
 /* Public API used by the chat UI */
 export const Lumikuttan = {
   greeting() { const g = GREETINGS(Store.name); return g[Math.floor(Math.random()*g.length)]; },
@@ -144,5 +156,6 @@ export const Lumikuttan = {
 
   aiEnabled() { return !!(CFG.MASCOT_WORKER_URL && (CFG.DEEP_ANSWER_ENABLED ?? true)); },
   ask,
-  examples
+  examples,
+  transcribe
 };

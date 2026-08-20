@@ -2031,3 +2031,36 @@ export const IDIOMS = [
   { de:"die Ohren steif halten", lit:"to keep the ears stiff", meaning:"to hang in there, to keep your chin up", ex:"Es ist gerade schwer, aber halt die Ohren steif!", ex_en:"It's tough right now, but hang in there!" }
 ];
 
+
+/* =====================================================================
+   PRONUNCIATION (Aussprache) practice, grouped by the sounds learners
+   struggle with. Each group: label, a plain tip (EN + DE), and words/pairs.
+   ===================================================================== */
+export const SOUNDS = [
+  { id:'ae', label:'ä', tip_en:'Like the "e" in "bed" (a bright, open sound).', tip_de:'Wie das „ä“ in „Bäcker“, ein heller, offener Laut.',
+    words:['der Bäcker','der Käse','spät','die Universität','die Männer','die Nähe'] },
+  { id:'oe', label:'ö', tip_en:'Say "e" but round your lips like for "o". Compare: schon vs schön.', tip_de:'Sag „e“, aber runde die Lippen wie bei „o“. Vergleich: schon vs schön.',
+    words:['schön','hören','die Möbel','zwölf','können','der Löffel'] },
+  { id:'ue', label:'ü', tip_en:'Say "ee" but round your lips like for "oo". Compare: Mutter vs Mütter.', tip_de:'Sag „i“, aber runde die Lippen wie bei „u“. Vergleich: Mutter vs Mütter.',
+    words:['über','die Tür','fühlen','die Bücher','müde','für'] },
+  { id:'ich', label:'ch (ich-Laut)', tip_en:'Soft, hissing sound after e, i, ä, ö, ü. Like a gentle hiss.', tip_de:'Weicher „ich-Laut“ nach e, i, ä, ö, ü.',
+    words:['ich','die Milch','München','richtig','das Mädchen','die Küche'] },
+  { id:'ach', label:'ch (ach-Laut)', tip_en:'Hard sound from the back of the throat, after a, o, u.', tip_de:'Harter „ach-Laut“ hinten im Hals, nach a, o, u.',
+    words:['ach','das Buch','machen','die Nacht','auch','die Sprache'] },
+  { id:'r', label:'r', tip_en:'A soft sound at the back of the throat. At the end of a word it often sounds like "a".', tip_de:'Weiches „r“ hinten im Hals. Am Wortende klingt es oft wie „a“.',
+    words:['rot','die Frau','die Reise','hören','die Uhr','der Bruder'] },
+  { id:'wv', label:'w vs v', tip_en:'German w = English "v" (Wasser). German v = English "f" (Vater).', tip_de:'Deutsches „w“ = englisches „v“ (Wasser). Deutsches „v“ = „f“ (Vater).',
+    words:['das Wasser','der Wein','das Wetter','der Vater','viel','der Vogel'] },
+  { id:'z', label:'z', tip_en:'German "z" is always "ts", never a soft z.', tip_de:'Deutsches „z“ ist immer „ts“.',
+    words:['die Zeit','zahlen','der Zug','die Katze','tanzen','der Zucker'] },
+  { id:'sss', label:'s · ß', tip_en:'"s" before a vowel is soft/buzzy (Sonne). "ß" and "ss" are a sharp, hissed s (Straße).', tip_de:'„s“ vor Vokal weich (Sonne). „ß“/„ss“ scharf (Straße).',
+    words:['die Sonne','die Straße','heißen','groß','der Fuß','sechs'] },
+  { id:'eiie', label:'ei vs ie', tip_en:'"ei" sounds like English "eye". "ie" sounds like English "ee".', tip_de:'„ei“ klingt wie engl. „eye“. „ie“ klingt wie langes „i“ (ee).',
+    words:['mein','die Zeit','heißen','vier','die Wiese','die Miete'] },
+  { id:'eu', label:'eu · äu', tip_en:'Both sound like English "oy" in "boy".', tip_de:'Beide klingen wie „oi“.',
+    words:['heute','der Freund','neu','die Häuser','träumen','das Feuer'] },
+  { id:'ng', label:'ng', tip_en:'One soft nasal sound, with no hard "g" after it (like "sing").', tip_de:'Ein weicher Nasal-Laut, ohne hörbares „g“.',
+    words:['singen','die Zeitung','lang','der Junge','der Finger','die Übung'] },
+  { id:'aus', label:'Auslaut b/d/g', tip_en:'At the end of a word, b/d/g harden to p/t/k. Tag sounds like "Tak".', tip_de:'Am Wortende werden b/d/g zu p/t/k. „Tag“ klingt wie „Tak“.',
+    words:['der Tag','der Hund','gelb','halb','und','der Weg'] }
+];

@@ -614,3 +614,47 @@ button { font-family: inherit; }
 .fcard__exde { font-size:1rem; color:var(--ink); font-weight:500; line-height:1.4; }
 .fcard__exen { font-size:.85rem; color:var(--ink-faint); margin-top:2px; }
 .fcard__exhint { font-size:.85rem; color:var(--ink-faint); padding:10px 0; text-align:center; }
+
+/* ---- Sprachgefühl guessing game ---- */
+.feel { max-width:640px; margin:0 auto; padding:24px 0 80px; }
+.feel__tag { color:var(--ink-soft); font-size:.95rem; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); padding:12px 16px; }
+.feel__tag-en { color:var(--ink-faint); font-size:.82rem; }
+.feel__radar { display:flex; gap:6px; justify-content:center; margin:16px 0; }
+.feel__dot { width:10px; height:10px; border-radius:50%; background:var(--bg-tint); border:1px solid var(--line); }
+.feel__dot.on { background:var(--success); border-color:transparent; }
+.feel__dot.off { background:color-mix(in srgb, var(--accent) 30%, var(--surface)); border-color:transparent; }
+.feelcard { background:var(--surface); border:1px solid var(--line); border-radius:var(--r-xl); box-shadow:var(--shadow-md); padding:34px 26px; text-align:center; }
+.feel__q { color:var(--ink-faint); font-size:.9rem; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+.feel__word { font-family:var(--font-display); font-size:2.3rem; font-weight:600; margin:12px 0 22px; line-height:1.2; }
+.feel__opts { display:flex; gap:12px; justify-content:center; }
+.feel__opts.col { flex-direction:column; }
+.feelbtn { flex:1; padding:16px 0; border-radius:var(--r-md); border:2px solid var(--line); background:var(--surface-2); font-family:var(--font-display); font-size:1.3rem; font-weight:600; cursor:pointer; transition:transform .1s, border-color .15s, background .15s; }
+.feelbtn:hover:not([disabled]) { transform:translateY(-2px); }
+.feelbtn.der { color:#5B7FFF; } .feelbtn.die { color:#EC4899; } .feelbtn.das { color:#22B981; }
+.feelbtn.correct { border-color:var(--success); background:var(--success-wash); }
+.feelbtn.wrong { border-color:var(--accent); background:color-mix(in srgb,var(--accent) 14%, var(--surface)); }
+.feelopt { text-align:left; padding:14px 18px; border-radius:var(--r-md); border:1.5px solid var(--line); background:var(--surface-2); font-size:1.05rem; font-weight:500; cursor:pointer; }
+.feelopt:hover:not([disabled]) { border-color:var(--primary); }
+.feelopt.correct { border-color:var(--success); background:var(--success-wash); }
+.feelopt.wrong { border-color:var(--accent); background:color-mix(in srgb,var(--accent) 14%, var(--surface)); }
+.feel__reveal { margin-top:20px; }
+.feel__msg { font-family:var(--font-display); font-size:1.3rem; font-weight:600; }
+.feel__msg.good { color:var(--success); }
+.feel__ans { margin-top:8px; font-size:1.2rem; }
+.feel__en { color:var(--ink-soft); font-size:1rem; }
+.feel__hint { margin-top:12px; background:var(--primary-wash); color:var(--primary-ink); border-radius:var(--r-md); padding:10px 14px; font-size:.92rem; text-align:left; }
+.feel__foot { text-align:center; margin-top:20px; }
+.feel__hintsm { color:var(--ink-faint); font-size:.9rem; }
+.art.der { color:#5B7FFF; font-weight:700; } .art.die { color:#EC4899; font-weight:700; } .art.das { color:#22B981; font-weight:700; }
+
+/* ---- Pronunciation trainer ---- */
+.soundchips { display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 16px; }
+.soundchip { padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:var(--surface); font-weight:600; cursor:pointer; font-size:.95rem; color:var(--ink-soft); }
+.soundchip.active { background:var(--ink); color:var(--bg); border-color:transparent; }
+.pron__word { font-family:var(--font-display); font-size:2.4rem; font-weight:600; text-align:center; margin:18px 0; }
+.pron__actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; }
+.pron__mic { width:60px; height:60px; font-size:24px; }
+.pron__status { margin-top:16px; text-align:center; color:var(--ink-soft); min-height:24px; font-size:1rem; }
+.pron__ok { color:var(--success); font-weight:600; }
+.pron__soft { color:var(--ink-soft); }
+.pron__check { color:var(--ink-faint); }

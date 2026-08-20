@@ -46,6 +46,18 @@ export default {
     if (request.method !== "POST") return json({ error: "POST only" }, 405);
     if (!env.AI) return json({ error: "Workers AI binding missing (add [ai] binding = \"AI\")." }, 500);
 
+    // ---- Speech-to-text (pronunciation check): POST ?mode=stt with raw audio ----
+    if (new URL(request.url).searchParams.get("mode") === "stt") {
+      try {
+        const buf = await request.arrayBuffer();
+        if (!buf || buf.byteLength < 200) return json({ error: "no audio" }, 400);
+        const r = await env.AI.run("@cf/openai/whisper", { audio: [...new Uint8Array(buf)] });
+        return json({ text: (r && r.text ? r.text : "").trim() });
+      } catch (e) {
+        return json({ error: "transcription failed", detail: String(e && e.message || e) }, 502);
+      }
+    }
+
     let body;
     try { body = await request.json(); } catch { return json({ error: "bad json" }, 400); }
 

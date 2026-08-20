@@ -18,18 +18,37 @@ if ('speechSynthesis' in window) {
 export const Speech = {
   supported: 'speechSynthesis' in window,
 
-  speak(text, rate = 0.92) {
-    if (!this.supported) return false;
+  speak(text, rate = 0.92, onEnd) {
+    if (!this.supported) { onEnd && onEnd(); return false; }
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'de-DE';
     u.rate = rate;
     u.pitch = 1;
     if (germanVoice) u.voice = germanVoice;
+    if (onEnd) u.onend = () => onEnd();
     speechSynthesis.speak(u);
     return true;
   },
   stop() { if (this.supported) speechSynthesis.cancel(); },
+
+  // ----- Microphone recording (for pronunciation practice) -----
+  recorderSupported() {
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  },
+  // Starts recording; returns { stop() -> Promise<Blob> }. Throws if denied/unsupported.
+  async startRecording() {
+    if (!this.recorderSupported()) throw new Error('no-recorder');
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mr = new MediaRecorder(stream);
+    const chunks = [];
+    mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    const done = new Promise(res => {
+      mr.onstop = () => { stream.getTracks().forEach(t => t.stop()); res(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })); };
+    });
+    mr.start();
+    return { stop() { try { mr.stop(); } catch (_) {} return done; } };
+  },
 
   // ----- Speech recognition -----
   recSupported() {

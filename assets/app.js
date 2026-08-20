@@ -2,9 +2,9 @@
    Schritt für Schritt, application core
    ========================================================================= */
 import { Store } from './store.js?v=2';
-import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS, IDIOMS } from './data.js?v=6';
-import { Speech, compareSpoken } from './speech.js?v=5';
-import { Lumikuttan } from './mascot.js?v=8';
+import { SYLLABUS, SKILLS, EXAM_INFO, PHONETIK, VOCAB, ACHIEVEMENTS, IDIOMS, SOUNDS } from './data.js?v=7';
+import { Speech, compareSpoken } from './speech.js?v=6';
+import { Lumikuttan } from './mascot.js?v=9';
 
 const CFG = window.SFS_CONFIG || { PASS_THRESHOLD:0.7, QUESTIONS_PER_QUIZ:7 };
 const THRESHOLD = CFG.PASS_THRESHOLD ?? 0.7;
@@ -114,6 +114,7 @@ function shell(inner, active='') {
       <a data-nav="#/" class="${active==='home'?'active':''}">Home</a>
       <a data-nav="#/roadmap" class="${active==='roadmap'?'active':''}">Roadmap</a>
       <a data-nav="#/vokabeln" class="${active==='vokabeln'?'active':''}">Vocabulary</a>
+      <a data-nav="#/feel" class="${active==='feel'?'active':''}">Feel 🎲</a>
       <a data-nav="#/pruefung" class="${active==='pruefung'?'active':''}">Exam</a>
       <a data-nav="#/phrases" class="${active==='phrases'?'active':''}">Phrases</a>
       <a data-nav="#/belohnungen" class="${active==='belohnungen'?'active':''}">Rewards</a>
@@ -167,12 +168,13 @@ function viewHome() {
   const ring = `conic-gradient(var(--success) ${dpct*3.6}deg, var(--bg-tint) 0)`;
   const inner = `
   <div class="wrap">
-    ${Store.flag('seen_update_examples') ? '' : `
+    ${Store.flag('seen_update_speak') ? '' : `
     <div class="update-banner" id="update-banner">
       <div>
         <span class="update-banner__tag">✨ New update</span>
         <ul class="update-banner__list">
-          <li>Every <b>vocabulary flashcard</b> now shows the word with its article and English meaning, plus an <b>A2 and a B1 example sentence with translations</b>, so you see exactly how to use each word. <button class="btn btn--ghost btn--sm" data-nav="#/vokabeln">Open vocabulary →</button></li>
+          <li>New <b>Pronunciation trainer</b>: hear a word, record yourself, compare, and get a gentle AI check on what you said. <button class="btn btn--ghost btn--sm" data-nav="#/aussprache">Try it →</button></li>
+          <li>New <b>Sprachgefühl</b> game: a no-pressure way to train your gut feeling for <b>der / die / das</b>. <button class="btn btn--ghost btn--sm" data-nav="#/feel">Play →</button></li>
         </ul>
       </div>
       <button class="update-banner__x" data-dismiss-update title="Got it">×</button>
@@ -185,6 +187,7 @@ function viewHome() {
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
           <button class="btn btn--accent" data-nav="#/lesson/${current.id}">▶︎ Keep learning: ${esc(current.title)}</button>
           <button class="btn btn--ghost" data-nav="#/flash/${curDeck.id}">🃏 Practice vocabulary</button>
+          <button class="btn btn--ghost" data-nav="#/feel">🎲 Sprachgefühl game</button>
         </div>
       </div>
       <div class="hero__owl"><span class="owl__bird">🦉</span></div>
@@ -208,20 +211,24 @@ function viewHome() {
     </section>
 
     <section class="section">
-      <div class="section__head"><div><h2>Your four exam skills</h2><p>The exam tests all four. Speaking matters most, so practise it often.</p></div></div>
+      <div class="section__head"><div><h2>Your exam skills</h2><p>The exam tests reading, listening, writing and speaking. Speaking matters most, so practise it often.</p></div></div>
       <div class="skillgrid">
         ${Object.entries(SKILLS).map(([k,v])=>`
           <div class="skillcard" style="background:linear-gradient(140deg,${v.color},${v.color}cc)" data-nav="#/skill/${encodeURIComponent(k)}">
             <div class="ic">${v.icon}</div>
             <div><h3>${k}</h3><p>${k==='Hören'?'Listening practice':k==='Lesen'?'Reading practice':k==='Schreiben'?'Letters & emails':'Speak out loud'}</p></div>
           </div>`).join('')}
+        <div class="skillcard" style="background:linear-gradient(140deg,#8B5CF6,#8B5CF6cc)" data-nav="#/aussprache">
+          <div class="ic">🗣️</div>
+          <div><h3>Aussprache</h3><p>Pronunciation: hear, record, compare</p></div>
+        </div>
       </div>
     </section>
   </div>`;
   render(inner, 'home');
   $$('[data-nav]').forEach(b => b.onclick = () => go(b.dataset.nav));
   const ub = $('[data-dismiss-update]');
-  if (ub) ub.onclick = () => { Store.setFlag('seen_update_examples'); const el = $('#update-banner'); if (el) el.remove(); };
+  if (ub) ub.onclick = () => { Store.setFlag('seen_update_speak'); const el = $('#update-banner'); if (el) el.remove(); };
 }
 
 /* =====================================================================
@@ -490,7 +497,7 @@ function viewPruefung(){
       </div>
     </section>
     <section class="section">
-      <div class="section__head"><div><h2>Pronunciation cheat sheet 🗣️</h2><p>From the workbook. Tap 🔊 to hear each example.</p></div></div>
+      <div class="section__head"><div><h2>Pronunciation cheat sheet 🗣️</h2><p>From the workbook. Tap 🔊 to hear each example.</p></div><button class="btn btn--accent btn--sm" data-nav="#/aussprache">Open the pronunciation trainer →</button></div>
       <div class="card pad">
         ${PHONETIK.map(([h,d])=>`<div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">
           <button class="btn btn--ghost btn--sm" data-say="${esc(d.replace(/["]/g,''))}">🔊</button>
@@ -940,6 +947,199 @@ function viewIdioms(){
 }
 
 /* =====================================================================
+   VIEW: Sprachgefühl (gentle intuition guessing game)
+   ===================================================================== */
+// Build a pool of clear single-gender nouns from the existing vocabulary.
+function genderPool(){
+  const pool=[]; const seen=new Set();
+  for(const d of VOCAB) for(const c of d.cards){
+    if(/\(Pl\.\)/.test(c.de)) continue;                 // skip plural-only
+    const m = c.de.match(/^(der|die|das)\s+([^,()]+)/);  // article + noun segment
+    if(!m) continue;
+    const noun = m[2].trim();
+    if(noun.includes(' ') || noun.length<2) continue;    // single-word nouns only
+    if(seen.has(noun)) continue; seen.add(noun);
+    pool.push({ art:m[1], noun, en:c.en });
+  }
+  return pool;
+}
+// Gentle "rule of thumb" so the feeling has something to grab onto (tendencies, not laws).
+function genderHint(noun){
+  const n = noun.toLowerCase();
+  if(/(ung|heit|keit|schaft|ion|tät|enz|anz)$/.test(n)) return 'Endungen wie -ung, -heit, -keit, -schaft, -ion, -tät sind fast immer die.';
+  if(/(ei|ie|ur|ik|age)$/.test(n)) return 'Endungen wie -ei, -ie, -ur, -ik sind meistens die.';
+  if(/(chen|lein)$/.test(n)) return 'Verkleinerungen auf -chen und -lein sind immer das.';
+  if(/(ment|um|tum|ma)$/.test(n)) return 'Endungen wie -ment, -um, -tum sind oft das.';
+  if(/(ling|ismus|ant|ent|ist|eur|or)$/.test(n)) return 'Endungen wie -ling, -ismus, -ant, -ist, -or sind meistens der.';
+  if(/e$/.test(n)) return 'Viele Nomen auf -e sind die (aber nicht alle, z. B. der Name).';
+  if(/(er|el|en)$/.test(n)) return 'Viele Nomen auf -er, -el, -en sind der (aber nicht immer).';
+  return null;
+}
+function viewFeel(){
+  Store.touchStreak();
+  const pool = genderPool();
+  let recent = [];   // last 12 gut-feelings (soft radar, not a score)
+  let round = null, answered = false;
+
+  function distractors(item, n){
+    const out=[], used=new Set([item.en]); let g=0;
+    while(out.length<n && g++<200){ const x=pool[Math.floor(Math.random()*pool.length)]; if(!used.has(x.en)){ used.add(x.en); out.push(x.en); } }
+    return out;
+  }
+  function nextRound(){
+    answered=false;
+    const item = pool[Math.floor(Math.random()*pool.length)];
+    if(Math.random()<0.28 && pool.length>=6){
+      const opts = shuffle([item.en, ...distractors(item,2)]);
+      round = { mode:'meaning', item, opts, answer:opts.indexOf(item.en), chosen:-1 };
+    } else {
+      round = { mode:'gender', item, chosen:'' };
+    }
+    paint();
+  }
+  function radar(){
+    let dots='';
+    for(let k=0;k<12;k++){ const v=recent[recent.length-12+k]; dots+=`<span class="feel__dot ${v===true?'on':v===false?'off':''}"></span>`; }
+    return `<div class="feel__radar" title="Your recent gut feeling">${dots}</div>`;
+  }
+  function paint(){
+    const it=round.item; let body='';
+    if(round.mode==='gender'){
+      const btn=(g)=>{ let cls='feelbtn '+g; if(answered){ if(g===it.art) cls+=' correct'; else if(g===round.chosen) cls+=' wrong'; } return `<button class="${cls}" data-g="${g}" ${answered?'disabled':''}>${g}</button>`; };
+      body=`<div class="feel__q">der, die oder das?</div>
+        <div class="feel__word">${esc(it.noun)} <button class="fcard__say" data-say="${esc(it.art+' '+it.noun)}" title="Listen">🔊</button></div>
+        <div class="feel__opts">${btn('der')}${btn('die')}${btn('das')}</div>`;
+    } else {
+      const btns=round.opts.map((o,idx)=>{ let cls='feelopt'; if(answered){ if(idx===round.answer) cls+=' correct'; else if(idx===round.chosen) cls+=' wrong'; } return `<button class="${cls}" data-o="${idx}" ${answered?'disabled':''}>${esc(o)}</button>`; }).join('');
+      body=`<div class="feel__q">Was bedeutet das?</div>
+        <div class="feel__word"><span class="art ${it.art}">${it.art}</span> ${esc(it.noun)} <button class="fcard__say" data-say="${esc(it.art+' '+it.noun)}" title="Listen">🔊</button></div>
+        <div class="feel__opts col">${btns}</div>`;
+    }
+    let reveal='';
+    if(answered){
+      const ok = round.mode==='gender' ? round.chosen===it.art : round.chosen===round.answer;
+      const hint = round.mode==='gender' ? genderHint(it.noun) : null;
+      reveal=`<div class="feel__reveal">
+        <div class="feel__msg ${ok?'good':''}">${ok?'Genau! 🎉':'Kein Problem 💛'}</div>
+        <div class="feel__ans"><span class="art ${it.art}">${it.art}</span> ${esc(it.noun)} <span class="feel__en">= ${esc(it.en)}</span></div>
+        ${hint?`<div class="feel__hint">💡 ${esc(hint)}</div>`:''}
+      </div>`;
+    }
+    const inner=`
+    <div class="wrap feel">
+      <div class="quiz__top">
+        <button class="btn btn--ghost btn--sm" data-nav="#/">← Home</button>
+        <span class="chip chip--wash">Sprachgefühl</span>
+      </div>
+      <p class="feel__tag">Kein Punktestand, keine Uhr. Tipp einfach dein Bauchgefühl an. „Falsch“ raten lässt das Gefühl erst wachsen. 🌱<br><span class="feel__tag-en">No score, no timer. Just tap your gut feeling. Guessing wrong is exactly how the feeling grows.</span></p>
+      ${radar()}
+      <div class="feelcard">${body}${reveal}</div>
+      <div class="feel__foot">${answered?`<button class="btn btn--accent" data-next>Weiter →</button>`:`<span class="feel__hintsm">Trust your first thought.</span>`}</div>
+    </div>`;
+    render(inner,'feel');
+    $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+    $$('[data-say]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); Speech.speak(b.dataset.say, Store.get().settings.ttsRate); });
+    if(!answered){
+      if(round.mode==='gender') $$('.feelbtn').forEach(b=>b.onclick=()=>answer('g', b.dataset.g));
+      else $$('.feelopt').forEach(b=>b.onclick=()=>answer('m', +b.dataset.o));
+    } else { const nx=$('[data-next]'); if(nx) nx.onclick=nextRound; }
+  }
+  function answer(kind, val){
+    if(answered) return; answered=true;
+    let ok;
+    if(kind==='g'){ round.chosen=val; ok = val===round.item.art; }
+    else { round.chosen=val; ok = val===round.answer; }
+    recent.push(ok); if(recent.length>12) recent.shift();
+    const prev=Store.levelInfo().idx; Store.addXP(ok?3:2);
+    paint();
+    gameCheck(prev);
+  }
+  if(pool.length<3){ render(`<div class="wrap"><div class="card pad" style="margin-top:40px;text-align:center"><h2>Sprachgefühl</h2><p>Add some vocabulary first, then come back to play.</p></div></div>`,'feel'); $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav)); return; }
+  nextRound();
+}
+
+/* =====================================================================
+   VIEW: Aussprache-Training (pronunciation: hear, record, compare, AI check)
+   ===================================================================== */
+function viewPronounce(){
+  Store.touchStreak();
+  const rate = Store.get().settings.ttsRate;
+  let si=0, wi=0, rec=null, myUrl=null;
+
+  function resetRec(){ if(rec){ try{ rec.stop(); }catch(_){} rec=null; } if(myUrl){ URL.revokeObjectURL(myUrl); myUrl=null; } }
+  function showCheck(transcript, word, status){
+    const norm=s=>String(s).toLowerCase().replace(/[.,!?;:„“"'`-]/g,'').replace(/\s+/g,' ').trim();
+    const stripArt=w=>w.replace(/^(der|die|das)\s+/i,'');
+    const target=norm(stripArt(word)), heard=norm(transcript);
+    const ok = target && heard && (heard.includes(target) || target.includes(heard));
+    const line = ok
+      ? `<span class="pron__ok">✅ Clear! I heard: „${esc(transcript)}“</span>`
+      : `<span class="pron__soft">💛 I heard: „${esc(transcript||'…')}“. No stress, say it again and lean into the ${esc(SOUNDS[si].label)} sound.</span>`;
+    const c=status.querySelector('.pron__check'); if(c) c.outerHTML=line; else status.innerHTML+='<br>'+line;
+  }
+  function paint(){
+    const s=SOUNDS[si]; if(wi>=s.words.length) wi=0;
+    const word=s.words[wi]; const canRec=Speech.recorderSupported();
+    const inner=`
+    <div class="wrap lesson">
+      <div class="lesson__hero" style="background:linear-gradient(135deg,#8B5CF6,#8B5CF6cc)">
+        <div class="kicker">Aussprache-Training</div>
+        <h1>🗣️ Pronunciation</h1>
+        <p class="lead">Hear it, say it, record yourself, then compare. ${Lumikuttan.aiEnabled()?'A gentle AI check tells you what it heard.':''} No score, no pressure.</p>
+      </div>
+      <div class="soundchips">${SOUNDS.map((g,idx)=>`<button class="soundchip ${idx===si?'active':''}" data-si="${idx}">${esc(g.label)}</button>`).join('')}</div>
+      <div class="card pad">
+        <div class="tipbox"><div class="ic">💡</div><div><div class="h">${esc(s.label)}</div>${esc(s.tip_en)}<br><span style="color:var(--ink-faint)">${esc(s.tip_de)}</span></div></div>
+        <div class="pron__word">${esc(word)}</div>
+        <div class="pron__actions">
+          <button class="btn btn--ghost" data-hear>▶︎ Hear</button>
+          ${canRec?`<button class="mic pron__mic" data-mic title="Record">🎙️</button>
+          <button class="btn btn--ghost" data-mine disabled>▶︎ You</button>
+          <button class="btn btn--ghost" data-compare disabled>▶︎ Compare</button>`:''}
+        </div>
+        ${canRec?'':'<div class="pron__status">Recording is not available in this browser, but you can still tap ▶︎ Hear and repeat aloud. (Chrome or Safari support recording.)</div>'}
+        <div class="pron__status" id="pstatus"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+        <button class="btn btn--ghost btn--sm" data-prev ${wi<=0?'disabled':''}>← previous</button>
+        <span class="chip chip--wash">${wi+1} / ${s.words.length}</span>
+        <button class="btn btn--accent btn--sm" data-next>${wi+1<s.words.length?'next word →':'next sound →'}</button>
+      </div>
+    </div>`;
+    render(inner);
+    $$('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+    $$('.soundchip').forEach(b=>b.onclick=()=>{ resetRec(); si=+b.dataset.si; wi=0; paint(); });
+    $('[data-hear]').onclick=()=>Speech.speak(word, rate);
+    const prev=$('[data-prev]'); if(prev) prev.onclick=()=>{ if(wi>0){ resetRec(); wi--; paint(); } };
+    const next=$('[data-next]'); if(next) next.onclick=()=>{ resetRec(); if(wi+1<s.words.length) wi++; else { si=(si+1)%SOUNDS.length; wi=0; } paint(); };
+    const status=$('#pstatus'), mine=$('[data-mine]'), compare=$('[data-compare]'), micBtn=$('[data-mic]');
+    if(mine) mine.onclick=()=>{ if(myUrl) new Audio(myUrl).play(); };
+    if(compare) compare.onclick=()=>{ if(!myUrl) return; Speech.speak(word, rate, ()=>setTimeout(()=>{ if(myUrl) new Audio(myUrl).play(); }, 250)); };
+    if(micBtn) micBtn.onclick=async()=>{
+      if(rec){
+        micBtn.classList.remove('rec');
+        let blob; try{ blob=await rec.stop(); }catch(_){}
+        rec=null;
+        if(!blob){ status.textContent='Hmm, that recording did not work. Please try again.'; return; }
+        if(myUrl) URL.revokeObjectURL(myUrl);
+        myUrl=URL.createObjectURL(blob);
+        if(mine) mine.disabled=false; if(compare) compare.disabled=false;
+        status.innerHTML='Recorded ✓ Tap <b>▶︎ Compare</b> to hear the model, then you.';
+        if(Lumikuttan.aiEnabled()){
+          status.innerHTML+='<br><span class="pron__check">✨ Checking…</span>';
+          try{ const t=await Lumikuttan.transcribe(blob); showCheck(t, word, status); }
+          catch(e){ const c=status.querySelector('.pron__check'); if(c) c.textContent='(The AI check is unavailable right now, compare by ear.)'; }
+        }
+        return;
+      }
+      try{ rec=await Speech.startRecording(); micBtn.classList.add('rec'); status.textContent='🔴 Recording… press 🎙️ again to stop.'; }
+      catch(e){ status.innerHTML='⚠️ The microphone needs permission. Allow it (mic icon in the address bar), then try again.'; }
+    };
+  }
+  paint();
+}
+
+/* =====================================================================
    Router
    ===================================================================== */
 function route(){
@@ -954,6 +1154,8 @@ function route(){
   if(mSkill) return viewSkill(decodeURIComponent(mSkill[1]));
   if(mFlash) return viewFlash(mFlash[1]);
   if(h.startsWith('#/vokabeln')) return viewVokabeln();
+  if(h.startsWith('#/feel')) return viewFeel();
+  if(h.startsWith('#/aussprache')) return viewPronounce();
   if(h.startsWith('#/phrases')) return viewIdioms();
   if(h.startsWith('#/belohnungen')) return viewBelohnungen();
   if(h.startsWith('#/roadmap')) return viewRoadmap();
